@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hospital.Client.AdminPermissionsPage"
+             Title="Erişim ve roller">
+    <ScrollView>
+        <VerticalStackLayout Padding="{StaticResource PageScrollContentPadding}" Spacing="18">
+            <VerticalStackLayout Padding="0,0,0,8" Spacing="6">
+                <Label Text="Rol tabanlı erişim"
+                       Style="{StaticResource PageHeroTitle}"
+                       FontSize="22" />
+                <Label Text="Bu kurulum tek hastane içindir; her rol yalnızca kendi veri sınırlarında işlem yapar."
+                       Style="{StaticResource PageHeroSubtitle}" />
+            </VerticalStackLayout>
+
+            <Border Style="{StaticResource ElevatedCard}" Padding="18,16">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Yönetim (Admin)"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="16" />
+                    <Label Text="Tüm hastalar, poliklinikler, doktorlar, randevular, tetkik raporları ve nöbet/izin planı. Kurumsal kullanıcı ile giriş yapılır."
+                           FontSize="14"
+                           TextColor="{StaticResource TextSecondary}"
+                           LineBreakMode="WordWrap" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource ElevatedCard}" Padding="18,16">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Doktor portalı"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="16" />
+                    <Label Text="Kendi randevu takvimi ve geçmişi; T.C. ile hasta bulup randevu oluşturma; yalnızca kendisiyle ilişkili hastaların tetkik özetleri."
+                           FontSize="14"
+                           TextColor="{StaticResource TextSecondary}"
+                           LineBreakMode="WordWrap" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource ElevatedCard}" Padding="18,16">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Hasta portalı"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="16" />
+                    <Label Text="Kişisel bilgiler, randevu alma, geçmiş zaman çizelgesi ve kendi tetkik sonuçları."
+                           FontSize="14"
+                           TextColor="{StaticResource TextSecondary}"
+                           LineBreakMode="WordWrap" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource ElevatedCard}" Padding="18,16">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Nöbet ve izin yönetimi"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="16" />
+                    <Label Text="Kadro planı menüsünde doktor bazlı nöbet, izin ve görev türlerini kaydedebilirsiniz. İleride LDAP / kurumsal kimlik ile genişletilebilir."
+                           FontSize="14"
+                           TextColor="{StaticResource TextSecondary}"
+                           LineBreakMode="WordWrap" />
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

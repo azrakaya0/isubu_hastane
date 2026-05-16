@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Hospital.Client.Views"
+             x:Class="Hospital.Client.PatientLabReportsPage"
+             Title="Tetkiklerim">
+    <Grid RowDefinitions="Auto,*">
+        <VerticalStackLayout Style="{StaticResource PageHeroPanel}">
+            <Label Text="Raporlar ve sonuçlar"
+                   Style="{StaticResource PageHeroTitle}"
+                   FontSize="20" />
+            <Label Text="Kategori renk kodları ve kritik özet uyarıları; satıra dokunarak tam detayı açın."
+                   Style="{StaticResource PageHeroSubtitle}" />
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1" Margin="{StaticResource PageListMargin}">
+            <RefreshView x:Name="RefreshHost" Refreshing="OnRefreshing">
+                <CollectionView x:Name="LabsCollection"
+                                Style="{StaticResource AppListCollectionView}"
+                                SelectionMode="Single"
+                                SelectionChanged="OnSelectionChanged">
+                    <CollectionView.EmptyView>
+                        <views:EmptyStateView IconGlyph="&#x2695;"
+                                              Title="Sonuç yok"
+                                              Message="Sisteme yüklenmiş tetkik kaydı bulunmuyor veya liste boş geldi."
+                                              Hint="Laboratuvar sonuçları yüklendiğinde bu ekranda renk kodlu olarak listelenir." />
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource ListRowCard}">
+                                <VerticalStackLayout Spacing="10" HorizontalOptions="Fill">
+                                    <Border IsVisible="{Binding IsCriticalAttention}"
+                                            Padding="10,8"
+                                            BackgroundColor="#FFEBEE"
+                                            Stroke="#E57373"
+                                            StrokeThickness="1">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10" />
+                                        </Border.StrokeShape>
+                                        <Label Text="Kritik / dikkat gerektiren ifadeler özet metninde tespit edildi — değerlendirme hekiminizdedir."
+                                               FontSize="12"
+                                               TextColor="#B71C1C"
+                                               LineBreakMode="WordWrap"
+                                               Style="{StaticResource ListBodyLabel}" />
+                                    </Border>
+                                    <HorizontalStackLayout Spacing="10">
+                                        <Border Style="{StaticResource BadgeChip}"
+                                                BackgroundColor="{Binding CategoryBadgeBg}">
+                                            <Label Text="{Binding Category}"
+                                                   FontSize="11"
+                                                   FontFamily="OpenSansSemibold"
+                                                   TextColor="{Binding CategoryBadgeFg}" />
+                                        </Border>
+                                        <Label VerticalOptions="Center"
+                                               FontSize="12"
+                                               TextColor="{StaticResource TextSecondary}"
+                                               Text="{Binding ResultDate, StringFormat='{}{0:dd.MM.yyyy}'}" />
+                                    </HorizontalStackLayout>
+                                    <Label Text="{Binding Title}"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="16"
+                                           TextColor="{StaticResource TextPrimary}"
+                                           Style="{StaticResource ListBodyLabel}" />
+                                    <Label Text="{Binding Summary}"
+                                           FontSize="13"
+                                           TextColor="{StaticResource TextSecondary}"
+                                           Style="{StaticResource ListBodyLabel}" />
+                                    <Label Text="{Binding OrderingDoctorName, TargetNullValue='', StringFormat='İsteyen hekim: {0}'}"
+                                           FontSize="12"
+                                           TextColor="{StaticResource TextSecondary}"
+                                           Style="{StaticResource ListBodyLabel}" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+            <Grid x:Name="BusyOverlay"
+                  IsVisible="False"
+                  BackgroundColor="#DDF5FAFF"
+                  ZIndex="100">
+                <ActivityIndicator x:Name="BusySpinner"
+                                   IsRunning="False"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center" />
+            </Grid>
+        </Grid>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Hospital.Client.Views"
+             x:Class="Hospital.Client.ClinicsPage"
+             Title="Poliklinikler">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Yeni" Clicked="OnAddClicked" />
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="0">
+        <VerticalStackLayout Grid.Row="0"
+                             Style="{StaticResource PageHeroPanel}">
+            <Label Text="Poliklinikler"
+                   Style="{StaticResource PageHeroTitle}"
+                   FontSize="20" />
+            <Label Text="Poliklinik adına dokunarak o birimdeki doktorları görün; düzenlemek için satırdaki Düzenle bağlantısını kullanın. Yeni kayıt: Yeni."
+                   Style="{StaticResource PageHeroSubtitle}" />
+        </VerticalStackLayout>
+
+        <Border Grid.Row="1"
+                Style="{StaticResource ElevatedCard}"
+                Padding="18,14"
+                Margin="20,12,20,0">
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Arama"
+                       Style="{StaticResource FormSubSectionTitle}"
+                       Margin="0,-4,0,-4" />
+                <Border Style="{StaticResource FormFieldBorder}" Padding="4,2">
+                    <SearchBar x:Name="ClinicSearch"
+                               Placeholder="İsim veya açıklama"
+                               SearchButtonPressed="OnSearchPressed" />
+                </Border>
+            </VerticalStackLayout>
+        </Border>
+
+        <Grid Grid.Row="2"
+              Margin="{StaticResource PageListMargin}"
+              RowDefinitions="Auto,*">
+            <Border x:Name="PageErrorBanner"
+                    Grid.Row="0"
+                    IsVisible="False"
+                    Margin="0,0,0,10"
+                    Padding="14,12"
+                    BackgroundColor="#FFEBEE"
+                    Stroke="#E57373"
+                    StrokeThickness="1">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                    <Label x:Name="PageErrorMessage"
+                           Grid.Column="0"
+                           FontSize="13"
+                           TextColor="#B71C1C"
+                           VerticalTextAlignment="Center"
+                           LineBreakMode="WordWrap" />
+                    <Button Grid.Column="1"
+                            Text="Tekrar dene"
+                            Clicked="OnPageErrorRetryClicked"
+                            Padding="12,8"
+                            FontSize="13"
+                            CornerRadius="8"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource Primary}"
+                            BorderColor="{StaticResource Primary}"
+                            BorderWidth="1.5"
+                            VerticalOptions="Center" />
+                </Grid>
+            </Border>
+            <Grid Grid.Row="1">
+            <RefreshView x:Name="RefreshHost" Refreshing="OnRefreshing">
+                <CollectionView x:Name="ClinicsCollection"
+                                Style="{StaticResource AppListCollectionView}"
+                                SelectionMode="None"
+                                SemanticProperties.Description="Poliklinik listesi.">
+                    <CollectionView.EmptyView>
+                        <views:EmptyStateView Title="Poliklinik yok"
+                                              Message="Arama sonucu boş olabilir veya henüz birim tanımlanmamıştır."
+                                              Hint="Yeni poliklinik eklemek için üst menüden Yeni’yi seçin." />
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource ListRowCard}">
+                                <Grid ColumnDefinitions="112,*" ColumnSpacing="14" HorizontalOptions="Fill">
+                                    <Border Grid.Column="0"
+                                            StrokeThickness="0"
+                                            HorizontalOptions="Start"
+                                            VerticalOptions="Center"
+                                            HeightRequest="90"
+                                            WidthRequest="112">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="12" />
+                                        </Border.StrokeShape>
+                                        <Grid IsClippedToBounds="True">
+                                            <Border StrokeThickness="0"
+                                                    BackgroundColor="{StaticResource Secondary}"
+                                                    HorizontalOptions="Fill"
+                                                    VerticalOptions="Fill" />
+                                            <Label Text="{Binding NameBadge}"
+                                                   FontFamily="OpenSansSemibold"
+                                                   FontSize="28"
+                                                   TextColor="{StaticResource Primary}"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"
+                                                   IsVisible="{Binding NeedsPlaceholder}"
+                                                   SemanticProperties.Hint="Varsayılan poliklinik rozeti" />
+                                            <Image Source="{Binding ThumbSource}"
+                                                   Aspect="AspectFill"
+                                                   IsVisible="{Binding HasThumb}"
+                                                   HorizontalOptions="Fill"
+                                                   VerticalOptions="Fill"
+                                                   SemanticProperties.Description="Poliklinik fotoğrafı" />
+                                        </Grid>
+                                    </Border>
+                                    <VerticalStackLayout Grid.Column="1"
+                                                         Spacing="8"
+                                                         HorizontalOptions="Fill"
+                                                         VerticalOptions="Center">
+                                        <Label FontFamily="OpenSansSemibold"
+                                               FontSize="17"
+                                               Text="{Binding Name}"
+                                               TextColor="{StaticResource Primary}"
+                                               LineBreakMode="WordWrap"
+                                               HorizontalOptions="Fill">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="OnClinicNameTapped" CommandParameter="{Binding Source}" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
+                                        <Label Text="{Binding Description}"
+                                               FontSize="13"
+                                               TextColor="{StaticResource TextSecondary}"
+                                               Style="{StaticResource ListBodyLabel}" />
+                                        <HorizontalStackLayout Spacing="16">
+                                            <Label FontSize="13"
+                                                   TextColor="{StaticResource TextSecondary}"
+                                                   Text="Doktorları gör"
+                                                   TextDecorations="Underline">
+                                                <Label.GestureRecognizers>
+                                                    <TapGestureRecognizer Tapped="OnClinicNameTapped" CommandParameter="{Binding Source}" />
+                                                </Label.GestureRecognizers>
+                                            </Label>
+                                            <Label FontSize="13"
+                                                   Text="Düzenle"
+                                                   TextColor="{StaticResource Primary}"
+                                                   TextDecorations="Underline">
+                                                <Label.GestureRecognizers>
+                                                    <TapGestureRecognizer Tapped="OnClinicEditTapped" CommandParameter="{Binding Source}" />
+                                                </Label.GestureRecognizers>
+                                            </Label>
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                    <CollectionView.Footer>
+                        <Label Padding="0,12,0,4"
+                               FontSize="11"
+                               TextColor="{StaticResource TextSecondary}"
+                               HorizontalTextAlignment="Center"
+                               Text="Arama kutusunda Enter veya ara simgesi ile sorgulayın." />
+                    </CollectionView.Footer>
+                </CollectionView>
+            </RefreshView>
+            <Grid x:Name="BusyOverlay"
+                  IsVisible="False"
+                  BackgroundColor="#DDF5FAFF"
+                  ZIndex="100">
+                <ActivityIndicator x:Name="BusySpinner"
+                                   IsRunning="False"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"
+                                   Scale="1.15" />
+            </Grid>
+            </Grid>
+        </Grid>
+
+        <views:HospitalFooterBar Grid.Row="3"
+                                 Margin="20,10,20,12" />
+    </Grid>
+</ContentPage>

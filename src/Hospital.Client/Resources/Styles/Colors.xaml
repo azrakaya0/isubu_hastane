@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Kurumsal hastane portalı: güven veren mavi, açık yüzeyler -->
+
+    <Color x:Key="Primary">#1565C0</Color>
+    <Color x:Key="PrimaryDark">#90CAF9</Color>
+    <Color x:Key="PrimaryDarkText">#0D47A1</Color>
+    <Color x:Key="Secondary">#E3F2FD</Color>
+    <Color x:Key="SecondaryDarkText">#1976D2</Color>
+    <Color x:Key="Tertiary">#0D47A1</Color>
+
+    <Color x:Key="White">White</Color>
+    <Color x:Key="Black">#1E3A5F</Color>
+    <Color x:Key="Magenta">#1565C0</Color>
+    <Color x:Key="MidnightBlue">#1565C0</Color>
+    <Color x:Key="OffBlack">#1E3A5F</Color>
+
+    <Color x:Key="Gray100">#F5FAFF</Color>
+    <Color x:Key="Gray200">#E3F2FD</Color>
+    <Color x:Key="Gray300">#BBDEFB</Color>
+    <Color x:Key="Gray400">#90CAF9</Color>
+    <Color x:Key="Gray500">#7895B2</Color>
+    <Color x:Key="Gray600">#5A7DA1</Color>
+    <Color x:Key="Gray900">#1E3A5F</Color>
+    <Color x:Key="Gray950">#C5D9ED</Color>
+
+    <Color x:Key="SurfacePage">#F5FAFF</Color>
+    <Color x:Key="SurfacePageDark">#F5FAFF</Color>
+    <Color x:Key="SurfaceCard">#FFFFFF</Color>
+    <Color x:Key="SurfaceCardDark">#FFFFFF</Color>
+    <Color x:Key="BorderSubtle">#C5D9ED</Color>
+    <Color x:Key="BorderSubtleDark">#C5D9ED</Color>
+    <Color x:Key="TextSecondary">#5A7DA1</Color>
+    <Color x:Key="TextSecondaryDark">#5A7DA1</Color>
+    <Color x:Key="TextPrimary">#1E3A5F</Color>
+    <Color x:Key="Danger">#E53935</Color>
+
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
+    <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
+    <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>
+    <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Black}"/>
+
+    <SolidColorBrush x:Key="Gray100Brush" Color="{StaticResource Gray100}"/>
+    <SolidColorBrush x:Key="Gray200Brush" Color="{StaticResource Gray200}"/>
+    <SolidColorBrush x:Key="Gray300Brush" Color="{StaticResource Gray300}"/>
+    <SolidColorBrush x:Key="Gray400Brush" Color="{StaticResource Gray400}"/>
+    <SolidColorBrush x:Key="Gray500Brush" Color="{StaticResource Gray500}"/>
+    <SolidColorBrush x:Key="Gray600Brush" Color="{StaticResource Gray600}"/>
+    <SolidColorBrush x:Key="Gray900Brush" Color="{StaticResource Gray900}"/>
+    <SolidColorBrush x:Key="Gray950Brush" Color="{StaticResource Gray950}"/>
+
+    <LinearGradientBrush x:Key="LoginBackgroundLight" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#FFFFFF" Offset="0" />
+        <GradientStop Color="#EDF6FF" Offset="0.55" />
+        <GradientStop Color="#DCECFC" Offset="1" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="LoginBackgroundDark" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#FFFFFF" Offset="0" />
+        <GradientStop Color="#EDF6FF" Offset="0.55" />
+        <GradientStop Color="#DCECFC" Offset="1" />
+    </LinearGradientBrush>
+</ResourceDictionary>

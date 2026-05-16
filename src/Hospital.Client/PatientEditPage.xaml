@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hospital.Client.PatientEditPage"
+             Title="Hasta">
+    <Grid RowDefinitions="Auto,*">
+        <VerticalStackLayout Grid.Row="0"
+                             Style="{StaticResource PageHeroPanel}">
+            <Label Text="Hasta kaydı"
+                   Style="{StaticResource PageHeroTitle}" />
+            <Label Text="Kimlik ve iletişim bilgilerini güncel tutun; T.C. kimlik numarası resmi kayıt için kullanılır."
+                   Style="{StaticResource PageHeroSubtitle}" />
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1">
+            <ScrollView BackgroundColor="Transparent">
+            <Grid Padding="{StaticResource PageScrollContentPadding}" ColumnDefinitions="*">
+                <Border Grid.Column="0"
+                        Style="{StaticResource FormSheetCard}"
+                        Margin="0,0,0,8">
+                    <VerticalStackLayout Padding="28,26" Spacing="22">
+                        <Label Text="Temel bilgiler"
+                               Style="{StaticResource FormSubSectionTitle}"
+                               Margin="0,0,0,0" />
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="18" RowSpacing="16">
+                            <VerticalStackLayout Grid.Column="0" Spacing="8">
+                                <Label Text="Ad" Style="{StaticResource SectionLabel}" Margin="0" />
+                                <Border Style="{StaticResource FormFieldBorder}">
+                                    <Entry x:Name="FirstNameEntry"
+                                           Placeholder="Ad"
+                                           MaxLength="100"
+                                           BackgroundColor="Transparent"
+                                           TextColor="{StaticResource TextPrimary}" />
+                                </Border>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="8">
+                                <Label Text="Soyad" Style="{StaticResource SectionLabel}" Margin="0" />
+                                <Border Style="{StaticResource FormFieldBorder}">
+                                    <Entry x:Name="LastNameEntry"
+                                           Placeholder="Soyad"
+                                           MaxLength="100"
+                                           BackgroundColor="Transparent"
+                                           TextColor="{StaticResource TextPrimary}" />
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="T.C. kimlik numarası" Style="{StaticResource SectionLabel}" Margin="0" />
+                            <Border Style="{StaticResource FormFieldBorder}">
+                                <Entry x:Name="NationalIdEntry"
+                                       Placeholder="11 hane"
+                                       Keyboard="Numeric"
+                                       MaxLength="11"
+                                       BackgroundColor="Transparent"
+                                       TextColor="{StaticResource TextPrimary}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="18">
+                            <VerticalStackLayout Grid.Column="0" Spacing="8">
+                                <Label Text="Telefon" Style="{StaticResource SectionLabel}" Margin="0" />
+                                <Border Style="{StaticResource FormFieldBorder}">
+                                    <Entry x:Name="PhoneEntry"
+                                           Placeholder="Telefon"
+                                           MaxLength="20"
+                                           BackgroundColor="Transparent"
+                                           TextColor="{StaticResource TextPrimary}" />
+                                </Border>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="8">
+                                <Label Text="E-posta" Style="{StaticResource SectionLabel}" Margin="0" />
+                                <Border Style="{StaticResource FormFieldBorder}">
+                                    <Entry x:Name="EmailEntry"
+                                           Placeholder="İsteğe bağlı"
+                                           Keyboard="Email"
+                                           MaxLength="200"
+                                           BackgroundColor="Transparent"
+                                           TextColor="{StaticResource TextPrimary}" />
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Doğum tarihi" Style="{StaticResource SectionLabel}" Margin="0" />
+                            <Border Style="{StaticResource FormFieldBorder}" Padding="10,4">
+                                <DatePicker x:Name="BirthDatePicker"
+                                            HorizontalOptions="Start"
+                                            TextColor="{StaticResource TextPrimary}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <BoxView HeightRequest="1" Color="{StaticResource BorderSubtle}" Margin="0,8,0,4" />
+
+                        <Button Text="Kaydet"
+                                Margin="0,4,0,0"
+                                Clicked="OnSaveClicked" />
+                        <Button x:Name="DeleteButton"
+                                Text="Kaydı sil"
+                                Style="{StaticResource DangerButton}"
+                                Clicked="OnDeleteClicked"
+                                IsVisible="False" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+            </ScrollView>
+            <Grid x:Name="BusyOverlay"
+                  IsVisible="False"
+                  BackgroundColor="#DDF5FAFF"
+                  ZIndex="100">
+                <ActivityIndicator x:Name="BusySpinner"
+                                   IsRunning="False"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"
+                                   Scale="1.1" />
+            </Grid>
+        </Grid>
+    </Grid>
+</ContentPage>

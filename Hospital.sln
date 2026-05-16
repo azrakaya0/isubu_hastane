@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FA26474E-0239-4168-ADD7-4CC2B8ED5D58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hospital.Shared", "src\Hospital.Shared\Hospital.Shared.csproj", "{09D8935D-9366-4F96-A18D-27A8C2630A51}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HospitalApi", "src\HospitalApi\HospitalApi.csproj", "{40B015D8-5D18-4E90-A9AD-D439AC9AB691}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hospital.Client", "src\Hospital.Client\Hospital.Client.csproj", "{BE2E7908-1292-48DE-BF19-752BD965EC1D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{09D8935D-9366-4F96-A18D-27A8C2630A51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09D8935D-9366-4F96-A18D-27A8C2630A51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09D8935D-9366-4F96-A18D-27A8C2630A51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09D8935D-9366-4F96-A18D-27A8C2630A51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40B015D8-5D18-4E90-A9AD-D439AC9AB691}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40B015D8-5D18-4E90-A9AD-D439AC9AB691}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40B015D8-5D18-4E90-A9AD-D439AC9AB691}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40B015D8-5D18-4E90-A9AD-D439AC9AB691}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE2E7908-1292-48DE-BF19-752BD965EC1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE2E7908-1292-48DE-BF19-752BD965EC1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE2E7908-1292-48DE-BF19-752BD965EC1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE2E7908-1292-48DE-BF19-752BD965EC1D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{09D8935D-9366-4F96-A18D-27A8C2630A51} = {FA26474E-0239-4168-ADD7-4CC2B8ED5D58}
+		{40B015D8-5D18-4E90-A9AD-D439AC9AB691} = {FA26474E-0239-4168-ADD7-4CC2B8ED5D58}
+		{BE2E7908-1292-48DE-BF19-752BD965EC1D} = {FA26474E-0239-4168-ADD7-4CC2B8ED5D58}
+	EndGlobalSection
+EndGlobal

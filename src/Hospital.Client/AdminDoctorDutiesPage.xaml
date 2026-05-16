@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Hospital.Client.Views"
+             x:Class="Hospital.Client.AdminDoctorDutiesPage"
+             Title="Nöbet ve izinler">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Yeni" Clicked="OnAddClicked" />
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*" RowSpacing="0">
+        <VerticalStackLayout Style="{StaticResource PageHeroPanel}">
+            <Label Text="Kadro ve nöbet planı"
+                   Style="{StaticResource PageHeroTitle}"
+                   FontSize="20" />
+            <Label Text="Nöbet–izin görünürlüğü, hızlı KPI’lar ve liste/özet sekmeleri; kayıt seçerek düzenleyin."
+                   Style="{StaticResource PageHeroSubtitle}" />
+        </VerticalStackLayout>
+
+        <Border Grid.Row="1"
+                Style="{StaticResource KpiStripCard}"
+                Margin="20,10,20,0">
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                <VerticalStackLayout>
+                    <Label x:Name="KpiTotal" Style="{StaticResource MetricValueLabel}" FontSize="22" HorizontalTextAlignment="Center" Text="–" />
+                    <Label Text="Görev satırı" Style="{StaticResource MetricCaptionLabel}" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1">
+                    <Label x:Name="KpiShift" Style="{StaticResource MetricValueLabel}" FontSize="22" HorizontalTextAlignment="Center" TextColor="{StaticResource Primary}" Text="–" />
+                    <Label Text="Nöbet adayı" Style="{StaticResource MetricCaptionLabel}" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="2">
+                    <Label x:Name="KpiLeave" Style="{StaticResource MetricValueLabel}" FontSize="22" HorizontalTextAlignment="Center" TextColor="#F57F17" Text="–" />
+                    <Label Text="İzin adayı" Style="{StaticResource MetricCaptionLabel}" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+
+        <VerticalStackLayout Grid.Row="2"
+                             Margin="20,10,20,0"
+                             Spacing="8">
+            <Label Text="Çalışma görünümü"
+                   Style="{StaticResource FormSubSectionTitle}"
+                   Margin="0,0,0,-4" />
+            <HorizontalStackLayout Spacing="10">
+                <RadioButton x:Name="RbViewList" Content="Operasyon listesi" GroupName="AdminDutyView" />
+                <RadioButton x:Name="RbViewInsight" Content="Dağılım özeti" GroupName="AdminDutyView" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="12">
+                <CheckBox x:Name="OnlyThisMonthCheck" VerticalOptions="Center" />
+                <Label Text="Yalnızca bu ayın kayıtları"
+                       VerticalOptions="Center"
+                       FontSize="14"
+                       TextColor="{StaticResource TextPrimary}" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="3" Margin="{StaticResource PageListMargin}">
+            <RefreshView x:Name="RefreshHost" Refreshing="OnRefreshing">
+                <Grid>
+                    <CollectionView x:Name="DutiesCollection"
+                                    Style="{StaticResource AppListCollectionView}"
+                                    SelectionMode="Single"
+                                    SelectionChanged="OnSelectionChanged">
+                        <CollectionView.EmptyView>
+                            <views:EmptyStateView IconGlyph="&#x231A;"
+                                                  Title="Kayıt bulunamadı"
+                                                  Message="Henüz nöbet/izin kaydı yok ya da bu ay filtresi her şeyi gizliyor."
+                                                  Hint="Yeni kayıt oluşturmak için araç çubuğundaki Yeni’yi kullanın." />
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource ListRowCard}">
+                                    <VerticalStackLayout Spacing="8" HorizontalOptions="Fill">
+                                        <HorizontalStackLayout Spacing="8">
+                                            <Border Style="{StaticResource BadgeChip}"
+                                                    BackgroundColor="{Binding KindBadgeBg}">
+                                                <Label Text="{Binding DutyKind}"
+                                                       FontSize="11"
+                                                       FontFamily="OpenSansSemibold"
+                                                       TextColor="{Binding KindBadgeFg}" />
+                                            </Border>
+                                            <Label VerticalOptions="Center"
+                                                   Text="{Binding DutyDate, StringFormat='{}{0:dd.MM.yyyy}'}"
+                                                   FontSize="13"
+                                                   FontFamily="OpenSansSemibold"
+                                                   TextColor="{StaticResource TextPrimary}" />
+                                        </HorizontalStackLayout>
+                                        <Label Text="{Binding DoctorFullName}"
+                                               FontFamily="OpenSansSemibold"
+                                               FontSize="16"
+                                               Style="{StaticResource ListBodyLabel}" />
+                                        <Label Text="{Binding ClinicName}"
+                                               FontSize="13"
+                                               TextColor="{StaticResource TextSecondary}"
+                                               Style="{StaticResource ListBodyLabel}" />
+                                        <Label Text="{Binding NotesSnippet}"
+                                               FontSize="12"
+                                               TextColor="{StaticResource TextSecondary}"
+                                               IsVisible="{Binding HasNotes}"
+                                               Style="{StaticResource ListBodyLabel}" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <ScrollView x:Name="InsightScroller"
+                                IsVisible="False"
+                                Padding="0,0,0,8">
+                        <Border Style="{StaticResource ElevatedCard}" Padding="18,16" Margin="0,0,0,10">
+                            <VerticalStackLayout Spacing="12">
+                                <Label Text="Görev dağılımı"
+                                       Style="{StaticResource FormSubSectionTitle}" />
+                                <Label x:Name="DutyInsightLabel"
+                                       FontSize="14"
+                                       LineBreakMode="WordWrap"
+                                       TextColor="{StaticResource TextSecondary}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </ScrollView>
+                </Grid>
+            </RefreshView>
+            <Grid x:Name="BusyOverlay"
+                  IsVisible="False"
+                  BackgroundColor="#DDF5FAFF"
+                  ZIndex="100">
+                <ActivityIndicator x:Name="BusySpinner"
+                                   IsRunning="False"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center" />
+            </Grid>
+        </Grid>
+    </Grid>
+</ContentPage>

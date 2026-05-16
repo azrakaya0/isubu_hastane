@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Hospital.Client.Views"
+             x:Class="Hospital.Client.DoctorAppointmentsPage"
+             Title="Randevularım">
+    <Grid RowDefinitions="Auto,Auto,Auto,*" RowSpacing="0">
+        <VerticalStackLayout Style="{StaticResource PageHeroPanel}">
+            <Label Text="Klinik randevu sırası"
+                   Style="{StaticResource PageHeroTitle}"
+                   FontSize="20" />
+            <Label Text="Öncelik rozetleri gecikme ve yakın zamanı vurgular; filtreleri kendi görünümünüze göre daraltın."
+                   Style="{StaticResource PageHeroSubtitle}" />
+        </VerticalStackLayout>
+
+        <Border Grid.Row="1"
+                Style="{StaticResource KpiStripCard}"
+                Margin="20,10,20,0">
+            <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="6">
+                <VerticalStackLayout>
+                    <Label x:Name="KpiTotal" Text="–" Style="{StaticResource MetricValueLabel}" FontSize="20" HorizontalTextAlignment="Center" />
+                    <Label Text="Hasta sırası" Style="{StaticResource MetricCaptionLabel}" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1">
+                    <Label x:Name="KpiScheduled" Text="–" Style="{StaticResource MetricValueLabel}" FontSize="20" HorizontalTextAlignment="Center" TextColor="{StaticResource Primary}" />
+                    <Label Text="Planlı" Style="{StaticResource MetricCaptionLabel}" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="2">
+                    <Label x:Name="KpiCompleted" Text="–" Style="{StaticResource MetricValueLabel}" FontSize="20" HorizontalTextAlignment="Center" TextColor="#2E7D32" />
+                    <Label Text="Tamamlanan" Style="{StaticResource MetricCaptionLabel}" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="3">
+                    <Label x:Name="KpiCancelled" Text="–" Style="{StaticResource MetricValueLabel}" FontSize="20" HorizontalTextAlignment="Center" TextColor="#78909C" />
+                    <Label Text="İptal" Style="{StaticResource MetricCaptionLabel}" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="2"
+                Style="{StaticResource ElevatedCard}"
+                Margin="20,12,20,0"
+                Padding="16,14">
+            <VerticalStackLayout Spacing="12">
+                <Label Text="Filtre paneli"
+                       Style="{StaticResource FormSubSectionTitle}"
+                       Margin="0,-4,0,-4" />
+                <HorizontalStackLayout Spacing="10">
+                    <RadioButton x:Name="RbAllDates" Content="Tüm tarihler" GroupName="DcApptDates" />
+                    <RadioButton x:Name="RbToday" Content="Bugün" GroupName="DcApptDates" />
+                    <RadioButton x:Name="RbWeek" Content="Bu hafta" GroupName="DcApptDates" />
+                </HorizontalStackLayout>
+                <Border Style="{StaticResource FormFieldBorder}" Padding="6,2">
+                    <Picker x:Name="StatusPicker"
+                            Title="Durum filtresi"
+                            TextColor="{StaticResource TextPrimary}">
+                        <Picker.Items>
+                            <x:String>Tüm durumlar</x:String>
+                            <x:String>Planlı</x:String>
+                            <x:String>Tamamlandı</x:String>
+                            <x:String>İptal</x:String>
+                        </Picker.Items>
+                    </Picker>
+                </Border>
+            </VerticalStackLayout>
+        </Border>
+
+        <Grid Grid.Row="3" Margin="{StaticResource PageListMargin}" RowDefinitions="Auto,*">
+            <Border x:Name="PageErrorBanner"
+                    Grid.Row="0"
+                    IsVisible="False"
+                    Margin="0,0,0,10"
+                    Padding="14,12"
+                    BackgroundColor="#FFEBEE"
+                    Stroke="#E57373"
+                    StrokeThickness="1">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                    <Label x:Name="PageErrorMessage"
+                           Grid.Column="0"
+                           FontSize="13"
+                           TextColor="#B71C1C"
+                           VerticalTextAlignment="Center"
+                           LineBreakMode="WordWrap" />
+                    <Button Grid.Column="1"
+                            Text="Tekrar dene"
+                            Clicked="OnPageErrorRetryClicked"
+                            Padding="12,8"
+                            FontSize="13"
+                            CornerRadius="8"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource Primary}"
+                            BorderColor="{StaticResource Primary}"
+                            BorderWidth="1.5"
+                            VerticalOptions="Center" />
+                </Grid>
+            </Border>
+            <Grid Grid.Row="1">
+                <RefreshView x:Name="RefreshHost" Refreshing="OnRefreshing">
+                    <CollectionView x:Name="ItemsCollection"
+                                    Style="{StaticResource AppListCollectionView}"
+                                    SelectionMode="None"
+                                    SemanticProperties.Description="Doktor randevu listesi.">
+                        <CollectionView.EmptyView>
+                            <views:EmptyStateView IconGlyph="&#9787;"
+                                                  Title="Randevu yok"
+                                                  Message="Bu filtre kombinasyonu için kayıt bulunmadı."
+                                                  Hint="Üst gezintiden Hastaya randevu ile yeni sıra oluşturabilirsiniz." />
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource ListRowCard}">
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10" RowDefinitions="Auto,Auto">
+                                        <HorizontalStackLayout Grid.Row="0" Grid.Column="0" Spacing="8" VerticalOptions="Center">
+                                            <Border Style="{StaticResource BadgeChip}"
+                                                    BackgroundColor="{Binding StatusBadgeBg}">
+                                                <Label Text="{Binding StatusLabel}"
+                                                       FontSize="11"
+                                                       FontFamily="OpenSansSemibold"
+                                                       TextColor="{Binding StatusBadgeFg}" />
+                                            </Border>
+                                            <Border Style="{StaticResource BadgeChip}"
+                                                    BackgroundColor="{Binding UrgencyBadgeBg}">
+                                                <Label Text="{Binding UrgencyLabel}"
+                                                       FontSize="11"
+                                                       FontFamily="OpenSansSemibold"
+                                                       TextColor="{Binding UrgencyBadgeFg}" />
+                                            </Border>
+                                        </HorizontalStackLayout>
+                                        <Label Grid.Row="0" Grid.Column="1"
+                                               Text="{Binding ScheduledAtText}"
+                                               FontFamily="OpenSansSemibold"
+                                               FontSize="15"
+                                               TextColor="{StaticResource Primary}"
+                                               VerticalOptions="Center"
+                                               HorizontalTextAlignment="End" />
+                                        <VerticalStackLayout Grid.Row="1"
+                                                             Grid.Column="0"
+                                                             Grid.ColumnSpan="2"
+                                                             Spacing="4"
+                                                             Margin="0,8,0,0">
+                                            <Label Text="{Binding PatientName}"
+                                                   FontFamily="OpenSansSemibold"
+                                                   FontSize="16"
+                                                   Style="{StaticResource ListBodyLabel}" />
+                                            <Label Text="{Binding ClinicName}"
+                                                   FontSize="13"
+                                                   TextColor="{StaticResource TextSecondary}"
+                                                   Style="{StaticResource ListBodyLabel}" />
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </RefreshView>
+                <Grid x:Name="BusyOverlay"
+                      IsVisible="False"
+                      BackgroundColor="#DDF5FAFF"
+                      ZIndex="100">
+                    <ActivityIndicator x:Name="BusySpinner"
+                                       IsRunning="False"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="Center"
+                                       Scale="1.15" />
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Hospital.Client.Views"
+             x:Class="Hospital.Client.AdminLabReportsPage"
+             Title="Tetkik raporları">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Yeni" Clicked="OnAddClicked" />
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*,Auto" RowSpacing="0">
+        <VerticalStackLayout Grid.Row="0"
+                             Style="{StaticResource PageHeroPanel}">
+            <Label Text="Tetkik operasyon merkezi"
+                   Style="{StaticResource PageHeroTitle}"
+                   FontSize="20" />
+            <Label Text="KPI şeridi, liste ve özet görünümleri arasında geçiş; hasta ID ile daraltın."
+                   Style="{StaticResource PageHeroSubtitle}" />
+        </VerticalStackLayout>
+
+        <Border Grid.Row="1"
+                Style="{StaticResource KpiStripCard}"
+                Margin="20,10,20,0">
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                <VerticalStackLayout>
+                    <Label x:Name="KpiTotal" Style="{StaticResource MetricValueLabel}" FontSize="22" HorizontalTextAlignment="Center" Text="–" />
+                    <Label Text="Gösterilen kayıt" Style="{StaticResource MetricCaptionLabel}" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1">
+                    <Label x:Name="KpiCritical" Style="{StaticResource MetricValueLabel}" FontSize="22" HorizontalTextAlignment="Center" TextColor="#B71C1C" Text="–" />
+                    <Label Text="Kritik uyarı" Style="{StaticResource MetricCaptionLabel}" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="2">
+                    <Label x:Name="KpiLast30" Style="{StaticResource MetricValueLabel}" FontSize="22" HorizontalTextAlignment="Center" TextColor="{StaticResource Primary}" Text="–" />
+                    <Label Text="Son 30 gün" Style="{StaticResource MetricCaptionLabel}" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+
+        <VerticalStackLayout Grid.Row="2"
+                             Margin="20,10,20,0"
+                             Spacing="8">
+            <Label Text="Görünüm"
+                   Style="{StaticResource FormSubSectionTitle}"
+                   Margin="0,0,0,-4" />
+            <HorizontalStackLayout Spacing="10">
+                <RadioButton x:Name="RbViewList" Content="Liste" GroupName="AdminLabView" />
+                <RadioButton x:Name="RbViewInsight" Content="Özet içgörüsü" GroupName="AdminLabView" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+
+        <Border Grid.Row="3"
+                Style="{StaticResource ElevatedCard}"
+                Margin="20,10,20,0"
+                Padding="16,14">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10" RowDefinitions="Auto,Auto">
+                <Label Grid.Row="0" Grid.ColumnSpan="2"
+                       Text="Hasta kimliği (boş bırakılırsa tümü)"
+                       Style="{StaticResource SectionLabel}" />
+                <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource FormFieldBorder}" Padding="10,6">
+                    <Entry x:Name="PatientIdEntry"
+                           Keyboard="Numeric"
+                           Placeholder="Örn. 1"
+                           TextColor="{StaticResource TextPrimary}" />
+                </Border>
+                <Button Grid.Row="1" Grid.Column="1"
+                        Text="Yükle"
+                        Padding="16,10"
+                        Clicked="OnFilterClicked" />
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="4" Margin="{StaticResource PageListMargin}">
+            <RefreshView x:Name="RefreshHost" Refreshing="OnRefreshing">
+                <Grid>
+                    <CollectionView x:Name="ReportsCollection"
+                                    Style="{StaticResource AppListCollectionView}"
+                                    SelectionMode="Single"
+                                    SelectionChanged="OnSelectionChanged">
+                        <CollectionView.EmptyView>
+                            <views:EmptyStateView IconGlyph="&#x2695;"
+                                                  Title="Kayıt bulunamadı"
+                                                  Message="Filtreye uyan tetkik kaydı yok veya API boş döndü."
+                                                  Hint="Yeni kayıt için Yeni; filtrede hasta ID’sini temizleyerek tüm hastaları yükleyebilirsiniz." />
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource ListRowCard}">
+                                    <VerticalStackLayout Spacing="8" HorizontalOptions="Fill">
+                                        <Border IsVisible="{Binding IsCriticalAttention}"
+                                                Padding="8,6"
+                                                BackgroundColor="#FFEBEE"
+                                                StrokeThickness="0">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="8" />
+                                            </Border.StrokeShape>
+                                            <Label Text="Kritik özet"
+                                                   FontFamily="OpenSansSemibold"
+                                                   FontSize="11"
+                                                   TextColor="#B71C1C" />
+                                        </Border>
+                                        <HorizontalStackLayout Spacing="8">
+                                            <Border Style="{StaticResource BadgeChip}"
+                                                    BackgroundColor="{Binding CategoryBadgeBg}">
+                                                <Label Text="{Binding Category}"
+                                                       FontSize="11"
+                                                       FontFamily="OpenSansSemibold"
+                                                       TextColor="{Binding CategoryBadgeFg}" />
+                                            </Border>
+                                            <Label VerticalOptions="Center"
+                                                   FontSize="12"
+                                                   TextColor="{StaticResource TextSecondary}"
+                                                   Text="{Binding ResultDate, StringFormat='{}{0:dd.MM.yyyy}'}" />
+                                        </HorizontalStackLayout>
+                                        <Label Text="{Binding Title}"
+                                               FontFamily="OpenSansSemibold"
+                                               FontSize="16"
+                                               Style="{StaticResource ListBodyLabel}" />
+                                        <Label Text="{Binding PatientName}"
+                                               FontSize="13"
+                                               TextColor="{StaticResource TextSecondary}"
+                                               Style="{StaticResource ListBodyLabel}" />
+                                        <Label Text="{Binding Summary}"
+                                               FontSize="12"
+                                               MaxLines="4"
+                                               LineBreakMode="TailTruncation"
+                                               TextColor="{StaticResource TextSecondary}"
+                                               Style="{StaticResource ListBodyLabel}" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <ScrollView x:Name="InsightScroller"
+                                IsVisible="False"
+                                Padding="0,0,0,8">
+                        <Border Style="{StaticResource ElevatedCard}" Padding="18,16" Margin="0,0,0,10">
+                            <VerticalStackLayout Spacing="12">
+                                <Label Text="Özet içgörüsü"
+                                       Style="{StaticResource FormSubSectionTitle}"
+                                       Margin="0,0,0,0" />
+                                <Label x:Name="InsightBodyLabel"
+                                       FontSize="14"
+                                       TextColor="{StaticResource TextSecondary}"
+                                       LineBreakMode="WordWrap" />
+                                <Label FontSize="11"
+                                       TextColor="{StaticResource TextSecondary}"
+                                       LineBreakMode="WordWrap"
+                                       Text="Kategoriler yüklenen veri kümesine göre gruplanır; hasta filtresi seçiliyse özet de buna göredir." />
+                            </VerticalStackLayout>
+                        </Border>
+                    </ScrollView>
+                </Grid>
+            </RefreshView>
+            <Grid x:Name="BusyOverlay"
+                  IsVisible="False"
+                  BackgroundColor="#DDF5FAFF"
+                  ZIndex="100">
+                <ActivityIndicator x:Name="BusySpinner"
+                                   IsRunning="False"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center" />
+            </Grid>
+        </Grid>
+
+        <views:HospitalFooterBar Grid.Row="5"
+                                 Margin="20,10,20,12" />
+    </Grid>
+</ContentPage>

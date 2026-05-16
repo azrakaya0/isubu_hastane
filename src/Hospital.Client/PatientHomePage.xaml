@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Hospital.Client.Views"
+             x:Class="Hospital.Client.PatientHomePage"
+             Title="Ana sayfa">
+    <ScrollView>
+        <VerticalStackLayout Padding="{StaticResource PageScrollContentPadding}" Spacing="18">
+            <Border Padding="0"
+                    StrokeThickness="0"
+                    HeightRequest="226">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="16" />
+                </Border.StrokeShape>
+                <Grid RowDefinitions="Auto,*"
+                      IsClippedToBounds="True">
+                    <Border Grid.Row="0"
+                            StrokeThickness="0"
+                            Padding="18,14"
+                            BackgroundColor="#1565C0">
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Hasta portalı"
+                                   FontSize="11"
+                                   TextColor="#BBDEFB" />
+                            <Label Text="Kişisel sağlık özeti"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="20"
+                                   TextColor="White" />
+                            <Label Text="Randevularınız, tetkik sonuçlarınız ve profil işlemleriniz bu ekrandan hızlıca ulaşılabilir."
+                                   FontSize="13"
+                                   TextColor="#E3F2FD"
+                                   LineBreakMode="WordWrap" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Grid Grid.Row="1"
+                          IsClippedToBounds="True">
+                        <Image x:Name="PatientHomeBackdrop"
+                               Aspect="AspectFill"
+                               IsVisible="False"
+                               Opacity="0.38"
+                               HeightRequest="118"
+                               VerticalOptions="End"
+                               HorizontalOptions="Fill" />
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10" RowDefinitions="Auto,Auto">
+                <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource MetricCard}">
+                    <VerticalStackLayout Spacing="4">
+                        <Label x:Name="PatientNameLabel" Text="Hasta profili" Style="{StaticResource MetricValueLabel}" FontSize="18" />
+                        <Label x:Name="PatientIdentityLabel" Text="Kimlik doğrulandı" Style="{StaticResource MetricCaptionLabel}" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource MetricCard}">
+                    <VerticalStackLayout Spacing="4">
+                        <Label x:Name="PatientUpcomingLabel" Text="-" Style="{StaticResource MetricValueLabel}" />
+                        <Label Text="Yaklaşan randevu" Style="{StaticResource MetricCaptionLabel}" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource MetricCard}">
+                    <VerticalStackLayout Spacing="4">
+                        <Label x:Name="PatientCompletedLabel" Text="-" Style="{StaticResource MetricValueLabel}" />
+                        <Label Text="Geçmiş ziyaret" Style="{StaticResource MetricCaptionLabel}" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource MetricCard}">
+                    <VerticalStackLayout Spacing="4">
+                        <Label x:Name="PatientLabCountLabel" Text="-" Style="{StaticResource MetricValueLabel}" />
+                        <Label Text="Tetkik sonucu" Style="{StaticResource MetricCaptionLabel}" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <Border Style="{StaticResource ActionPanelCard}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Hızlı işlemler"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="16"
+                           TextColor="{StaticResource TextPrimary}" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10" RowDefinitions="Auto,Auto,Auto">
+                        <Button Grid.Row="0" Grid.Column="0" Text="Randevu al" Style="{StaticResource OutlineButton}" Clicked="OnBookClicked" />
+                        <Button Grid.Row="0" Grid.Column="1" Text="Randevularım" Style="{StaticResource OutlineButton}" Clicked="OnAppointmentsClicked" />
+                        <Button Grid.Row="1" Grid.Column="0" Text="Sağlık özeti" Style="{StaticResource OutlineButton}" Clicked="OnTimelineClicked" />
+                        <Button Grid.Row="1" Grid.Column="1" Text="Tetkiklerim" Style="{StaticResource OutlineButton}" Clicked="OnLabsClicked" />
+                        <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="Profil bilgileri" Style="{StaticResource OutlineButton}" Clicked="OnProfileClicked" />
+                    </Grid>
+                    <Label x:Name="PatientStatusLabel" Text="Veriler yükleniyor..." Style="{StaticResource CaptionMuted}" />
+                    <Label Text="Acil durumda 112 veya hastanenin acil çağrı hattını arayın."
+                           Style="{StaticResource CaptionMuted}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <views:HospitalFooterBar Margin="0,6,0,0" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

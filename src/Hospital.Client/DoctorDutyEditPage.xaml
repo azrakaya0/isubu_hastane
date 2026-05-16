@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hospital.Client.DoctorDutyEditPage"
+             Title="Nöbet / izin">
+    <Grid RowDefinitions="Auto,*">
+        <VerticalStackLayout Style="{StaticResource PageHeroPanel}">
+            <Label x:Name="HeroTitle"
+                   Text="Yeni kayıt"
+                   Style="{StaticResource PageHeroTitle}"
+                   FontSize="20" />
+            <Label Text="Görev türü örn. Poliklinik nöbeti, İzin, Kongre."
+                   Style="{StaticResource PageHeroSubtitle}" />
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1">
+            <ScrollView BackgroundColor="Transparent">
+                <Border Style="{StaticResource FormSheetCard}" Margin="{StaticResource PageFormSheetMargin}" Padding="22,20">
+                    <VerticalStackLayout Spacing="16">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Doktor" Style="{StaticResource SectionLabel}" />
+                            <Border Style="{StaticResource FormFieldBorder}" Padding="6,2">
+                                <Picker x:Name="DoctorPicker"
+                                        Title="Seçin"
+                                        TextColor="{StaticResource TextPrimary}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Poliklinik" Style="{StaticResource SectionLabel}" />
+                            <Border Style="{StaticResource FormFieldBorder}" Padding="6,2">
+                                <Picker x:Name="ClinicPicker"
+                                        Title="Seçin"
+                                        TextColor="{StaticResource TextPrimary}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Tarih" Style="{StaticResource SectionLabel}" />
+                            <Border Style="{StaticResource FormFieldBorder}" Padding="8,4">
+                                <DatePicker x:Name="DutyDatePicker"
+                                            TextColor="{StaticResource TextPrimary}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Tür" Style="{StaticResource SectionLabel}" />
+                            <Border Style="{StaticResource FormFieldBorder}" Padding="10,6">
+                                <Entry x:Name="KindEntry"
+                                       MaxLength="80"
+                                       Placeholder="Poliklinik nöbeti, Yıllık izin..."
+                                       TextColor="{StaticResource TextPrimary}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Not" Style="{StaticResource SectionLabel}" />
+                            <Border Style="{StaticResource FormFieldBorder}" Padding="10,8">
+                                <Editor x:Name="NotesEditor"
+                                        AutoSize="TextChanges"
+                                        MaxLength="500"
+                                        MinimumHeightRequest="72"
+                                        BackgroundColor="Transparent"
+                                        TextColor="{StaticResource TextPrimary}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <Label x:Name="ErrorLabel"
+                               IsVisible="False"
+                               TextColor="#B71C1C"
+                               FontSize="13"
+                               LineBreakMode="WordWrap" />
+
+                        <Button Text="Kaydet" Clicked="OnSaveClicked" />
+                        <Button x:Name="DeleteButton"
+                                Text="Sil"
+                                Style="{StaticResource DangerButton}"
+                                IsVisible="False"
+                                Clicked="OnDeleteClicked" />
+                    </VerticalStackLayout>
+                </Border>
+            </ScrollView>
+            <Grid x:Name="BusyOverlay"
+                  IsVisible="False"
+                  BackgroundColor="#DDF5FAFF"
+                  ZIndex="100">
+                <ActivityIndicator x:Name="BusySpinner"
+                                   IsRunning="False"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center" />
+            </Grid>
+        </Grid>
+    </Grid>
+</ContentPage>

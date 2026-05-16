@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hospital.Client.PatientProfilePage"
+             Title="Bilgilerim">
+    <Grid RowDefinitions="Auto,*">
+        <VerticalStackLayout Style="{StaticResource PageHeroPanel}">
+            <Label Text="Bilgilerim"
+                   Style="{StaticResource PageHeroTitle}"
+                   FontSize="20" />
+            <Label Text="Kayıtlı hasta bilgileriniz (salt okunur)."
+                   Style="{StaticResource PageHeroSubtitle}" />
+        </VerticalStackLayout>
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="{StaticResource PageScrollContentPadding}" Spacing="14">
+                <Border Style="{StaticResource ElevatedCard}" Padding="22,20">
+                    <VerticalStackLayout Spacing="14">
+                        <Label x:Name="FullNameLabel" FontSize="18" FontFamily="OpenSansSemibold" />
+                        <Label x:Name="NationalIdLabel" FontSize="14" TextColor="{StaticResource TextSecondary}" />
+                        <Label x:Name="PhoneLabel" FontSize="14" TextColor="{StaticResource TextSecondary}" />
+                        <Label x:Name="BirthLabel" FontSize="14" TextColor="{StaticResource TextSecondary}" />
+                        <BoxView HeightRequest="1" Color="{StaticResource BorderSubtle}" />
+                        <Label Text="Hızlı işlemler"
+                               FontFamily="OpenSansSemibold"
+                               FontSize="14"
+                               TextColor="{StaticResource TextPrimary}" />
+                        <VerticalStackLayout Spacing="10">
+                            <Button Text="Randevu al"
+                                    Style="{StaticResource OutlineButton}"
+                                    Clicked="OnBookAppointmentClicked" />
+                            <Button Text="Sağlık özeti (geçmiş)"
+                                    Style="{StaticResource OutlineButton}"
+                                    Clicked="OnTimelineClicked" />
+                            <Button Text="Tetkiklerim"
+                                    Style="{StaticResource OutlineButton}"
+                                    Clicked="OnLabsClicked" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+                <Label x:Name="ErrorLabel"
+                       IsVisible="False"
+                       TextColor="#B71C1C"
+                       FontSize="13"
+                       LineBreakMode="WordWrap" />
+                <Grid x:Name="BusyOverlay"
+                      IsVisible="False"
+                      HeightRequest="120">
+                    <ActivityIndicator x:Name="BusySpinner" IsRunning="False" />
+                </Grid>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

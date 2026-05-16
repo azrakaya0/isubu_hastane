@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Hospital.Client.Views"
+             x:Class="Hospital.Client.AdminHomePage"
+             Title="Ana sayfa">
+    <ScrollView>
+        <VerticalStackLayout Padding="{StaticResource PageScrollContentPadding}" Spacing="18">
+            <Border Padding="0"
+                    StrokeThickness="0"
+                    HeightRequest="238">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="16" />
+                </Border.StrokeShape>
+                <Grid RowDefinitions="Auto,*"
+                      IsClippedToBounds="True">
+                    <Border Grid.Row="0"
+                            StrokeThickness="0"
+                            Padding="18,14"
+                            BackgroundColor="#1565C0">
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Isparta · kurumsal sağlık yönetimi"
+                                   FontSize="11"
+                                   TextColor="#BBDEFB" />
+                            <Label Text="Yönetim paneli"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="20"
+                                   TextColor="White" />
+                            <Label Text="Hasta, poliklinik, randevu ve tetkik süreçlerini tek yerden takip edin; KPI ve nöbet ile operasyon görünür kalır."
+                                   FontSize="13"
+                                   TextColor="#E3F2FD"
+                                   LineBreakMode="WordWrap" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Grid Grid.Row="1"
+                          IsClippedToBounds="True">
+                        <Image x:Name="AdminHomeBackdrop"
+                               Aspect="AspectFill"
+                               IsVisible="False"
+                               Opacity="0.38"
+                               HeightRequest="128"
+                               VerticalOptions="End"
+                               HorizontalOptions="Fill" />
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10" RowDefinitions="Auto,Auto">
+                <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource MetricCard}">
+                    <VerticalStackLayout Spacing="4">
+                        <Label x:Name="PatientsCountLabel" Text="-" Style="{StaticResource MetricValueLabel}" />
+                        <Label Text="Kayıtlı hasta" Style="{StaticResource MetricCaptionLabel}" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource MetricCard}">
+                    <VerticalStackLayout Spacing="4">
+                        <Label x:Name="DoctorsCountLabel" Text="-" Style="{StaticResource MetricValueLabel}" />
+                        <Label Text="Aktif doktor" Style="{StaticResource MetricCaptionLabel}" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource MetricCard}">
+                    <VerticalStackLayout Spacing="4">
+                        <Label x:Name="TodayAppointmentsLabel" Text="-" Style="{StaticResource MetricValueLabel}" />
+                        <Label Text="Bugün randevu" Style="{StaticResource MetricCaptionLabel}" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource MetricCard}">
+                    <VerticalStackLayout Spacing="4">
+                        <Label x:Name="PendingReportsLabel" Text="-" Style="{StaticResource MetricValueLabel}" />
+                        <Label Text="Tetkik kaydı" Style="{StaticResource MetricCaptionLabel}" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <Border Style="{StaticResource ActionPanelCard}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Hızlı operasyonlar"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="16"
+                           TextColor="{StaticResource TextPrimary}" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10" RowDefinitions="Auto,Auto,Auto,Auto">
+                        <Button Grid.Row="0" Grid.Column="0" Text="Hasta yönetimi" Style="{StaticResource OutlineButton}" Clicked="OnPatientsClicked" />
+                        <Button Grid.Row="0" Grid.Column="1" Text="Doktor kadrosu" Style="{StaticResource OutlineButton}" Clicked="OnDoctorsClicked" />
+                        <Button Grid.Row="1" Grid.Column="0" Text="Poliklinikler" Style="{StaticResource OutlineButton}" Clicked="OnClinicsClicked" />
+                        <Button Grid.Row="1" Grid.Column="1" Text="Randevu planı" Style="{StaticResource OutlineButton}" Clicked="OnAppointmentsClicked" />
+                        <Button Grid.Row="2" Grid.Column="0" Text="Tetkik raporları" Style="{StaticResource OutlineButton}" Clicked="OnLabReportsClicked" />
+                        <Button Grid.Row="2" Grid.Column="1" Text="Nöbet ve izinler" Style="{StaticResource OutlineButton}" Clicked="OnDutiesClicked" />
+                        <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="Erişim ve roller" Style="{StaticResource OutlineButton}" Clicked="OnPermissionsClicked" />
+                    </Grid>
+                    <Label x:Name="StatusMessageLabel"
+                           Text="Veriler yükleniyor..."
+                           Style="{StaticResource CaptionMuted}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <views:HospitalFooterBar Margin="0,6,0,0" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

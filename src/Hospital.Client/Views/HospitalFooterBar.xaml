@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hospital.Client.Views.HospitalFooterBar">
+    <Border Padding="14,12"
+            Margin="0,6,0,0"
+            StrokeThickness="1"
+            Stroke="#C5D9E8"
+            BackgroundColor="#EAF2F9">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="12" />
+        </Border.StrokeShape>
+        <VerticalStackLayout Spacing="4">
+            <Label Text="Örnek Üniversite Hastanesi · Isparta"
+                   FontFamily="OpenSansSemibold"
+                   FontSize="12"
+                   TextColor="{StaticResource TextPrimary}" />
+            <Label Text="Süleyman Demirel Üniversitesi Kampüsü, Merkez / Isparta (örnek adres — 32260)"
+                   FontSize="11"
+                   TextColor="{StaticResource TextSecondary}"
+                   LineBreakMode="WordWrap" />
+            <Label Text="Randevu: +90 (246) 211 00 00 · Acil: 112 · E-posta: iletisim@ornek-hastane.isparta.tr"
+                   FontSize="11"
+                   TextColor="{StaticResource TextSecondary}"
+                   LineBreakMode="WordWrap" />
+            <Label Text="Poliklinik: hafta içi 08:00–17:00 · Acil servis: 7/24"
+                   FontSize="10"
+                   TextColor="{StaticResource TextSecondary}"
+                   Opacity="0.92" />
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

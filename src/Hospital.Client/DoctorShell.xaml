@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="Hospital.Client.DoctorShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:Hospital.Client"
+    xmlns:views="clr-namespace:Hospital.Client.Views"
+    Title="Doktor portalı"
+    FlyoutBehavior="Flyout"
+    FlyoutWidth="300">
+
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid Padding="14,10"
+                  ColumnDefinitions="Auto,*"
+                  ColumnSpacing="12"
+                  BackgroundColor="Transparent">
+                <Border WidthRequest="10"
+                        HeightRequest="10"
+                        VerticalOptions="Center"
+                        StrokeThickness="0"
+                        BackgroundColor="{StaticResource Primary}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="5" />
+                    </Border.StrokeShape>
+                </Border>
+                <Label Grid.Column="1"
+                       Text="{Binding Title}"
+                       VerticalOptions="Center"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="15"
+                       TextColor="{StaticResource TextPrimary}" />
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+
+    <Shell.FlyoutHeader>
+        <views:PortalFlyoutHeader BadgeText="DR"
+                                  Headline="Doktor portalı"
+                                  Tagline="Randevu takvimi ve profil" />
+    </Shell.FlyoutHeader>
+
+    <FlyoutItem Title="Ana sayfa">
+        <ShellContent ContentTemplate="{DataTemplate local:DoctorHomePage}" Route="DoctorHomePage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Takvim">
+        <ShellContent ContentTemplate="{DataTemplate local:DoctorCalendarPage}" Route="DoctorCalendarPage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Randevularım">
+        <ShellContent ContentTemplate="{DataTemplate local:DoctorAppointmentsPage}" Route="DoctorAppointmentsPage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Hastaya randevu">
+        <ShellContent ContentTemplate="{DataTemplate local:DoctorBookAppointmentPage}" Route="DoctorBookAppointmentPage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Geçmiş">
+        <ShellContent ContentTemplate="{DataTemplate local:DoctorTimelinePage}" Route="DoctorTimelinePage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Hasta tetkikleri">
+        <ShellContent ContentTemplate="{DataTemplate local:DoctorPatientLabsPage}" Route="DoctorPatientLabsPage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Profilim">
+        <ShellContent ContentTemplate="{DataTemplate local:DoctorProfilePage}" Route="DoctorProfilePage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Şifre Değiştir">
+        <ShellContent ContentTemplate="{DataTemplate local:ChangePasswordPage}" Route="DoctorChangePasswordPage" />
+    </FlyoutItem>
+
+    <Shell.FlyoutFooter>
+        <VerticalStackLayout Padding="16,12,16,14"
+                             Spacing="10"
+                             BackgroundColor="#E8F4FC">
+            <views:HospitalFooterBar Margin="0,0,0,4" />
+            <Label x:Name="FlyoutFooterVersion"
+                   FontSize="11"
+                   TextColor="{StaticResource TextSecondary}"
+                   HorizontalTextAlignment="Center" />
+            <Button Text="Çıkış Yap"
+                    Style="{StaticResource OutlineButton}"
+                    Clicked="OnLogoutClicked" />
+        </VerticalStackLayout>
+    </Shell.FlyoutFooter>
+</Shell>

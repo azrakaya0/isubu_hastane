@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Hospital.Client.Views"
+             xmlns:behaviors="clr-namespace:Hospital.Client.Behaviors"
+             x:Class="Hospital.Client.PortalPickerPage"
+             Title="Ana sayfa"
+             Background="{StaticResource LoginBackgroundLight}">
+    <ScrollView>
+        <VerticalStackLayout Padding="{StaticResource PageScrollContentPadding}"
+                             Spacing="22"
+                             MaximumWidthRequest="560"
+                             HorizontalOptions="Center">
+            <Border Padding="0"
+                    StrokeThickness="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="16" />
+                </Border.StrokeShape>
+                <Grid MinimumHeightRequest="192">
+                    <Image x:Name="PortalHeroImage"
+                           Aspect="AspectFill"
+                           IsVisible="False"
+                           HorizontalOptions="Fill"
+                           VerticalOptions="Fill" />
+                    <Border StrokeThickness="0">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#DE0D47A1" Offset="0" />
+                                <GradientStop Color="#D01976D2" Offset="0.52" />
+                                <GradientStop Color="#C942A5F5" Offset="1" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <VerticalStackLayout Padding="22,22" Spacing="10">
+                            <Label Text="HASTANE BİLGİ SİSTEMİ"
+                                   FontSize="11"
+                                   FontFamily="OpenSansSemibold"
+                                   TextColor="#E3F2FD"
+                                   CharacterSpacing="1.4" />
+                            <Label Text="Kurumsal dijital hastane platformu"
+                                   FontSize="24"
+                                   FontFamily="OpenSansSemibold"
+                                   TextColor="White"
+                                   LineBreakMode="WordWrap" />
+                            <Label Text="Hasta, doktor ve yönetim süreçleri tek altyapıda: randevu yönetimi, tetkik akışı, nöbet planı ve rol bazlı yetkilendirme."
+                                   FontSize="14"
+                                   TextColor="#E3F2FD"
+                                   LineBreakMode="WordWrap" />
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <Label Text="Giriş türünü seçin"
+                   FontSize="16"
+                   FontFamily="OpenSansSemibold"
+                   TextColor="{StaticResource TextPrimary}"
+                   Margin="2,4,0,0" />
+
+            <VerticalStackLayout Spacing="12">
+                <Border Style="{StaticResource TappableElevatedCard}"
+                        Padding="0"
+                        SemanticProperties.Hint="Yönetim portalına gitmek için dokunun">
+                    <Border.Behaviors>
+                        <behaviors:HandHoverBehavior />
+                    </Border.Behaviors>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnStaffPortalTapped" />
+                    </Border.GestureRecognizers>
+                    <Grid Padding="18,16" ColumnDefinitions="Auto,*" ColumnSpacing="14">
+                        <Border WidthRequest="44"
+                                HeightRequest="44"
+                                VerticalOptions="Center"
+                                StrokeThickness="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <Grid>
+                                <Image x:Name="PortalStaffCardImage"
+                                       Aspect="AspectFill"
+                                       IsVisible="False" />
+                                <Border x:Name="PortalStaffCardFallback"
+                                        StrokeThickness="0"
+                                        BackgroundColor="{StaticResource Primary}">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="12" />
+                                    </Border.StrokeShape>
+                                    <Label Text="A"
+                                           FontFamily="OpenSansSemibold"
+                                           TextColor="White"
+                                           HorizontalTextAlignment="Center"
+                                           VerticalTextAlignment="Center" />
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                            <Label Text="Yönetim portalı"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="16"
+                                   TextColor="{StaticResource TextPrimary}" />
+                            <Label Text="Hasta kayıtları, poliklinik operasyonları, doktor kadrosu, randevu, tetkik ve nöbet yönetimi"
+                                   FontSize="13"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   LineBreakMode="WordWrap" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource TappableElevatedCard}"
+                        Padding="0"
+                        SemanticProperties.Hint="Doktor portalına gitmek için dokunun">
+                    <Border.Behaviors>
+                        <behaviors:HandHoverBehavior />
+                    </Border.Behaviors>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnDoctorPortalTapped" />
+                    </Border.GestureRecognizers>
+                    <Grid Padding="18,16" ColumnDefinitions="Auto,*" ColumnSpacing="14">
+                        <Border WidthRequest="44"
+                                HeightRequest="44"
+                                VerticalOptions="Center"
+                                StrokeThickness="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <Grid>
+                                <Image x:Name="PortalDoctorCardImage"
+                                       Aspect="AspectFill"
+                                       IsVisible="False" />
+                                <Border x:Name="PortalDoctorCardFallback"
+                                        StrokeThickness="0"
+                                        BackgroundColor="#1565C0">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="12" />
+                                    </Border.StrokeShape>
+                                    <Label Text="Dr"
+                                           FontSize="12"
+                                           FontFamily="OpenSansSemibold"
+                                           TextColor="White"
+                                           HorizontalTextAlignment="Center"
+                                           VerticalTextAlignment="Center" />
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                            <Label Text="Doktor portalı"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="16"
+                                   TextColor="{StaticResource TextPrimary}" />
+                            <Label Text="Takvim, hastaya randevu verme, hasta tetkik erişimi ve klinik geçmiş"
+                                   FontSize="13"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   LineBreakMode="WordWrap" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource TappableElevatedCard}"
+                        Padding="0"
+                        SemanticProperties.Hint="Hasta portalına gitmek için dokunun">
+                    <Border.Behaviors>
+                        <behaviors:HandHoverBehavior />
+                    </Border.Behaviors>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnPatientPortalTapped" />
+                    </Border.GestureRecognizers>
+                    <Grid Padding="18,16" ColumnDefinitions="Auto,*" ColumnSpacing="14">
+                        <Border WidthRequest="44"
+                                HeightRequest="44"
+                                VerticalOptions="Center"
+                                StrokeThickness="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <Grid>
+                                <Image x:Name="PortalPatientCardImage"
+                                       Aspect="AspectFill"
+                                       IsVisible="False" />
+                                <Border x:Name="PortalPatientCardFallback"
+                                        StrokeThickness="0"
+                                        BackgroundColor="#2E7D32">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="12" />
+                                    </Border.StrokeShape>
+                                    <Label Text="H"
+                                           FontFamily="OpenSansSemibold"
+                                           TextColor="White"
+                                           HorizontalTextAlignment="Center"
+                                           VerticalTextAlignment="Center" />
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                            <Label Text="Hasta portalı"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="16"
+                                   TextColor="{StaticResource TextPrimary}" />
+                            <Label Text="Randevu alma, sağlık özeti, tetkik sonuçları ve kişisel profil işlemleri"
+                                   FontSize="13"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   LineBreakMode="WordWrap" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
+            <Border Style="{StaticResource ElevatedCard}" Padding="16,14">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="Sistem modülleri"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="15"
+                           TextColor="{StaticResource TextPrimary}" />
+                    <Label Text="• Merkezi randevu ve poliklinik planlama"
+                           FontSize="13"
+                           TextColor="{StaticResource TextSecondary}" />
+                    <Label Text="• Laboratuvar / tetkik rapor yönetimi"
+                           FontSize="13"
+                           TextColor="{StaticResource TextSecondary}" />
+                    <Label Text="• Doktor nöbet-izin planı ve rol tabanlı erişim"
+                           FontSize="13"
+                           TextColor="{StaticResource TextSecondary}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="Bağlantı veya giriş sorunu yaşarsanız hastane bilgi işlem birimiyle iletişime geçin."
+                   FontSize="12"
+                   TextColor="{StaticResource TextSecondary}"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,8,0,0" />
+
+            <views:HospitalFooterBar Margin="0,4,0,8" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

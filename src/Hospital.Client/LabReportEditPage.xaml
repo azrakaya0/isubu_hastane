@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hospital.Client.LabReportEditPage"
+             Title="Tetkik kaydı">
+    <Grid RowDefinitions="Auto,*">
+        <VerticalStackLayout Style="{StaticResource PageHeroPanel}">
+            <Label x:Name="HeroTitle"
+                   Text="Yeni tetkik"
+                   Style="{StaticResource PageHeroTitle}"
+                   FontSize="20" />
+            <Label Text="Hasta, başlık, kategori ve özet metin; isteğe bağlı isteyen hekim."
+                   Style="{StaticResource PageHeroSubtitle}" />
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1">
+            <ScrollView BackgroundColor="Transparent">
+                <Border Style="{StaticResource FormSheetCard}" Margin="{StaticResource PageFormSheetMargin}" Padding="22,20">
+                    <VerticalStackLayout Spacing="16">
+                        <VerticalStackLayout x:Name="PatientPickerSection" Spacing="8">
+                            <Label Text="Hasta" Style="{StaticResource SectionLabel}" />
+                            <Border Style="{StaticResource FormFieldBorder}" Padding="6,2">
+                                <Picker x:Name="PatientPicker"
+                                        Title="Hasta seçin"
+                                        TextColor="{StaticResource TextPrimary}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <Label x:Name="PatientReadOnlyLabel"
+                               IsVisible="False"
+                               FontSize="14"
+                               FontFamily="OpenSansSemibold" />
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Başlık" Style="{StaticResource SectionLabel}" />
+                            <Border Style="{StaticResource FormFieldBorder}" Padding="10,6">
+                                <Entry x:Name="TitleEntry"
+                                       MaxLength="200"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       TextChanged="OnLabTextChanged" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Kategori" Style="{StaticResource SectionLabel}" />
+                            <Border Style="{StaticResource FormFieldBorder}" Padding="10,6">
+                                <Entry x:Name="CategoryEntry"
+                                       MaxLength="100"
+                                       Placeholder="Laboratuvar, Radyoloji..."
+                                       TextColor="{StaticResource TextPrimary}"
+                                       TextChanged="OnLabTextChanged" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Sonuç özeti" Style="{StaticResource SectionLabel}" />
+                            <Border Style="{StaticResource FormFieldBorder}" Padding="12,10">
+                                <Editor x:Name="SummaryEditor"
+                                        AutoSize="TextChanges"
+                                        MaxLength="2000"
+                                        MinimumHeightRequest="140"
+                                        BackgroundColor="Transparent"
+                                        TextColor="{StaticResource TextPrimary}"
+                                        TextChanged="OnLabTextChanged" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <Border x:Name="CriticalPreviewPanel"
+                                IsVisible="False"
+                                Padding="12,10"
+                                BackgroundColor="#FFEBEE"
+                                Stroke="#E57373"
+                                StrokeThickness="1">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Önizleme: kritik anahtar kelimeler"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="13"
+                                       TextColor="#B71C1C" />
+                                <Label Text="Özet veya başlıkta dikkat gerektiren kelimeler yakalandı; hastaya gösterimden önce hekim onayı önerilir."
+                                       FontSize="12"
+                                       TextColor="#B71C1C"
+                                       LineBreakMode="WordWrap" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Sonuç tarihi" Style="{StaticResource SectionLabel}" />
+                            <Border Style="{StaticResource FormFieldBorder}" Padding="8,4">
+                                <DatePicker x:Name="ResultDatePicker"
+                                            TextColor="{StaticResource TextPrimary}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="İsteyen hekim (isteğe bağlı)" Style="{StaticResource SectionLabel}" />
+                            <Border Style="{StaticResource FormFieldBorder}" Padding="6,2">
+                                <Picker x:Name="DoctorPicker"
+                                        Title="Seçin veya boş bırakın"
+                                        TextColor="{StaticResource TextPrimary}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <Label x:Name="ErrorLabel"
+                               IsVisible="False"
+                               TextColor="#B71C1C"
+                               FontSize="13"
+                               LineBreakMode="WordWrap" />
+
+                        <Button Text="Kaydet" Clicked="OnSaveClicked" />
+                        <Button x:Name="DeleteButton"
+                                Text="Sil"
+                                Style="{StaticResource DangerButton}"
+                                IsVisible="False"
+                                Clicked="OnDeleteClicked" />
+                    </VerticalStackLayout>
+                </Border>
+            </ScrollView>
+            <Grid x:Name="BusyOverlay"
+                  IsVisible="False"
+                  BackgroundColor="#DDF5FAFF"
+                  ZIndex="100">
+                <ActivityIndicator x:Name="BusySpinner"
+                                   IsRunning="False"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center" />
+            </Grid>
+        </Grid>
+    </Grid>
+</ContentPage>

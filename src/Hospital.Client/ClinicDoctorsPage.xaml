@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+
+             xmlns:views="clr-namespace:Hospital.Client.Views"
+
+             x:Class="Hospital.Client.ClinicDoctorsPage"
+
+             Title="Poliklinik doktorları">
+
+    <ContentPage.ToolbarItems>
+
+        <ToolbarItem Text="Düzenle" Clicked="OnEditClinicClicked" />
+
+    </ContentPage.ToolbarItems>
+
+
+
+    <Grid RowDefinitions="Auto,*">
+
+        <Border Grid.Row="0" StrokeThickness="0">
+
+            <Grid MinimumHeightRequest="188">
+
+                <Image x:Name="ClinicHeroImage"
+
+                       Aspect="AspectFill"
+
+                       IsVisible="False"
+
+                       HorizontalOptions="Fill"
+
+                       VerticalOptions="Fill" />
+
+                <Border StrokeThickness="0">
+
+                    <Border.Background>
+
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+
+                            <GradientStop Color="#E01565C0" Offset="0" />
+
+                            <GradientStop Color="#D80D47A1" Offset="1" />
+
+                        </LinearGradientBrush>
+
+                    </Border.Background>
+
+                    <VerticalStackLayout Padding="22,18"
+
+                                         Spacing="8"
+
+                                         BackgroundColor="Transparent">
+
+                        <Label x:Name="ClinicTitleLabel"
+
+                               Style="{StaticResource PageHeroTitle}"
+
+                               FontSize="21"
+
+                               TextColor="White" />
+
+                        <Label x:Name="ClinicDescLabel"
+
+                               Style="{StaticResource PageHeroSubtitle}"
+
+                               TextColor="#E3F2FD"
+
+                               Margin="0,0,0,4" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+            </Grid>
+
+        </Border>
+
+
+
+        <Grid Grid.Row="1" Margin="{StaticResource PageListMargin}">
+
+            <RefreshView x:Name="RefreshHost" Refreshing="OnRefreshing">
+
+                <CollectionView x:Name="DoctorsCollection"
+
+                                  Style="{StaticResource AppListCollectionView}"
+
+                                  SelectionMode="None">
+
+                    <CollectionView.EmptyView>
+
+                        <views:EmptyStateView Title="Doktor yok"
+
+                                              Message="Bu poliklinikte kayıtlı hekim bulunmuyor veya liste yüklenemedi."
+
+                                              Hint="Yönetim panelinden doktor ekleyerek birime atayın." />
+
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemTemplate>
+
+                        <DataTemplate>
+
+                            <Border Style="{StaticResource ListRowCard}">
+
+                                <VerticalStackLayout Spacing="4" HorizontalOptions="Fill">
+
+                                    <HorizontalStackLayout Spacing="6">
+
+                                        <Label Text="{Binding FirstName}"
+
+                                               FontFamily="OpenSansSemibold"
+
+                                               FontSize="16"
+
+                                               TextColor="{StaticResource TextPrimary}" />
+
+                                        <Label Text="{Binding LastName}"
+
+                                               FontFamily="OpenSansSemibold"
+
+                                               FontSize="16"
+
+                                               TextColor="{StaticResource TextPrimary}" />
+
+                                    </HorizontalStackLayout>
+
+                                    <Label Text="{Binding Specialty}"
+
+                                           FontSize="13"
+
+                                           TextColor="{StaticResource TextSecondary}"
+
+                                           Style="{StaticResource ListBodyLabel}" />
+
+                                </VerticalStackLayout>
+
+                            </Border>
+
+                        </DataTemplate>
+
+                    </CollectionView.ItemTemplate>
+
+                </CollectionView>
+
+            </RefreshView>
+
+            <Grid x:Name="BusyOverlay"
+
+                  IsVisible="False"
+
+                  BackgroundColor="#DDF5FAFF"
+
+                  ZIndex="100">
+
+                <ActivityIndicator x:Name="BusySpinner"
+
+                                   IsRunning="False"
+
+                                   VerticalOptions="Center"
+
+                                   HorizontalOptions="Center" />
+
+            </Grid>
+
+        </Grid>
+
+    </Grid>
+
+</ContentPage>
+

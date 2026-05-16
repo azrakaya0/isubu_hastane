@@ -1,0 +1,12 @@
+# Geliştirme SQL Server (Development varsayılanı 127.0.0.1:1433 + sa ile bağlanır).
+# 1) Proje kökü: docker compose up -d
+# 2) API: cd src\HospitalApi && dotnet run --launch-profile http
+# LocalDB kullanacaksanız: dotnet run --launch-profile http-localdb
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Hospital_Dev_2024!"
+    ports:
+      - "1433:1433"

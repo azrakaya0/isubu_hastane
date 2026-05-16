@@ -1,0 +1,34 @@
+# Derleme çıktıları
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# MAUI / Xamarin
+*.apk
+*.aab
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# NuGet
+*.nupkg
+**/packages/*
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Yerel gizli ayarlar (isteğe bağlı — şu an dev ayarları repoda)
+# **/appsettings.Development.json

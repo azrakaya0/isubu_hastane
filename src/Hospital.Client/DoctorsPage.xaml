@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Hospital.Client.Views"
+             x:Class="Hospital.Client.DoctorsPage"
+             Title="Doktorlar">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Yeni" Clicked="OnAddClicked" />
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="0">
+        <VerticalStackLayout Grid.Row="0"
+                             Style="{StaticResource PageHeroPanel}">
+            <Label Text="Doktor kadrosu"
+                   Style="{StaticResource PageHeroTitle}"
+                   FontSize="20" />
+            <Label Text="İsim, uzmanlık veya poliklinik ile filtreleyin; kayıt seçerek düzenleyin."
+                   Style="{StaticResource PageHeroSubtitle}" />
+        </VerticalStackLayout>
+
+        <Border Grid.Row="1"
+                Style="{StaticResource ElevatedCard}"
+                Padding="18,16"
+                Margin="20,12,20,0">
+            <VerticalStackLayout Spacing="14">
+                <Label Text="Arama ve filtre"
+                       Style="{StaticResource FormSubSectionTitle}"
+                       Margin="0,-4,0,-4" />
+                <Border Style="{StaticResource FormFieldBorder}">
+                    <Entry x:Name="SearchEntry"
+                           Placeholder="Ad, uzmanlık veya poliklinik"
+                           MaxLength="120"
+                           Completed="OnSearchCompleted"
+                           BackgroundColor="Transparent"
+                           TextColor="{StaticResource TextPrimary}" />
+                </Border>
+                <Border Style="{StaticResource FormFieldBorder}" Padding="6,2">
+                    <Picker x:Name="ClinicFilterPicker"
+                            Title="Poliklinik filtresi"
+                            TextColor="{StaticResource TextPrimary}" />
+                </Border>
+            </VerticalStackLayout>
+        </Border>
+
+        <Grid Grid.Row="2"
+              Margin="{StaticResource PageListMargin}"
+              RowDefinitions="Auto,*">
+            <Border x:Name="PageErrorBanner"
+                    Grid.Row="0"
+                    IsVisible="False"
+                    Margin="0,0,0,10"
+                    Padding="14,12"
+                    BackgroundColor="#FFEBEE"
+                    Stroke="#E57373"
+                    StrokeThickness="1">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                    <Label x:Name="PageErrorMessage"
+                           Grid.Column="0"
+                           FontSize="13"
+                           TextColor="#B71C1C"
+                           VerticalTextAlignment="Center"
+                           LineBreakMode="WordWrap" />
+                    <Button Grid.Column="1"
+                            Text="Tekrar dene"
+                            Clicked="OnPageErrorRetryClicked"
+                            Padding="12,8"
+                            FontSize="13"
+                            CornerRadius="8"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource Primary}"
+                            BorderColor="{StaticResource Primary}"
+                            BorderWidth="1.5"
+                            VerticalOptions="Center" />
+                </Grid>
+            </Border>
+            <Grid Grid.Row="1">
+            <RefreshView x:Name="RefreshHost" Refreshing="OnRefreshing">
+                <CollectionView x:Name="DoctorsCollection"
+                                Style="{StaticResource AppListCollectionView}"
+                                SelectionMode="Single"
+                                SelectionChanged="OnSelectionChanged"
+                                SemanticProperties.Description="Doktor listesi.">
+                    <CollectionView.EmptyView>
+                        <views:EmptyStateView Title="Doktor bulunamadı"
+                                              Message="Filtreyi “Tümü” yapın veya arama metnini temizleyin. Yeni doktor için Yeni’yi kullanın."
+                                              Hint="Önce poliklinik kaydı oluşturmanız gerekebilir." />
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource ListRowCard}">
+                                <VerticalStackLayout Spacing="6" HorizontalOptions="Fill">
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="{Binding FirstName}" FontFamily="OpenSansSemibold" FontSize="17" />
+                                        <Label Text="{Binding LastName}" FontFamily="OpenSansSemibold" FontSize="17" />
+                                    </HorizontalStackLayout>
+                                    <Label Text="{Binding Specialty}"
+                                           FontSize="13"
+                                           TextColor="{StaticResource TextSecondary}" />
+                                    <Label Text="{Binding ClinicName}"
+                                           FontSize="12"
+                                           TextColor="{StaticResource Primary}" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                    <CollectionView.Footer>
+                        <Label Padding="0,12,0,4"
+                               FontSize="11"
+                               TextColor="{StaticResource TextSecondary}"
+                               HorizontalTextAlignment="Center"
+                               Text="Doktor listesi poliklinik filtresine göre güncellenir." />
+                    </CollectionView.Footer>
+                </CollectionView>
+            </RefreshView>
+            <Grid x:Name="BusyOverlay"
+                  IsVisible="False"
+                  BackgroundColor="#DDF5FAFF"
+                  ZIndex="100">
+                <ActivityIndicator x:Name="BusySpinner"
+                                   IsRunning="False"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"
+                                   Scale="1.15" />
+            </Grid>
+            </Grid>
+        </Grid>
+
+        <views:HospitalFooterBar Grid.Row="3"
+                                 Margin="20,10,20,12" />
+    </Grid>
+</ContentPage>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hospital.Client.PatientBookAppointmentPage"
+             Title="Randevu al">
+    <Grid RowDefinitions="Auto,*">
+        <VerticalStackLayout Style="{StaticResource PageHeroPanel}">
+            <Label Text="Yeni randevu"
+                   Style="{StaticResource PageHeroTitle}"
+                   FontSize="20" />
+            <Label Text="Poliklinik ve hekim seçin; uygun tarih ve saati belirleyin."
+                   Style="{StaticResource PageHeroSubtitle}" />
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1">
+            <ScrollView BackgroundColor="Transparent">
+                <Border Style="{StaticResource FormSheetCard}" Margin="{StaticResource PageFormSheetMargin}" Padding="22,20">
+                    <VerticalStackLayout Spacing="18">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Poliklinik" Style="{StaticResource SectionLabel}" />
+                            <Border Style="{StaticResource FormFieldBorder}" Padding="6,2">
+                                <Picker x:Name="ClinicPicker"
+                                        Title="Birim seçin"
+                                        SelectedIndexChanged="OnClinicChanged"
+                                        TextColor="{StaticResource TextPrimary}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Doktor" Style="{StaticResource SectionLabel}" />
+                            <Border Style="{StaticResource FormFieldBorder}" Padding="6,2">
+                                <Picker x:Name="DoctorPicker"
+                                        Title="Önce poliklinik seçin"
+                                        TextColor="{StaticResource TextPrimary}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                            <VerticalStackLayout Grid.Column="0" Spacing="8">
+                                <Label Text="Tarih" Style="{StaticResource SectionLabel}" />
+                                <Border Style="{StaticResource FormFieldBorder}" Padding="8,4">
+                                    <DatePicker x:Name="ScheduleDatePicker"
+                                                TextColor="{StaticResource TextPrimary}" />
+                                </Border>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="8">
+                                <Label Text="Saat" Style="{StaticResource SectionLabel}" />
+                                <Border Style="{StaticResource FormFieldBorder}" Padding="8,4">
+                                    <TimePicker x:Name="ScheduleTimePicker"
+                                                TextColor="{StaticResource TextPrimary}" />
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Not (isteğe bağlı)" Style="{StaticResource SectionLabel}" />
+                            <Border Style="{StaticResource FormFieldBorder}" Padding="10,8">
+                                <Editor x:Name="NotesEditor"
+                                        Placeholder="Belirtmek istediğiniz ek bilgi"
+                                        AutoSize="TextChanges"
+                                        MaxLength="500"
+                                        MinimumHeightRequest="72"
+                                        BackgroundColor="Transparent"
+                                        TextColor="{StaticResource TextPrimary}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <Label x:Name="ErrorLabel"
+                               IsVisible="False"
+                               TextColor="#B71C1C"
+                               FontSize="13"
+                               LineBreakMode="WordWrap" />
+
+                        <Button Text="Randevuyu oluştur"
+                                Clicked="OnBookClicked" />
+                    </VerticalStackLayout>
+                </Border>
+            </ScrollView>
+            <Grid x:Name="BusyOverlay"
+                  IsVisible="False"
+                  BackgroundColor="#DDF5FAFF"
+                  ZIndex="100">
+                <ActivityIndicator x:Name="BusySpinner"
+                                   IsRunning="False"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center" />
+            </Grid>
+        </Grid>
+    </Grid>
+</ContentPage>

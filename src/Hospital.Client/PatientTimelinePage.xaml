@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Hospital.Client.Views"
+             x:Class="Hospital.Client.PatientTimelinePage"
+             Title="Sağlık özeti">
+    <Grid RowDefinitions="Auto,*">
+        <VerticalStackLayout Style="{StaticResource PageHeroPanel}">
+            <Label Text="Geçmiş ve yaklaşan kayıtlar"
+                   Style="{StaticResource PageHeroTitle}"
+                   FontSize="20" />
+            <Label Text="Randevularınız ile laboratuvar / tetkik sonuçları tek akışta listelenir."
+                   Style="{StaticResource PageHeroSubtitle}" />
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1" Margin="{StaticResource PageListMargin}">
+            <RefreshView x:Name="RefreshHost" Refreshing="OnRefreshing">
+                <CollectionView x:Name="TimelineCollection"
+                                Style="{StaticResource AppListCollectionView}"
+                                SelectionMode="None">
+                    <CollectionView.EmptyView>
+                        <views:EmptyStateView Title="Kayıt yok"
+                                              Message="Henüz zaman çizelgesinde görüntülenecek kayıt bulunmuyor."
+                                              Hint="Randevu aldığınızda veya sonuç yüklendiğinde burada görünür." />
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource ListRowCard}">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
+                                    <Border WidthRequest="4"
+                                            StrokeThickness="0"
+                                            VerticalOptions="Fill"
+                                            HorizontalOptions="Start"
+                                            BackgroundColor="{StaticResource Primary}">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="2" />
+                                        </Border.StrokeShape>
+                                    </Border>
+                                    <VerticalStackLayout Grid.Column="1"
+                                                         Spacing="6"
+                                                         HorizontalOptions="Fill"
+                                                         VerticalOptions="Start">
+                                        <Label FontSize="12"
+                                               TextColor="{StaticResource TextSecondary}"
+                                               Style="{StaticResource ListBodyLabel}"
+                                               Text="{Binding At, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}" />
+                                        <Label Text="{Binding Title}"
+                                               FontFamily="OpenSansSemibold"
+                                               FontSize="16"
+                                               TextColor="{StaticResource TextPrimary}"
+                                               Style="{StaticResource ListBodyLabel}" />
+                                        <Label Text="{Binding Subtitle}"
+                                               FontSize="13"
+                                               TextColor="{StaticResource TextSecondary}"
+                                               Style="{StaticResource ListBodyLabel}" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+            <Grid x:Name="BusyOverlay"
+                  IsVisible="False"
+                  BackgroundColor="#DDF5FAFF"
+                  ZIndex="100">
+                <ActivityIndicator x:Name="BusySpinner"
+                                   IsRunning="False"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center" />
+            </Grid>
+        </Grid>
+    </Grid>
+</ContentPage>

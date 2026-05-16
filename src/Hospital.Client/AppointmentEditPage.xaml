@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hospital.Client.AppointmentEditPage"
+             Title="Randevu">
+    <Grid RowDefinitions="Auto,*">
+        <VerticalStackLayout Grid.Row="0"
+                             Style="{StaticResource PageHeroPanel}">
+            <Label Text="Randevu planı"
+                   Style="{StaticResource PageHeroTitle}" />
+            <Label Text="Hasta, birim ve hekim seçin; tarih-saat ile durumu güncelleyin."
+                   Style="{StaticResource PageHeroSubtitle}" />
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1">
+            <ScrollView BackgroundColor="Transparent">
+            <Grid Padding="{StaticResource PageScrollContentPadding}" ColumnDefinitions="*">
+                <Border Grid.Column="0"
+                        Style="{StaticResource FormSheetCard}"
+                        Margin="0,0,0,8">
+                    <VerticalStackLayout Padding="28,26" Spacing="20">
+                        <Label Text="Katılımcılar"
+                               Style="{StaticResource FormSubSectionTitle}"
+                               Margin="0,0,0,0" />
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="18" RowDefinitions="Auto,Auto">
+                            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="8">
+                                <Label Text="Hasta" Style="{StaticResource SectionLabel}" Margin="0" />
+                                <Border Style="{StaticResource FormFieldBorder}" Padding="6,2">
+                                    <Picker x:Name="PatientPicker"
+                                            Title="Hasta seçin"
+                                            TextColor="{StaticResource TextPrimary}" />
+                                </Border>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="8">
+                                <Label Text="Poliklinik" Style="{StaticResource SectionLabel}" Margin="0" />
+                                <Border Style="{StaticResource FormFieldBorder}" Padding="6,2">
+                                    <Picker x:Name="ClinicPicker"
+                                            Title="Poliklinik seçin"
+                                            TextColor="{StaticResource TextPrimary}" />
+                                </Border>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Spacing="8">
+                                <Label Text="Doktor" Style="{StaticResource SectionLabel}" Margin="0" />
+                                <Border Style="{StaticResource FormFieldBorder}" Padding="6,2">
+                                    <Picker x:Name="DoctorPicker"
+                                            Title="Doktor seçin"
+                                            TextColor="{StaticResource TextPrimary}" />
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Label Text="Zamanlama"
+                               Style="{StaticResource FormSubSectionTitle}" />
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="18">
+                            <VerticalStackLayout Grid.Column="0" Spacing="8">
+                                <Label Text="Tarih" Style="{StaticResource SectionLabel}" Margin="0" />
+                                <Border Style="{StaticResource FormFieldBorder}" Padding="10,4">
+                                    <DatePicker x:Name="ScheduleDatePicker"
+                                                HorizontalOptions="Start"
+                                                TextColor="{StaticResource TextPrimary}" />
+                                </Border>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="8">
+                                <Label Text="Saat" Style="{StaticResource SectionLabel}" Margin="0" />
+                                <Border Style="{StaticResource FormFieldBorder}" Padding="10,4">
+                                    <TimePicker x:Name="ScheduleTimePicker"
+                                                HorizontalOptions="Start"
+                                                TextColor="{StaticResource TextPrimary}" />
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Durum" Style="{StaticResource SectionLabel}" Margin="0" />
+                            <Border Style="{StaticResource FormFieldBorder}" Padding="6,2">
+                                <Picker x:Name="StatusPicker"
+                                        Title="Durum seçin"
+                                        TextColor="{StaticResource TextPrimary}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Notlar" Style="{StaticResource SectionLabel}" Margin="0" />
+                            <Border Style="{StaticResource FormFieldBorder}" Padding="12,10">
+                                <Editor x:Name="NotesEditor"
+                                        Placeholder="Klinik notu veya hasta yönlendirmesi (isteğe bağlı)"
+                                        AutoSize="TextChanges"
+                                        MaxLength="500"
+                                        MinimumHeightRequest="100"
+                                        BackgroundColor="Transparent"
+                                        TextColor="{StaticResource TextPrimary}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <Border Padding="16,14"
+                                BackgroundColor="{StaticResource Gray100}"
+                                Stroke="{StaticResource BorderSubtle}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <HorizontalStackLayout Spacing="14" VerticalOptions="Center">
+                                <Switch x:Name="UrgentSwitch" VerticalOptions="Center" />
+                                <Label Text="Acil randevu — notlara otomatik işaret eklenir."
+                                       VerticalTextAlignment="Center"
+                                       FontSize="14"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       LineBreakMode="WordWrap"
+                                       HorizontalOptions="Fill" />
+                            </HorizontalStackLayout>
+                        </Border>
+
+                        <BoxView HeightRequest="1" Color="{StaticResource BorderSubtle}" Margin="0,8,0,4" />
+
+                        <Button Text="Kaydet"
+                                Margin="0,4,0,0"
+                                Clicked="OnSaveClicked" />
+                        <Button x:Name="DeleteButton"
+                                Text="Randevuyu sil"
+                                Style="{StaticResource DangerButton}"
+                                Clicked="OnDeleteClicked"
+                                IsVisible="False" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+            </ScrollView>
+            <Grid x:Name="BusyOverlay"
+                  IsVisible="False"
+                  BackgroundColor="#DDF5FAFF"
+                  ZIndex="100">
+                <ActivityIndicator x:Name="BusySpinner"
+                                   IsRunning="False"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"
+                                   Scale="1.1" />
+            </Grid>
+        </Grid>
+    </Grid>
+</ContentPage>

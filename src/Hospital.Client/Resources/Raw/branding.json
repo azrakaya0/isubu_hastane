@@ -1,0 +1,10 @@
+{
+  "portalHeroImage": "hero_main.jpg",
+  "loginLogoImage": "portal_admin.jpg",
+  "portalStaffCardImage": "portal_admin.jpg",
+  "portalDoctorCardImage": "portal_doctor.jpg",
+  "portalPatientCardImage": "portal_patient.jpg",
+  "patientHomeBannerImage": "hero_main.jpg",
+  "doctorHomeBannerImage": "hero_main.jpg",
+  "adminHomeBannerImage": "hero_main.jpg"
+}
