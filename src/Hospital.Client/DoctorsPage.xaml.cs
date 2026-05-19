@@ -9,16 +9,22 @@ public partial class DoctorsPage : ContentPage
     private readonly IHospitalApiClient _api = AppLocator.Services.GetRequiredService<IHospitalApiClient>();
     private readonly ObservableCollection<DoctorDto> _items = new();
     private readonly List<int?> _clinicFilterIds = new();
+    private readonly DebouncedReload _searchDebouncer;
+    private readonly PickerFilterWatcher _clinicPickerWatcher;
 
     public DoctorsPage()
     {
         InitializeComponent();
         DoctorsCollection.ItemsSource = _items;
+        _searchDebouncer = new DebouncedReload(ReloadDoctorsWithSpinnerAsync);
+        SearchFilterWiring.WireEntry(SearchEntry, _searchDebouncer);
+        _clinicPickerWatcher = new PickerFilterWatcher(ClinicFilterPicker, ReloadDoctorsWithSpinnerAsync);
     }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        SearchEntry.Text = string.Empty;
         await PageUi.WithSpinnerAsync(BusyOverlay, BusySpinner, async () =>
         {
             try
@@ -36,19 +42,22 @@ public partial class DoctorsPage : ContentPage
     private async Task LoadClinicFilterAsync()
     {
         var clinics = await _api.GetClinicsAsync(null);
-        ClinicFilterPicker.Items.Clear();
-        _clinicFilterIds.Clear();
-        ClinicFilterPicker.Items.Add("Tümü");
-        _clinicFilterIds.Add(null);
-        foreach (var c in clinics.OrderBy(x => x.Name))
+        using (_clinicPickerWatcher.SuppressChanges())
         {
-            ClinicFilterPicker.Items.Add(c.Name);
-            _clinicFilterIds.Add(c.Id);
-        }
+            ClinicFilterPicker.Items.Clear();
+            _clinicFilterIds.Clear();
+            ClinicFilterPicker.Items.Add("Tümü");
+            _clinicFilterIds.Add(null);
+            foreach (var c in clinics.OrderBy(x => x.Name))
+            {
+                ClinicFilterPicker.Items.Add(c.Name);
+                _clinicFilterIds.Add(c.Id);
+            }
 
-        if (ClinicFilterPicker.SelectedIndex < 0)
-        {
-            ClinicFilterPicker.SelectedIndex = 0;
+            if (ClinicFilterPicker.SelectedIndex < 0)
+            {
+                ClinicFilterPicker.SelectedIndex = 0;
+            }
         }
     }
 
@@ -84,16 +93,6 @@ public partial class DoctorsPage : ContentPage
     private async void OnPageErrorRetryClicked(object? sender, EventArgs e)
     {
         await PageUi.HideListErrorAsync(PageErrorBanner);
-        await ReloadDoctorsWithSpinnerAsync();
-    }
-
-    private async void OnClinicFilterChanged(object? sender, EventArgs e)
-    {
-        await ReloadDoctorsWithSpinnerAsync();
-    }
-
-    private async void OnSearchCompleted(object? sender, EventArgs e)
-    {
         await ReloadDoctorsWithSpinnerAsync();
     }
 

@@ -5,7 +5,8 @@
              x:Class="Hospital.Client.PatientsPage"
              Title="Hastalar">
     <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" RowSpacing="0"
-          MaximumWidthRequest="720" HorizontalOptions="Center">
+          MaximumWidthRequest="720" HorizontalOptions="Center"
+          VerticalOptions="FillAndExpand">
         <VerticalStackLayout Grid.Row="0"
                              Style="{StaticResource PageHeroPanel}">
             <Label Text="Hasta listesi"
@@ -19,6 +20,8 @@
                 Text="+ Yeni hasta kaydı oluştur"
                 Style="{StaticResource AddNewButton}"
                 Margin="12,10,12,0"
+                Padding="16,14"
+                FontSize="16"
                 Clicked="OnAddClicked" />
 
         <Border Grid.Row="2"

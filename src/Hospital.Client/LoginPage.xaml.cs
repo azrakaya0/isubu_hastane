@@ -129,6 +129,11 @@ public partial class LoginPage : ContentPage
         await AttemptLoginAsync();
     }
 
+    private async void OnPasswordEntryCompleted(object? sender, EventArgs e)
+    {
+        await AttemptLoginAsync();
+    }
+
     private async void OnLoginRetryClicked(object? sender, EventArgs e)
     {
         HideLoginError();

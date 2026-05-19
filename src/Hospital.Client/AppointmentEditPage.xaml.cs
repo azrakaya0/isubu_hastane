@@ -12,6 +12,7 @@ public partial class AppointmentEditPage : ContentPage
     private readonly List<int> _clinicIds = new();
     private readonly List<int> _doctorIds = new();
     private List<DoctorDto> _allDoctors = new();
+    private readonly PickerFilterWatcher _clinicPickerWatcher;
 
     public AppointmentEditPage(int? appointmentId)
     {
@@ -22,7 +23,7 @@ public partial class AppointmentEditPage : ContentPage
         StatusPicker.Items.Add("Tamamlandı");
         StatusPicker.Items.Add("İptal");
         StatusPicker.SelectedIndex = 0;
-        ClinicPicker.SelectedIndexChanged += OnClinicChanged;
+        _clinicPickerWatcher = new PickerFilterWatcher(ClinicPicker, OnClinicFilterCommittedAsync);
     }
 
     protected override async void OnAppearing()
@@ -61,11 +62,13 @@ public partial class AppointmentEditPage : ContentPage
                 }
 
                 SelectPickerIndex(PatientPicker, _patientIds, a.PatientId);
-                ClinicPicker.SelectedIndexChanged -= OnClinicChanged;
-                SelectPickerIndex(ClinicPicker, _clinicIds, a.ClinicId);
+                using (_clinicPickerWatcher.SuppressChanges())
+                {
+                    SelectPickerIndex(ClinicPicker, _clinicIds, a.ClinicId);
+                }
+
                 await FilterDoctorsByClinicAsync(a.ClinicId);
                 SelectPickerIndex(DoctorPicker, _doctorIds, a.DoctorId);
-                ClinicPicker.SelectedIndexChanged += OnClinicChanged;
                 ScheduleDatePicker.Date = a.ScheduledAt.Date;
                 ScheduleTimePicker.Time = a.ScheduledAt.TimeOfDay;
                 StatusPicker.SelectedIndex = a.Status switch
@@ -124,14 +127,14 @@ public partial class AppointmentEditPage : ContentPage
         _allDoctors = (await _api.GetDoctorsAsync(null, null)).ToList();
     }
 
-    private void OnClinicChanged(object? sender, EventArgs e)
+    private Task OnClinicFilterCommittedAsync()
     {
         if (ClinicPicker.SelectedIndex < 0 || ClinicPicker.SelectedIndex >= _clinicIds.Count)
         {
-            return;
+            return Task.CompletedTask;
         }
 
-        _ = FilterDoctorsByClinicAsync(_clinicIds[ClinicPicker.SelectedIndex]);
+        return FilterDoctorsByClinicAsync(_clinicIds[ClinicPicker.SelectedIndex]);
     }
 
     private Task FilterDoctorsByClinicAsync(int clinicId)

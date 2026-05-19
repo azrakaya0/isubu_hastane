@@ -7,7 +7,7 @@
         <BackButtonBehavior TextOverride="Geri" />
     </Shell.BackButtonBehavior>
     <Grid RowDefinitions="Auto,*"
-          MaximumWidthRequest="680" HorizontalOptions="Center">
+          MaximumWidthRequest="800" HorizontalOptions="Center">
         <VerticalStackLayout Grid.Row="0"
                              Style="{StaticResource PageHeroPanel}">
             <Label Text="Hasta kaydı"

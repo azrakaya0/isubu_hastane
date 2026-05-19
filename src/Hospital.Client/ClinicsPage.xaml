@@ -5,7 +5,8 @@
              x:Class="Hospital.Client.ClinicsPage"
              Title="Poliklinikler">
     <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" RowSpacing="0"
-          MaximumWidthRequest="720" HorizontalOptions="Center">
+          MaximumWidthRequest="720" HorizontalOptions="Center"
+          VerticalOptions="FillAndExpand">
         <VerticalStackLayout Grid.Row="0"
                              Style="{StaticResource PageHeroPanel}">
             <Label Text="Poliklinikler"
@@ -19,6 +20,8 @@
                 Text="+ Yeni poliklinik ekle"
                 Style="{StaticResource AddNewButton}"
                 Margin="12,10,12,0"
+                Padding="16,14"
+                FontSize="16"
                 Clicked="OnAddClicked" />
 
         <Border Grid.Row="2"
@@ -31,8 +34,7 @@
                        Margin="0,-4,0,-4" />
                 <Border Style="{StaticResource FormFieldBorder}" Padding="4,2">
                     <SearchBar x:Name="ClinicSearch"
-                               Placeholder="İsim veya açıklama"
-                               SearchButtonPressed="OnSearchPressed" />
+                               Placeholder="İsim veya açıklama" />
                 </Border>
             </VerticalStackLayout>
         </Border>
@@ -162,7 +164,7 @@
                                FontSize="11"
                                TextColor="{StaticResource TextSecondary}"
                                HorizontalTextAlignment="Center"
-                               Text="Arama kutusunda Enter veya ara simgesi ile sorgulayın." />
+                               Text="Arama yazdıkça liste güncellenir." />
                     </CollectionView.Footer>
                 </CollectionView>
             </RefreshView>

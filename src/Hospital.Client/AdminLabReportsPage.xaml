@@ -69,7 +69,7 @@
                 <Button Grid.Row="1" Grid.Column="1"
                         Text="Yükle"
                         Padding="16,10"
-                        Clicked="OnFilterClicked" />
+                        Clicked="OnFilterApplyClicked" />
             </Grid>
         </Border>
 

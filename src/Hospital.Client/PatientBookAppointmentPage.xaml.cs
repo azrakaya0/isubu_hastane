@@ -8,10 +8,12 @@ public partial class PatientBookAppointmentPage : ContentPage
     private readonly IHospitalApiClient _api = AppLocator.Services.GetRequiredService<IHospitalApiClient>();
     private readonly List<ClinicDto> _clinics = new();
     private readonly List<DoctorDto> _doctors = new();
+    private readonly PickerFilterWatcher _clinicPickerWatcher;
 
     public PatientBookAppointmentPage()
     {
         InitializeComponent();
+        _clinicPickerWatcher = new PickerFilterWatcher(ClinicPicker, LoadDoctorsForSelectedClinicAsync);
     }
 
     protected override async void OnAppearing()
@@ -29,10 +31,13 @@ public partial class PatientBookAppointmentPage : ContentPage
             _clinics.Clear();
             var list = await _api.GetPatientPortalClinicsAsync(null);
             _clinics.AddRange(list.OrderBy(c => c.Name));
-            ClinicPicker.Items.Clear();
-            foreach (var c in _clinics)
+            using (_clinicPickerWatcher.SuppressChanges())
             {
-                ClinicPicker.Items.Add(c.Name);
+                ClinicPicker.Items.Clear();
+                foreach (var c in _clinics)
+                {
+                    ClinicPicker.Items.Add(c.Name);
+                }
             }
 
             DoctorPicker.Items.Clear();
@@ -41,7 +46,7 @@ public partial class PatientBookAppointmentPage : ContentPage
         });
     }
 
-    private async void OnClinicChanged(object? sender, EventArgs e)
+    private async Task LoadDoctorsForSelectedClinicAsync()
     {
         if (ClinicPicker.SelectedIndex < 0 || ClinicPicker.SelectedIndex >= _clinics.Count)
         {

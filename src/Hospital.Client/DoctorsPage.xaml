@@ -5,7 +5,8 @@
              x:Class="Hospital.Client.DoctorsPage"
              Title="Doktorlar">
     <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" RowSpacing="0"
-          MaximumWidthRequest="720" HorizontalOptions="Center">
+          MaximumWidthRequest="720" HorizontalOptions="Center"
+          VerticalOptions="FillAndExpand">
         <VerticalStackLayout Grid.Row="0"
                              Style="{StaticResource PageHeroPanel}">
             <Label Text="Doktor kadrosu"
@@ -33,7 +34,6 @@
                     <Entry x:Name="SearchEntry"
                            Placeholder="Ad, uzmanlık veya poliklinik"
                            MaxLength="120"
-                           Completed="OnSearchCompleted"
                            BackgroundColor="Transparent"
                            TextColor="{StaticResource TextPrimary}" />
                 </Border>
@@ -93,7 +93,8 @@
                     </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Border Style="{StaticResource ListRowCard}">
+                            <Border Style="{StaticResource ListRowCard}"
+                                    Margin="0,0,0,10">
                                 <VerticalStackLayout Spacing="6" HorizontalOptions="Fill">
                                     <HorizontalStackLayout Spacing="8">
                                         <Label Text="{Binding FirstName}" FontFamily="OpenSansSemibold" FontSize="17" />
@@ -114,7 +115,7 @@
                                FontSize="11"
                                TextColor="{StaticResource TextSecondary}"
                                HorizontalTextAlignment="Center"
-                               Text="Doktor listesi poliklinik filtresine göre güncellenir." />
+                               Text="Poliklinik seçimi ve arama yazdıkça liste güncellenir." />
                     </CollectionView.Footer>
                 </CollectionView>
             </RefreshView>

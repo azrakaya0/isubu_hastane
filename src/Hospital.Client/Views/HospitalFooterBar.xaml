@@ -11,15 +11,15 @@
             <RoundRectangle CornerRadius="12" />
         </Border.StrokeShape>
         <VerticalStackLayout Spacing="4">
-            <Label Text="Örnek Üniversite Hastanesi · Isparta"
+            <Label Text="İSUBÜ Hastanesi · Merkez"
                    FontFamily="OpenSansSemibold"
                    FontSize="12"
                    TextColor="{StaticResource TextPrimary}" />
-            <Label Text="Süleyman Demirel Üniversitesi Kampüsü, Merkez / Isparta (örnek adres — 32260)"
+            <Label Text="İSUBÜ Sağlık Hizmetleri Birim Yönetimi"
                    FontSize="11"
                    TextColor="{StaticResource TextSecondary}"
                    LineBreakMode="WordWrap" />
-            <Label Text="Randevu: +90 (246) 211 00 00 · Acil: 112 · E-posta: iletisim@ornek-hastane.isparta.tr"
+            <Label Text="Randevu: +90 (246) 211 00 00 · Acil: 112 · E-posta: iletisim@isubu-hastane.tr"
                    FontSize="11"
                    TextColor="{StaticResource TextSecondary}"
                    LineBreakMode="WordWrap" />

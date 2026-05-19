@@ -61,6 +61,12 @@
                                        TextColor="{StaticResource TextPrimary}" />
                             </VerticalStackLayout>
                         </HorizontalStackLayout>
+                        <Label Text="Hoş geldiniz"
+                               FontSize="16"
+                               FontFamily="OpenSansSemibold"
+                               TextColor="{StaticResource Primary}"
+                               HorizontalTextAlignment="Center"
+                               Margin="0,0,0,4" />
                         <Label x:Name="PortalSubtitleLabel"
                                Text="Hasta kayıtları, poliklinikler, doktorlar ve randevu yönetimi için güvenli oturum açın."
                                FontSize="14"
@@ -150,7 +156,8 @@
                                                IsPassword="True"
                                                MaxLength="128"
                                                BackgroundColor="Transparent"
-                                               TextColor="{StaticResource TextPrimary}" />
+                                               TextColor="{StaticResource TextPrimary}"
+                                               Completed="OnPasswordEntryCompleted" />
                                     </Border>
                                     <Button x:Name="PasswordVisibilityButton"
                                             Grid.Column="1"

@@ -25,7 +25,6 @@
                             <Border Style="{StaticResource FormFieldBorder}" Padding="6,2">
                                 <Picker x:Name="ClinicPicker"
                                         Title="Birim seçin"
-                                        SelectedIndexChanged="OnClinicChanged"
                                         TextColor="{StaticResource TextPrimary}" />
                             </Border>
                         </VerticalStackLayout>

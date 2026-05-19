@@ -8,16 +8,22 @@ public partial class PatientsPage : ContentPage
 {
     private readonly IHospitalApiClient _api = AppLocator.Services.GetRequiredService<IHospitalApiClient>();
     private readonly ObservableCollection<PatientDto> _items = new();
+    private readonly DebouncedReload _searchDebouncer;
 
     public PatientsPage()
     {
         InitializeComponent();
         PatientsCollection.ItemsSource = _items;
+        _searchDebouncer = new DebouncedReload(ReloadWithSpinnerAsync);
+        SearchFilterWiring.WireEntry(SearchEntry, _searchDebouncer);
+        SearchFilterWiring.WireEntry(NationalIdEntry, _searchDebouncer);
     }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        SearchEntry.Text = string.Empty;
+        NationalIdEntry.Text = string.Empty;
         await ReloadWithSpinnerAsync();
     }
 
@@ -51,7 +57,7 @@ public partial class PatientsPage : ContentPage
         await ReloadWithSpinnerAsync();
     }
 
-    private async void OnSearchClicked(object? sender, EventArgs e) => await ReloadWithSpinnerAsync();
+    private async void OnSearchClicked(object? sender, EventArgs e) => await _searchDebouncer.RunNowAsync();
 
     private async void OnRefreshing(object? sender, EventArgs e)
     {

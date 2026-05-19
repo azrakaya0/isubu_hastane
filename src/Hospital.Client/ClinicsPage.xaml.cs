@@ -11,21 +11,28 @@ public partial class ClinicsPage : ContentPage
     private readonly ObservableCollection<ClinicListRow> _items = new();
     private string? _lastSearch;
 
+    private readonly DebouncedReload _searchDebouncer;
+
     public ClinicsPage()
     {
         InitializeComponent();
         ClinicsCollection.ItemsSource = _items;
+        _searchDebouncer = new DebouncedReload(ReloadWithSpinnerAsync);
+        SearchFilterWiring.WireSearchBar(ClinicSearch, _searchDebouncer);
     }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        _lastSearch = null;
+        ClinicSearch.Text = string.Empty;
         await ReloadWithSpinnerAsync();
     }
 
     private async Task LoadDataAsync()
     {
         await PageUi.HideListErrorAsync(PageErrorBanner);
+        _lastSearch = string.IsNullOrWhiteSpace(ClinicSearch.Text) ? null : ClinicSearch.Text.Trim();
         var list = await _api.GetClinicsAsync(_lastSearch);
         _items.Clear();
         foreach (var c in list.OrderBy(x => x.Name))
@@ -50,12 +57,6 @@ public partial class ClinicsPage : ContentPage
     private async void OnPageErrorRetryClicked(object? sender, EventArgs e)
     {
         await PageUi.HideListErrorAsync(PageErrorBanner);
-        await ReloadWithSpinnerAsync();
-    }
-
-    private async void OnSearchPressed(object? sender, EventArgs e)
-    {
-        _lastSearch = string.IsNullOrWhiteSpace(ClinicSearch.Text) ? null : ClinicSearch.Text.Trim();
         await ReloadWithSpinnerAsync();
     }
 

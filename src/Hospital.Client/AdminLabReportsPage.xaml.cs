@@ -12,6 +12,7 @@ public partial class AdminLabReportsPage : ContentPage
     private readonly ObservableCollection<LabReportListRow> _items = new();
     private int? _filterPatientId;
     private readonly List<LabReportListRow> _rows = new();
+    private readonly DebouncedReload _patientFilterDebouncer;
 
     public AdminLabReportsPage()
     {
@@ -20,6 +21,8 @@ public partial class AdminLabReportsPage : ContentPage
         RbViewList.CheckedChanged += OnViewModeChanged;
         RbViewInsight.CheckedChanged += OnViewModeChanged;
         RbViewList.IsChecked = true;
+        _patientFilterDebouncer = new DebouncedReload(ApplyPatientFilterFromEntryAsync);
+        SearchFilterWiring.WireEntry(PatientIdEntry, _patientFilterDebouncer);
     }
 
     protected override async void OnAppearing()
@@ -103,17 +106,38 @@ public partial class AdminLabReportsPage : ContentPage
         });
     }
 
-    private async void OnFilterClicked(object? sender, EventArgs e)
+    private async Task ApplyPatientFilterFromEntryAsync()
     {
         var raw = (PatientIdEntry.Text ?? string.Empty).Trim();
-        _filterPatientId = string.IsNullOrEmpty(raw) ? null : int.TryParse(raw, out var id) ? id : null;
-        if (!string.IsNullOrEmpty(raw) && _filterPatientId is null)
+        if (string.IsNullOrEmpty(raw))
+        {
+            _filterPatientId = null;
+            await ReloadAsync();
+            return;
+        }
+
+        if (!int.TryParse(raw, out var id))
+        {
+            return;
+        }
+
+        _filterPatientId = id;
+        await ReloadAsync();
+    }
+
+    private async void OnFilterApplyClicked(object? sender, EventArgs e) =>
+        await ApplyPatientFilterWithValidationAsync();
+
+    private async Task ApplyPatientFilterWithValidationAsync()
+    {
+        var raw = (PatientIdEntry.Text ?? string.Empty).Trim();
+        if (!string.IsNullOrEmpty(raw) && !int.TryParse(raw, out _))
         {
             await DisplayAlert("Filtre", "Geçerli bir hasta ID’si girin veya alanı boş bırakın.", "Tamam");
             return;
         }
 
-        await ReloadAsync();
+        await _patientFilterDebouncer.RunNowAsync();
     }
 
     private async void OnRefreshing(object? sender, EventArgs e)
