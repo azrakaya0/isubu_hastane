@@ -3,7 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Hospital.Client.DoctorProfilePage"
              Title="Profilim">
-    <Grid RowDefinitions="Auto,*">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior TextOverride="Geri" />
+    </Shell.BackButtonBehavior>
+    <Grid RowDefinitions="Auto,*"
+          MaximumWidthRequest="720" HorizontalOptions="Center">
         <VerticalStackLayout Style="{StaticResource PageHeroPanel}">
             <Label Text="Profilim"
                    Style="{StaticResource PageHeroTitle}"

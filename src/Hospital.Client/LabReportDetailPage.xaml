@@ -3,7 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Hospital.Client.LabReportDetailPage"
              Title="Tetkik detayı">
-    <Grid RowDefinitions="Auto,*">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior TextOverride="Geri" />
+    </Shell.BackButtonBehavior>
+    <Grid RowDefinitions="Auto,*"
+          MaximumWidthRequest="720" HorizontalOptions="Center">
         <VerticalStackLayout Style="{StaticResource PageHeroPanel}">
             <Label x:Name="HeroTitle"
                    Text="Tetkik detayı"
@@ -93,7 +97,7 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <Button Margin="20,0,20,20"
+                <Button Margin="12,0,12,12"
                         Text="Kapat"
                         Clicked="OnCloseClicked"
                         HorizontalOptions="Fill" />

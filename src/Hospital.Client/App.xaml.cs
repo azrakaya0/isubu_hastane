@@ -2,17 +2,25 @@
 
 public partial class App : Application
 {
+    private static readonly string CrashLogPath = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "maui_crash.txt");
+
     public App()
     {
         InitializeComponent();
         UserAppTheme = AppTheme.Light;
-        MainPage = CreateLoginNavigation();
+
+        AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+            File.AppendAllText(CrashLogPath, $"\n[{DateTime.Now}] AppDomain: {e.ExceptionObject}\n");
+        TaskScheduler.UnobservedTaskException += (_, e) =>
+            File.AppendAllText(CrashLogPath, $"\n[{DateTime.Now}] Task: {e.Exception}\n");
     }
 
-    /// <summary>
-    /// Giriş sayfası NavigationPage içinde olduğundan üst çubuk varsayılan olarak görünür;
-    /// kapatılmazsa Windows'ta koyu başlık ve sistem vurgu renkleri hissedilir.
-    /// </summary>
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
+        return new Window(CreateLoginNavigation());
+    }
+
     public static NavigationPage CreateLoginNavigation()
     {
         var root = new PortalPickerPage();

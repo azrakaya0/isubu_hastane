@@ -126,7 +126,7 @@ public partial class LabReportEditPage : ContentPage
                         Title = TitleEntry.Text.Trim(),
                         Category = CategoryEntry.Text.Trim(),
                         Summary = SummaryEditor.Text.Trim(),
-                        ResultDate = ResultDatePicker.Date,
+                        ResultDate = ResultDatePicker.Date!.Value,
                         OrderingDoctorId = GetSelectedDoctorId()
                     };
 
@@ -156,7 +156,7 @@ public partial class LabReportEditPage : ContentPage
                         Title = TitleEntry.Text.Trim(),
                         Category = CategoryEntry.Text.Trim(),
                         Summary = SummaryEditor.Text.Trim(),
-                        ResultDate = ResultDatePicker.Date,
+                        ResultDate = ResultDatePicker.Date!.Value,
                         OrderingDoctorId = GetSelectedDoctorId()
                     };
 

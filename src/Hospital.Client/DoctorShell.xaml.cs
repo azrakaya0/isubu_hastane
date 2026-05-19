@@ -21,6 +21,6 @@ public partial class DoctorShell : Shell
     {
         var store = AppLocator.Services.GetRequiredService<IAuthTokenStore>();
         store.Clear();
-        Application.Current!.MainPage = App.CreateLoginNavigation();
+        Application.Current!.Windows[0].Page = App.CreateLoginNavigation();
     }
 }

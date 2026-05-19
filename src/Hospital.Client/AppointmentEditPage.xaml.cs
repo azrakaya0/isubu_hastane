@@ -183,7 +183,7 @@ public partial class AppointmentEditPage : ContentPage
         var patientId = _patientIds[PatientPicker.SelectedIndex];
         var clinicId = _clinicIds[ClinicPicker.SelectedIndex];
         var doctorId = _doctorIds[DoctorPicker.SelectedIndex];
-        var when = ScheduleDatePicker.Date.Date + ScheduleTimePicker.Time;
+        var when = ScheduleDatePicker.Date!.Value.Date + ScheduleTimePicker.Time!.Value;
         var notes = NotesEditor.Text?.Trim();
         if (UrgentSwitch.IsToggled)
         {

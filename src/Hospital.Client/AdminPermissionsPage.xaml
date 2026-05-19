@@ -4,7 +4,8 @@
              x:Class="Hospital.Client.AdminPermissionsPage"
              Title="Erişim ve roller">
     <ScrollView>
-        <VerticalStackLayout Padding="{StaticResource PageScrollContentPadding}" Spacing="18">
+        <VerticalStackLayout Padding="{StaticResource PageScrollContentPadding}" Spacing="14"
+                             MaximumWidthRequest="720" HorizontalOptions="Center">
             <VerticalStackLayout Padding="0,0,0,8" Spacing="6">
                 <Label Text="Rol tabanlı erişim"
                        Style="{StaticResource PageHeroTitle}"

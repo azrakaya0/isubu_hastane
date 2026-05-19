@@ -18,6 +18,16 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
+    "http-sqlite": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "http://localhost:5059",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "UseSqlite": "true"
+      }
+    },
     "http-localdb": {
       "commandName": "Project",
       "dotnetRunMessages": true,

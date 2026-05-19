@@ -103,7 +103,7 @@ public partial class DoctorDutyEditPage : ContentPage
                     {
                         DoctorId = doctor.Id,
                         ClinicId = clinic.Id,
-                        DutyDate = DutyDatePicker.Date,
+                        DutyDate = DutyDatePicker.Date!.Value,
                         DutyKind = kind,
                         Notes = string.IsNullOrWhiteSpace(NotesEditor.Text) ? null : NotesEditor.Text.Trim()
                     };
@@ -124,7 +124,7 @@ public partial class DoctorDutyEditPage : ContentPage
                     {
                         DoctorId = doctor.Id,
                         ClinicId = clinic.Id,
-                        DutyDate = DutyDatePicker.Date,
+                        DutyDate = DutyDatePicker.Date!.Value,
                         DutyKind = kind,
                         Notes = string.IsNullOrWhiteSpace(NotesEditor.Text) ? null : NotesEditor.Text.Trim()
                     };

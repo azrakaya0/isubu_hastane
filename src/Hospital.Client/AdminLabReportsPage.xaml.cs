@@ -25,7 +25,14 @@ public partial class AdminLabReportsPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await ReloadAsync();
+        try
+        {
+            await ReloadAsync();
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Hata", ex.ToString(), "Tamam");
+        }
     }
 
     private void OnViewModeChanged(object? sender, CheckedChangedEventArgs e)

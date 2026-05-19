@@ -4,11 +4,8 @@
              xmlns:views="clr-namespace:Hospital.Client.Views"
              x:Class="Hospital.Client.AdminDoctorDutiesPage"
              Title="Nöbet ve izinler">
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Yeni" Clicked="OnAddClicked" />
-    </ContentPage.ToolbarItems>
-
-    <Grid RowDefinitions="Auto,Auto,Auto,*" RowSpacing="0">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" RowSpacing="0"
+          MaximumWidthRequest="720" HorizontalOptions="Center">
         <VerticalStackLayout Style="{StaticResource PageHeroPanel}">
             <Label Text="Kadro ve nöbet planı"
                    Style="{StaticResource PageHeroTitle}"
@@ -17,9 +14,15 @@
                    Style="{StaticResource PageHeroSubtitle}" />
         </VerticalStackLayout>
 
-        <Border Grid.Row="1"
+        <Button Grid.Row="1"
+                Text="+ Yeni nöbet / izin kaydı"
+                Style="{StaticResource AddNewButton}"
+                Margin="12,10,12,0"
+                Clicked="OnAddClicked" />
+
+        <Border Grid.Row="2"
                 Style="{StaticResource KpiStripCard}"
-                Margin="20,10,20,0">
+                Margin="12,8,12,0">
             <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
                 <VerticalStackLayout>
                     <Label x:Name="KpiTotal" Style="{StaticResource MetricValueLabel}" FontSize="22" HorizontalTextAlignment="Center" Text="–" />
@@ -36,8 +39,8 @@
             </Grid>
         </Border>
 
-        <VerticalStackLayout Grid.Row="2"
-                             Margin="20,10,20,0"
+        <VerticalStackLayout Grid.Row="3"
+                             Margin="12,8,12,0"
                              Spacing="8">
             <Label Text="Çalışma görünümü"
                    Style="{StaticResource FormSubSectionTitle}"
@@ -55,7 +58,7 @@
             </HorizontalStackLayout>
         </VerticalStackLayout>
 
-        <Grid Grid.Row="3" Margin="{StaticResource PageListMargin}">
+        <Grid Grid.Row="4" Margin="{StaticResource PageListMargin}">
             <RefreshView x:Name="RefreshHost" Refreshing="OnRefreshing">
                 <Grid>
                     <CollectionView x:Name="DutiesCollection"

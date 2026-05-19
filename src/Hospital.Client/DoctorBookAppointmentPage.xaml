@@ -3,7 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Hospital.Client.DoctorBookAppointmentPage"
              Title="Hastaya randevu">
-    <Grid RowDefinitions="Auto,*">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior TextOverride="Geri" />
+    </Shell.BackButtonBehavior>
+    <Grid RowDefinitions="Auto,*"
+          MaximumWidthRequest="680" HorizontalOptions="Center">
         <VerticalStackLayout Style="{StaticResource PageHeroPanel}">
             <Label Text="Randevu oluştur"
                    Style="{StaticResource PageHeroTitle}"

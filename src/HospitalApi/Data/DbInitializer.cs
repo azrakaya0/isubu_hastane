@@ -48,7 +48,10 @@ public static class DbInitializer
         IPasswordHasher<Patient> patientPasswordHasher,
         CancellationToken cancellationToken = default)
     {
-        await db.Database.MigrateAsync(cancellationToken);
+        if (db.Database.IsSqlite())
+            await db.Database.EnsureCreatedAsync(cancellationToken);
+        else
+            await db.Database.MigrateAsync(cancellationToken);
 
         if (await db.Users.AnyAsync(cancellationToken))
         {
@@ -149,6 +152,20 @@ public static class DbInitializer
         };
         demoPatient.PortalPasswordHash = patientPasswordHasher.HashPassword(demoPatient, "Patient123!");
         db.Patients.Add(demoPatient);
+
+        var eftalyaPatient = new Patient
+        {
+            FirstName = "Eftalya Beril",
+            LastName = "Şahin",
+            NationalId = "11173221086",
+            Phone = "05551112233",
+            BirthDate = new DateTime(2000, 6, 15, 0, 0, 0, DateTimeKind.Utc),
+            CreatedAt = DateTime.UtcNow,
+            CreatedByUserId = admin.Id
+        };
+        eftalyaPatient.PortalPasswordHash = patientPasswordHasher.HashPassword(eftalyaPatient, "Patient123!");
+        db.Patients.Add(eftalyaPatient);
+
         await db.SaveChangesAsync(cancellationToken);
 
         await SeedLabsAndDutiesForDemoAsync(db, admin.Id, cancellationToken);
@@ -322,6 +339,35 @@ public static class DbInitializer
         else if (string.IsNullOrEmpty(demoPatient.PortalPasswordHash))
         {
             demoPatient.PortalPasswordHash = patientPasswordHasher.HashPassword(demoPatient, "Patient123!");
+            changed = true;
+        }
+
+        var eftalya = await db.Patients.FirstOrDefaultAsync(
+            p => p.NationalId == "11173221086",
+            cancellationToken);
+        if (eftalya is null)
+        {
+            var adminUser = await db.Users.OrderBy(u => u.Id).FirstOrDefaultAsync(cancellationToken);
+            if (adminUser is not null)
+            {
+                eftalya = new Patient
+                {
+                    FirstName = "Eftalya Beril",
+                    LastName = "Şahin",
+                    NationalId = "11173221086",
+                    Phone = "05551112233",
+                    BirthDate = new DateTime(2000, 6, 15, 0, 0, 0, DateTimeKind.Utc),
+                    CreatedAt = DateTime.UtcNow,
+                    CreatedByUserId = adminUser.Id
+                };
+                eftalya.PortalPasswordHash = patientPasswordHasher.HashPassword(eftalya, "Patient123!");
+                db.Patients.Add(eftalya);
+                changed = true;
+            }
+        }
+        else if (string.IsNullOrEmpty(eftalya.PortalPasswordHash))
+        {
+            eftalya.PortalPasswordHash = patientPasswordHasher.HashPassword(eftalya, "Patient123!");
             changed = true;
         }
 

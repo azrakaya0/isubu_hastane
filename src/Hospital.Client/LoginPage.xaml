@@ -169,12 +169,22 @@
                                           Grid.Column="0"
                                           VerticalOptions="Start"
                                           Margin="0,2,0,0" />
-                                <Label Grid.Column="1"
-                                       Text="Kullanım koşullarını ve kişisel verilerin korunmasına ilişkin aydınlatmayı okudum, kabul ediyorum."
-                                       VerticalOptions="Center"
-                                       FontSize="13"
-                                       TextColor="{StaticResource TextPrimary}"
-                                       LineBreakMode="WordWrap" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                    <Label Text="Kullanım koşullarını ve kişisel verilerin korunmasına ilişkin aydınlatmayı okudum, kabul ediyorum."
+                                           FontSize="13"
+                                           TextColor="{StaticResource TextPrimary}"
+                                           LineBreakMode="WordWrap" />
+                                    <Label Text="Kullanıcı sözleşmesini oku"
+                                           FontSize="12"
+                                           FontFamily="OpenSansSemibold"
+                                           TextColor="{StaticResource Primary}"
+                                           TextDecorations="Underline"
+                                           Margin="0,4,0,0">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnTermsTapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </VerticalStackLayout>
                             </Grid>
 
                             <Button Text="Güvenli giriş"

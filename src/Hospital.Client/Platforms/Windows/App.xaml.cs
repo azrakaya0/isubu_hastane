@@ -17,8 +17,16 @@ public partial class App : MauiWinUIApplication
 	public App()
 	{
 		this.InitializeComponent();
-		// Sistem koyu modu / koyu pencere: MAUI sayfa arka planını kapatabiliyor; açık tema zorunlu.
 		RequestedTheme = ApplicationTheme.Light;
+		UnhandledException += OnUnhandledException;
+	}
+
+	private void OnUnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+	{
+		e.Handled = true;
+		var path = System.IO.Path.Combine(
+			Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "maui_crash.txt");
+		System.IO.File.AppendAllText(path, $"\n[{DateTime.Now}] WinUI: {e.Exception}\n{e.Exception?.StackTrace}\n");
 	}
 
 	protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();

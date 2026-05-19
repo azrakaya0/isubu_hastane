@@ -90,7 +90,7 @@ public partial class PatientEditPage : ContentPage
             NationalId = national,
             Phone = phone,
             Email = string.IsNullOrWhiteSpace(email) ? null : email,
-            BirthDate = BirthDatePicker.Date
+            BirthDate = BirthDatePicker.Date!.Value
         };
 
         await PageUi.WithSpinnerAsync(BusyOverlay, BusySpinner, async () =>

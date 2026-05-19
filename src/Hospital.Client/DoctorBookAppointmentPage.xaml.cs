@@ -57,7 +57,7 @@ public partial class DoctorBookAppointmentPage : ContentPage
             return;
         }
 
-        var when = ScheduleDatePicker.Date.Date.Add(ScheduleTimePicker.Time);
+        var when = ScheduleDatePicker.Date!.Value.Date.Add(ScheduleTimePicker.Time!.Value);
         if (when < DateTime.Now.AddMinutes(-5))
         {
             ErrorLabel.Text = "Geçmiş bir saat seçilemez.";

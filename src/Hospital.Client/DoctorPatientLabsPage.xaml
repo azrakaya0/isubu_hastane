@@ -4,7 +4,11 @@
              xmlns:views="clr-namespace:Hospital.Client.Views"
              x:Class="Hospital.Client.DoctorPatientLabsPage"
              Title="Hasta tetkikleri">
-    <Grid RowDefinitions="Auto,*">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior TextOverride="Geri" />
+    </Shell.BackButtonBehavior>
+    <Grid RowDefinitions="Auto,*"
+          MaximumWidthRequest="720" HorizontalOptions="Center">
         <VerticalStackLayout Style="{StaticResource PageHeroPanel}">
             <Label Text="Tetkik ve raporlar"
                    Style="{StaticResource PageHeroTitle}"

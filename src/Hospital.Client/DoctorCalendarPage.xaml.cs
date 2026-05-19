@@ -85,7 +85,7 @@ public partial class DoctorCalendarPage : ContentPage
 
     private void OnDayPickerDateSelected(object? sender, DateChangedEventArgs e)
     {
-        _selectedDate = e.NewDate.Date;
+        _selectedDate = e.NewDate!.Value.Date;
         BuildDayChips();
         ApplyFilter();
         UpdateSummary();

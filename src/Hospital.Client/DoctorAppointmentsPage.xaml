@@ -4,7 +4,8 @@
              xmlns:views="clr-namespace:Hospital.Client.Views"
              x:Class="Hospital.Client.DoctorAppointmentsPage"
              Title="Randevularım">
-    <Grid RowDefinitions="Auto,Auto,Auto,*" RowSpacing="0">
+    <Grid RowDefinitions="Auto,Auto,Auto,*" RowSpacing="0"
+          MaximumWidthRequest="720" HorizontalOptions="Center">
         <VerticalStackLayout Style="{StaticResource PageHeroPanel}">
             <Label Text="Klinik randevu sırası"
                    Style="{StaticResource PageHeroTitle}"
@@ -15,7 +16,7 @@
 
         <Border Grid.Row="1"
                 Style="{StaticResource KpiStripCard}"
-                Margin="20,10,20,0">
+                Margin="12,8,12,0">
             <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="6">
                 <VerticalStackLayout>
                     <Label x:Name="KpiTotal" Text="–" Style="{StaticResource MetricValueLabel}" FontSize="20" HorizontalTextAlignment="Center" />
@@ -38,7 +39,7 @@
 
         <Border Grid.Row="2"
                 Style="{StaticResource ElevatedCard}"
-                Margin="20,12,20,0"
+                Margin="12,8,12,0"
                 Padding="16,14">
             <VerticalStackLayout Spacing="12">
                 <Label Text="Filtre paneli"

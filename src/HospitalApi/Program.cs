@@ -13,11 +13,21 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var useSqlite = builder.Configuration.GetValue<bool>("UseSqlite");
 
-builder.Services.AddDbContext<HospitalDbContext>(options =>
-    options.UseSqlServer(connectionString));
+if (useSqlite)
+{
+    var sqlitePath = Path.Combine(AppContext.BaseDirectory, "hospital.db");
+    builder.Services.AddDbContext<HospitalDbContext>(options =>
+        options.UseSqlite($"Data Source={sqlitePath}"));
+}
+else
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+    builder.Services.AddDbContext<HospitalDbContext>(options =>
+        options.UseSqlServer(connectionString));
+}
 
 builder.Services.AddSingleton<IPasswordHasher<AppUser>, PasswordHasher<AppUser>>();
 builder.Services.AddSingleton<IPasswordHasher<Doctor>, PasswordHasher<Doctor>>();

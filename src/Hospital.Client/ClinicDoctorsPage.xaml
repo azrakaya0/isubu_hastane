@@ -10,6 +10,10 @@
 
              Title="Poliklinik doktorları">
 
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior TextOverride="Geri" />
+    </Shell.BackButtonBehavior>
+
     <ContentPage.ToolbarItems>
 
         <ToolbarItem Text="Düzenle" Clicked="OnEditClinicClicked" />
@@ -18,7 +22,8 @@
 
 
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,*"
+          MaximumWidthRequest="720" HorizontalOptions="Center">
 
         <Border Grid.Row="0" StrokeThickness="0">
 

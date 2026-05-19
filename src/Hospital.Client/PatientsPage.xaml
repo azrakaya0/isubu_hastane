@@ -4,11 +4,8 @@
              xmlns:views="clr-namespace:Hospital.Client.Views"
              x:Class="Hospital.Client.PatientsPage"
              Title="Hastalar">
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Yeni" Clicked="OnAddClicked" />
-    </ContentPage.ToolbarItems>
-
-    <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="0">
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" RowSpacing="0"
+          MaximumWidthRequest="720" HorizontalOptions="Center">
         <VerticalStackLayout Grid.Row="0"
                              Style="{StaticResource PageHeroPanel}">
             <Label Text="Hasta listesi"
@@ -18,10 +15,16 @@
                    Style="{StaticResource PageHeroSubtitle}" />
         </VerticalStackLayout>
 
-        <Border Grid.Row="1"
+        <Button Grid.Row="1"
+                Text="+ Yeni hasta kaydı oluştur"
+                Style="{StaticResource AddNewButton}"
+                Margin="12,10,12,0"
+                Clicked="OnAddClicked" />
+
+        <Border Grid.Row="2"
                 Style="{StaticResource ElevatedCard}"
                 Padding="18,16"
-                Margin="20,12,20,0">
+                Margin="12,8,12,0">
             <VerticalStackLayout Spacing="14">
                 <Label Text="Arama"
                        Style="{StaticResource FormSubSectionTitle}"
@@ -50,7 +53,7 @@
             </VerticalStackLayout>
         </Border>
 
-        <Grid Grid.Row="2"
+        <Grid Grid.Row="3"
               Margin="{StaticResource PageListMargin}"
               RowDefinitions="Auto,*">
             <Border x:Name="PageErrorBanner"
@@ -140,7 +143,7 @@
             </Grid>
         </Grid>
 
-        <views:HospitalFooterBar Grid.Row="3"
+        <views:HospitalFooterBar Grid.Row="4"
                                  Margin="20,10,20,12" />
     </Grid>
 </ContentPage>

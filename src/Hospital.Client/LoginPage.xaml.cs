@@ -95,6 +95,35 @@ public partial class LoginPage : ContentPage
         ErrorBanner.IsVisible = true;
     }
 
+    private async void OnTermsTapped(object? sender, EventArgs e)
+    {
+        const string agreement =
+            "HASTANE BİLGİ SİSTEMİ KULLANICI SÖZLEŞMESİ\n\n" +
+            "1. Amaç\n" +
+            "Bu sistem, hastane hizmetlerinin elektronik ortamda yürütülmesi amacıyla geliştirilmiştir. " +
+            "Kullanıcılar sisteme erişerek aşağıdaki koşulları kabul etmiş sayılır.\n\n" +
+            "2. Kişisel Verilerin Korunması\n" +
+            "Sisteme girilen tüm kişisel veriler 6698 sayılı KVKK kapsamında işlenir. " +
+            "Verileriniz yalnızca sağlık hizmeti sunumu ve yasal yükümlülükler çerçevesinde kullanılır; " +
+            "üçüncü taraflarla paylaşılmaz.\n\n" +
+            "3. Hesap Güvenliği\n" +
+            "Kullanıcı adı ve şifrenizin gizliliğinden siz sorumlusunuz. " +
+            "Hesabınızla gerçekleştirilen tüm işlemler size ait kabul edilir. " +
+            "Şüpheli bir durumda derhal bilgi işlem birimine başvurunuz.\n\n" +
+            "4. Kullanım Kuralları\n" +
+            "Sistemi yalnızca yetkilendirilmiş işlemler için kullanabilirsiniz. " +
+            "Yetkisiz erişim girişimi, verilerin kopyalanması veya manipülasyonu yasaktır.\n\n" +
+            "5. Sorumluluk\n" +
+            "Kurum, sistemin kesintisiz çalışacağını garanti etmez. " +
+            "Teknik bakım ve güncelleme dönemlerinde erişim geçici olarak kısıtlanabilir.\n\n" +
+            "6. Değişiklikler\n" +
+            "Kurum bu sözleşmeyi önceden bildirimde bulunmaksızın güncelleme hakkını saklı tutar. " +
+            "Güncel metin her zaman giriş ekranında erişilebilir durumdadır.\n\n" +
+            "Sisteme giriş yaparak bu koşulları kabul etmiş olursunuz.";
+
+        await DisplayAlert("Kullanıcı Sözleşmesi", agreement, "Tamam");
+    }
+
     private async void OnLoginClicked(object? sender, EventArgs e)
     {
         await AttemptLoginAsync();
@@ -174,7 +203,7 @@ public partial class LoginPage : ContentPage
 
                     await MainThread.InvokeOnMainThreadAsync(() =>
                     {
-                        Application.Current!.MainPage = PortalKind switch
+                        Application.Current!.Windows[0].Page = PortalKind switch
                         {
                             LoginPortalKind.Doctor => new DoctorShell(),
                             LoginPortalKind.Patient => new PatientShell(),

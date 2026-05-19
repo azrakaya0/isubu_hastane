@@ -2,11 +2,12 @@ using Hospital.Shared.Dtos;
 using HospitalApi.Data;
 using HospitalApi.Entities;
 using HospitalApi.Security;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace HospitalApi.Services;
 
-public sealed class PatientService(HospitalDbContext db, ICurrentUserContext currentUser) : IPatientService
+public sealed class PatientService(HospitalDbContext db, ICurrentUserContext currentUser, IPasswordHasher<Patient> patientPasswordHasher) : IPatientService
 {
     public async Task<IReadOnlyList<PatientDto>> GetAsync(PatientListQuery query, CancellationToken cancellationToken = default)
     {
@@ -88,6 +89,7 @@ public sealed class PatientService(HospitalDbContext db, ICurrentUserContext cur
             CreatedAt = DateTime.UtcNow,
             CreatedByUserId = userId
         };
+        entity.PortalPasswordHash = patientPasswordHasher.HashPassword(entity, "Patient123!");
 
         db.Patients.Add(entity);
         await db.SaveChangesAsync(cancellationToken);

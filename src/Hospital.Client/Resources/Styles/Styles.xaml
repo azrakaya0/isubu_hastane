@@ -1,22 +1,20 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <?xaml-comp compile="true" ?>
-<ResourceDictionary 
+<ResourceDictionary
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <!-- Tutarlı sayfa ölçüleri: hero bandı ile liste aynı yatay hizada (20dp). -->
-    <Thickness x:Key="PageListMargin">20,10,20,16</Thickness>
-    <Thickness x:Key="PageListMarginFlushTop">20,0,20,16</Thickness>
-    <Thickness x:Key="PageScrollContentPadding">20,16,20,24</Thickness>
-    <Thickness x:Key="PageFormSheetMargin">20,14,20,22</Thickness>
+    <Thickness x:Key="PageListMargin">12,8,12,12</Thickness>
+    <Thickness x:Key="PageListMarginFlushTop">12,0,12,12</Thickness>
+    <Thickness x:Key="PageScrollContentPadding">16,14,16,18</Thickness>
+    <Thickness x:Key="PageFormSheetMargin">12,10,12,16</Thickness>
 
     <Style TargetType="VerticalStackLayout" x:Key="PageHeroPanel">
-        <Setter Property="Padding" Value="20,16,20,16" />
+        <Setter Property="Padding" Value="18,16,18,14" />
         <Setter Property="Spacing" Value="6" />
-        <Setter Property="BackgroundColor" Value="{StaticResource Secondary}" />
+        <Setter Property="Background" Value="{StaticResource HeroGradient}" />
     </Style>
 
-    <!-- WinUI / CollectionView: çok satırlı satırların kırpılmasını önler. -->
     <Style TargetType="CollectionView" x:Key="AppListCollectionView">
         <Setter Property="ItemSizingStrategy" Value="MeasureAllItems" />
     </Style>
@@ -32,23 +30,24 @@
 
     <Style TargetType="Border">
         <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource BorderSubtle}, Dark={StaticResource BorderSubtleDark}}" />
-        <Setter Property="StrokeThickness" Value="1"/>
+        <Setter Property="StrokeThickness" Value="0.5"/>
         <Setter Property="StrokeShape">
-            <RoundRectangle CornerRadius="14" />
+            <RoundRectangle CornerRadius="16" />
         </Setter>
     </Style>
 
     <Style TargetType="Border" x:Key="ElevatedCard">
         <Setter Property="Padding" Value="14" />
-        <Setter Property="StrokeThickness" Value="1" />
-        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource BorderSubtle}, Dark={StaticResource BorderSubtleDark}}" />
+        <Setter Property="StrokeThickness" Value="0" />
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceCard}, Dark={StaticResource SurfaceCardDark}}" />
         <Setter Property="StrokeShape">
             <RoundRectangle CornerRadius="14" />
         </Setter>
+        <Setter Property="Shadow">
+            <Shadow Brush="#20103050" Offset="0,3" Radius="12" Opacity="0.16" />
+        </Setter>
     </Style>
 
-    <!-- Dokunmatik seçim kartları (portal vb.): hover’da hafif renk değişimi -->
     <Style TargetType="Border" x:Key="TappableElevatedCard" BasedOn="{StaticResource ElevatedCard}">
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
@@ -56,7 +55,10 @@
                     <VisualState x:Name="Normal" />
                     <VisualState x:Name="PointerOver">
                         <VisualState.Setters>
-                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#F3F8FF, Dark=#2A3340}" />
+                            <Setter Property="BackgroundColor" Value="#F0F6FF" />
+                            <Setter Property="Shadow">
+                                <Shadow Brush="#30103050" Offset="0,6" Radius="22" Opacity="0.22" />
+                            </Setter>
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
@@ -65,33 +67,32 @@
     </Style>
 
     <Style TargetType="Border" x:Key="ListRowCard" BasedOn="{StaticResource ElevatedCard}">
-        <Setter Property="Padding" Value="16,14" />
-        <Setter Property="Margin" Value="0,0,0,10" />
+        <Setter Property="Padding" Value="14,12" />
+        <Setter Property="Margin" Value="0,0,0,6" />
         <Setter Property="HorizontalOptions" Value="Fill" />
     </Style>
 
-    <!-- Form alanları: beyaz zemin, net çerçeve (WinUI varsayılan çizgisi yerine) -->
     <Style TargetType="Border" x:Key="FormFieldBorder">
         <Setter Property="Padding" Value="14,12" />
         <Setter Property="BackgroundColor" Value="{StaticResource SurfaceCard}" />
         <Setter Property="Stroke" Value="{StaticResource BorderSubtle}" />
         <Setter Property="StrokeThickness" Value="1" />
         <Setter Property="StrokeShape">
-            <RoundRectangle CornerRadius="10" />
+            <RoundRectangle CornerRadius="12" />
         </Setter>
     </Style>
 
     <Style TargetType="Border" x:Key="FormSheetCard" BasedOn="{StaticResource ElevatedCard}">
         <Setter Property="Padding" Value="0" />
-        <Setter Property="MaximumWidthRequest" Value="960" />
-        <Setter Property="HorizontalOptions" Value="Fill" />
+        <Setter Property="MaximumWidthRequest" Value="620" />
+        <Setter Property="HorizontalOptions" Value="Center" />
         <Setter Property="StrokeShape">
             <RoundRectangle CornerRadius="16" />
         </Setter>
     </Style>
 
     <Style TargetType="BoxView">
-        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray200}}" />
     </Style>
 
     <Style TargetType="Button">
@@ -100,10 +101,13 @@
         <Setter Property="FontFamily" Value="OpenSansSemibold"/>
         <Setter Property="FontSize" Value="15"/>
         <Setter Property="BorderWidth" Value="0"/>
-        <Setter Property="CornerRadius" Value="12"/>
-        <Setter Property="Padding" Value="16,12"/>
-        <Setter Property="MinimumHeightRequest" Value="44"/>
-        <Setter Property="MinimumWidthRequest" Value="44"/>
+        <Setter Property="CornerRadius" Value="14"/>
+        <Setter Property="Padding" Value="20,14"/>
+        <Setter Property="MinimumHeightRequest" Value="48"/>
+        <Setter Property="MinimumWidthRequest" Value="48"/>
+        <Setter Property="Shadow">
+            <Shadow Brush="#301565C0" Offset="0,3" Radius="10" Opacity="0.2" />
+        </Setter>
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup x:Name="CommonStates">
@@ -164,7 +168,7 @@
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
         <Setter Property="FontSize" Value="14" />
-        <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}" />
+        <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}" />
         <Setter Property="MinimumHeightRequest" Value="44"/>
         <Setter Property="MinimumWidthRequest" Value="44"/>
         <Setter Property="VisualStateManager.VisualStateGroups">
@@ -186,7 +190,7 @@
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
         <Setter Property="FontSize" Value="14" />
-        <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}" />
+        <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}" />
         <Setter Property="MinimumHeightRequest" Value="44"/>
         <Setter Property="MinimumWidthRequest" Value="44"/>
         <Setter Property="VisualStateManager.VisualStateGroups">
@@ -206,7 +210,7 @@
     <Style TargetType="Frame">
         <Setter Property="HasShadow" Value="False" />
         <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource BorderSubtleDark}}" />
-        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="CornerRadius" Value="12" />
     </Style>
 
     <Style TargetType="ImageButton">
@@ -257,7 +261,7 @@
     <Style TargetType="Label" x:Key="Headline">
         <Setter Property="FontFamily" Value="OpenSansSemibold" />
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
-        <Setter Property="FontSize" Value="28" />
+        <Setter Property="FontSize" Value="30" />
         <Setter Property="HorizontalOptions" Value="Center" />
         <Setter Property="HorizontalTextAlignment" Value="Center" />
     </Style>
@@ -265,78 +269,78 @@
     <Style TargetType="Label" x:Key="SubHeadline">
         <Setter Property="FontFamily" Value="OpenSansSemibold" />
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource SecondaryDarkText}}" />
-        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontSize" Value="22" />
         <Setter Property="HorizontalOptions" Value="Center" />
         <Setter Property="HorizontalTextAlignment" Value="Center" />
     </Style>
 
     <Style TargetType="Label" x:Key="SectionTitle">
         <Setter Property="FontFamily" Value="OpenSansSemibold" />
-        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontSize" Value="16" />
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
     </Style>
 
     <Style TargetType="Label" x:Key="PageHeroTitle">
         <Setter Property="FontFamily" Value="OpenSansSemibold" />
-        <Setter Property="FontSize" Value="22" />
-        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="TextColor" Value="White" />
         <Setter Property="HorizontalOptions" Value="Fill" />
         <Setter Property="LineBreakMode" Value="WordWrap" />
     </Style>
 
     <Style TargetType="Label" x:Key="PageHeroSubtitle">
         <Setter Property="FontSize" Value="14" />
-        <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+        <Setter Property="TextColor" Value="#BBDEFB" />
         <Setter Property="LineBreakMode" Value="WordWrap" />
         <Setter Property="HorizontalOptions" Value="Fill" />
-        <Setter Property="Margin" Value="0,0,0,2" />
+        <Setter Property="Margin" Value="0,2,0,2" />
     </Style>
 
-    <!-- Liste kartları içi: metin taşması ve ölçüm için -->
     <Style TargetType="Label" x:Key="ListBodyLabel">
         <Setter Property="LineBreakMode" Value="WordWrap" />
         <Setter Property="HorizontalOptions" Value="Fill" />
     </Style>
 
     <Style TargetType="Border" x:Key="MetricCard" BasedOn="{StaticResource ElevatedCard}">
-        <Setter Property="Padding" Value="14,12" />
-        <Setter Property="StrokeThickness" Value="1" />
-        <Setter Property="BackgroundColor" Value="#F9FCFF" />
+        <Setter Property="Padding" Value="16,14" />
+        <Setter Property="Margin" Value="0,0,0,6" />
+        <Setter Property="BackgroundColor" Value="#FFFFFF" />
+        <Setter Property="Stroke" Value="{StaticResource Primary}" />
+        <Setter Property="StrokeThickness" Value="1.5" />
     </Style>
 
     <Style TargetType="Label" x:Key="MetricValueLabel">
         <Setter Property="FontFamily" Value="OpenSansSemibold" />
-        <Setter Property="FontSize" Value="24" />
-        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="TextColor" Value="{StaticResource Primary}" />
     </Style>
 
     <Style TargetType="Label" x:Key="MetricCaptionLabel">
         <Setter Property="FontSize" Value="12" />
         <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
         <Setter Property="LineBreakMode" Value="WordWrap" />
+        <Setter Property="Margin" Value="0,2,0,0" />
     </Style>
 
     <Style TargetType="Border" x:Key="ActionPanelCard" BasedOn="{StaticResource ElevatedCard}">
-        <Setter Property="Padding" Value="18,16" />
-        <Setter Property="StrokeShape">
-            <RoundRectangle CornerRadius="16" />
-        </Setter>
-    </Style>
-
-    <!-- KPI şeridi / üst özet blokları -->
-    <Style TargetType="Border" x:Key="KpiStripCard" BasedOn="{StaticResource ElevatedCard}">
-        <Setter Property="Padding" Value="12,14" />
+        <Setter Property="Padding" Value="16,14" />
         <Setter Property="StrokeShape">
             <RoundRectangle CornerRadius="14" />
         </Setter>
     </Style>
 
-    <!-- Durum ve etiket rozeti -->
+    <Style TargetType="Border" x:Key="KpiStripCard" BasedOn="{StaticResource ElevatedCard}">
+        <Setter Property="Padding" Value="14,12" />
+        <Setter Property="StrokeShape">
+            <RoundRectangle CornerRadius="14" />
+        </Setter>
+    </Style>
+
     <Style TargetType="Border" x:Key="BadgeChip">
-        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="Padding" Value="10,5" />
         <Setter Property="StrokeThickness" Value="0" />
         <Setter Property="StrokeShape">
-            <RoundRectangle CornerRadius="8" />
+            <RoundRectangle CornerRadius="10" />
         </Setter>
     </Style>
 
@@ -344,6 +348,7 @@
         <Setter Property="FontFamily" Value="OpenSansSemibold" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="TextColor" Value="{StaticResource Primary}" />
+        <Setter Property="CharacterSpacing" Value="0.3" />
         <Setter Property="Margin" Value="0,4,0,8" />
     </Style>
 
@@ -361,15 +366,18 @@
 
     <Style TargetType="Button" x:Key="OutlineButton">
         <Setter Property="FontFamily" Value="OpenSansSemibold" />
-        <Setter Property="FontSize" Value="15" />
-        <Setter Property="CornerRadius" Value="12" />
-        <Setter Property="Padding" Value="16,12" />
-        <Setter Property="MinimumHeightRequest" Value="44" />
-        <Setter Property="MinimumWidthRequest" Value="44" />
-        <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="BorderWidth" Value="1.5" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="Padding" Value="18,13" />
+        <Setter Property="MinimumHeightRequest" Value="48" />
+        <Setter Property="MinimumWidthRequest" Value="48" />
+        <Setter Property="BackgroundColor" Value="#F4F8FF" />
+        <Setter Property="BorderWidth" Value="1" />
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource SecondaryDarkText}}" />
-        <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray500}}" />
+        <Setter Property="BorderColor" Value="{StaticResource BorderSubtle}" />
+        <Setter Property="Shadow">
+            <Shadow Brush="#10103050" Offset="0,2" Radius="6" Opacity="0.1" />
+        </Setter>
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup x:Name="CommonStates">
@@ -383,7 +391,7 @@
                     </VisualState>
                     <VisualState x:Name="PointerOver">
                         <VisualState.Setters>
-                            <Setter Property="BackgroundColor" Value="#121565C0" />
+                            <Setter Property="BackgroundColor" Value="#E3EEFF" />
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
@@ -391,7 +399,6 @@
         </Setter>
     </Style>
 
-    <!-- Giriş: şifre göster/gizle -->
     <Style TargetType="Button" x:Key="LinkTextButton">
         <Setter Property="FontFamily" Value="OpenSansSemibold" />
         <Setter Property="FontSize" Value="13" />
@@ -416,13 +423,39 @@
         </Setter>
     </Style>
 
+    <Style TargetType="Button" x:Key="AddNewButton">
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="Padding" Value="24,16" />
+        <Setter Property="MinimumHeightRequest" Value="56" />
+        <Setter Property="TextColor" Value="White" />
+        <Setter Property="BackgroundColor" Value="{StaticResource AccentGreen}" />
+        <Setter Property="HorizontalOptions" Value="Fill" />
+        <Setter Property="Shadow">
+            <Shadow Brush="#4000897B" Offset="0,4" Radius="16" Opacity="0.35" />
+        </Setter>
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal" />
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#00796B" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
     <Style TargetType="Button" x:Key="DangerButton">
         <Setter Property="FontFamily" Value="OpenSansSemibold" />
         <Setter Property="FontSize" Value="15" />
-        <Setter Property="CornerRadius" Value="12" />
-        <Setter Property="Padding" Value="16,12" />
-        <Setter Property="MinimumHeightRequest" Value="44" />
-        <Setter Property="MinimumWidthRequest" Value="44" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="Padding" Value="20,14" />
+        <Setter Property="MinimumHeightRequest" Value="48" />
+        <Setter Property="MinimumWidthRequest" Value="48" />
         <Setter Property="TextColor" Value="{StaticResource White}" />
         <Setter Property="BackgroundColor" Value="{StaticResource Danger}" />
     </Style>
@@ -634,7 +667,7 @@
         <Setter Property="Shell.DisabledColor" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
         <Setter Property="Shell.UnselectedColor" Value="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray400}}" />
         <Setter Property="Shell.NavBarHasShadow" Value="True" />
-        <Setter Property="Shell.FlyoutBackground" Value="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource SurfaceCardDark}}" />
+        <Setter Property="Shell.FlyoutBackground" Value="{AppThemeBinding Light={StaticResource SurfacePage}, Dark={StaticResource SurfaceCardDark}}" />
         <Setter Property="Shell.TabBarBackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceCard}, Dark={StaticResource SurfaceCardDark}}" />
         <Setter Property="Shell.TabBarForegroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource SecondaryDarkText}}" />
         <Setter Property="Shell.TabBarTitleColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource SecondaryDarkText}}" />

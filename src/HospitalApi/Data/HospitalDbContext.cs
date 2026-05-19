@@ -57,7 +57,7 @@ public sealed class HospitalDbContext : DbContext
             e.Property(x => x.Specialty).HasMaxLength(200).IsRequired();
             e.Property(x => x.PortalUserName).HasMaxLength(64);
             e.Property(x => x.PortalPasswordHash).HasMaxLength(500);
-            e.HasIndex(x => x.PortalUserName).IsUnique().HasFilter("[PortalUserName] IS NOT NULL");
+            e.HasIndex(x => x.PortalUserName).IsUnique();
             e.HasOne(x => x.Clinic)
                 .WithMany(c => c.Doctors)
                 .HasForeignKey(x => x.ClinicId)

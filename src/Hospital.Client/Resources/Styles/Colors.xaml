@@ -1,10 +1,8 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <?xaml-comp compile="true" ?>
-<ResourceDictionary 
+<ResourceDictionary
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
-
-    <!-- Kurumsal hastane portalı: güven veren mavi, açık yüzeyler -->
 
     <Color x:Key="Primary">#1565C0</Color>
     <Color x:Key="PrimaryDark">#90CAF9</Color>
@@ -12,32 +10,41 @@
     <Color x:Key="Secondary">#E3F2FD</Color>
     <Color x:Key="SecondaryDarkText">#1976D2</Color>
     <Color x:Key="Tertiary">#0D47A1</Color>
+    <Color x:Key="Accent">#2979FF</Color>
 
     <Color x:Key="White">White</Color>
-    <Color x:Key="Black">#1E3A5F</Color>
+    <Color x:Key="Black">#1A2B42</Color>
     <Color x:Key="Magenta">#1565C0</Color>
     <Color x:Key="MidnightBlue">#1565C0</Color>
-    <Color x:Key="OffBlack">#1E3A5F</Color>
+    <Color x:Key="OffBlack">#1A2B42</Color>
 
-    <Color x:Key="Gray100">#F5FAFF</Color>
-    <Color x:Key="Gray200">#E3F2FD</Color>
+    <Color x:Key="Gray100">#F4F8FC</Color>
+    <Color x:Key="Gray200">#E8F0F8</Color>
     <Color x:Key="Gray300">#BBDEFB</Color>
     <Color x:Key="Gray400">#90CAF9</Color>
-    <Color x:Key="Gray500">#7895B2</Color>
-    <Color x:Key="Gray600">#5A7DA1</Color>
-    <Color x:Key="Gray900">#1E3A5F</Color>
+    <Color x:Key="Gray500">#6B8FAD</Color>
+    <Color x:Key="Gray600">#4A7196</Color>
+    <Color x:Key="Gray900">#1A2B42</Color>
     <Color x:Key="Gray950">#C5D9ED</Color>
 
-    <Color x:Key="SurfacePage">#F5FAFF</Color>
-    <Color x:Key="SurfacePageDark">#F5FAFF</Color>
+    <Color x:Key="SurfacePage">#F0F5FB</Color>
+    <Color x:Key="SurfacePageDark">#F0F5FB</Color>
     <Color x:Key="SurfaceCard">#FFFFFF</Color>
     <Color x:Key="SurfaceCardDark">#FFFFFF</Color>
-    <Color x:Key="BorderSubtle">#C5D9ED</Color>
-    <Color x:Key="BorderSubtleDark">#C5D9ED</Color>
-    <Color x:Key="TextSecondary">#5A7DA1</Color>
-    <Color x:Key="TextSecondaryDark">#5A7DA1</Color>
-    <Color x:Key="TextPrimary">#1E3A5F</Color>
-    <Color x:Key="Danger">#E53935</Color>
+    <Color x:Key="BorderSubtle">#D6E4F0</Color>
+    <Color x:Key="BorderSubtleDark">#D6E4F0</Color>
+    <Color x:Key="TextSecondary">#5A7A99</Color>
+    <Color x:Key="TextSecondaryDark">#5A7A99</Color>
+    <Color x:Key="TextPrimary">#1A2B42</Color>
+    <Color x:Key="Danger">#D32F2F</Color>
+    <Color x:Key="Success">#2E7D32</Color>
+    <Color x:Key="Warning">#F57C00</Color>
+    <Color x:Key="AccentGreen">#00897B</Color>
+    <Color x:Key="AccentGreenLight">#E0F2F1</Color>
+    <Color x:Key="AccentOrange">#EF6C00</Color>
+    <Color x:Key="AccentOrangeLight">#FFF3E0</Color>
+    <Color x:Key="AccentPurple">#5E35B1</Color>
+    <Color x:Key="AccentPurpleLight">#EDE7F6</Color>
 
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
@@ -54,15 +61,23 @@
     <SolidColorBrush x:Key="Gray900Brush" Color="{StaticResource Gray900}"/>
     <SolidColorBrush x:Key="Gray950Brush" Color="{StaticResource Gray950}"/>
 
-    <LinearGradientBrush x:Key="LoginBackgroundLight" StartPoint="0,0" EndPoint="0,1">
+    <LinearGradientBrush x:Key="LoginBackgroundLight" StartPoint="0,0" EndPoint="0.3,1">
         <GradientStop Color="#FFFFFF" Offset="0" />
-        <GradientStop Color="#EDF6FF" Offset="0.55" />
-        <GradientStop Color="#DCECFC" Offset="1" />
+        <GradientStop Color="#EBF3FC" Offset="0.4" />
+        <GradientStop Color="#D4E6F9" Offset="0.8" />
+        <GradientStop Color="#C2DAEF" Offset="1" />
     </LinearGradientBrush>
 
-    <LinearGradientBrush x:Key="LoginBackgroundDark" StartPoint="0,0" EndPoint="0,1">
+    <LinearGradientBrush x:Key="LoginBackgroundDark" StartPoint="0,0" EndPoint="0.3,1">
         <GradientStop Color="#FFFFFF" Offset="0" />
-        <GradientStop Color="#EDF6FF" Offset="0.55" />
-        <GradientStop Color="#DCECFC" Offset="1" />
+        <GradientStop Color="#EBF3FC" Offset="0.4" />
+        <GradientStop Color="#D4E6F9" Offset="0.8" />
+        <GradientStop Color="#C2DAEF" Offset="1" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="HeroGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#0A3D7C" Offset="0" />
+        <GradientStop Color="#1565C0" Offset="0.45" />
+        <GradientStop Color="#2979FF" Offset="1" />
     </LinearGradientBrush>
 </ResourceDictionary>

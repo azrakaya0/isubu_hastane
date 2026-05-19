@@ -5,7 +5,8 @@
              x:Class="Hospital.Client.AdminHomePage"
              Title="Ana sayfa">
     <ScrollView>
-        <VerticalStackLayout Padding="{StaticResource PageScrollContentPadding}" Spacing="18">
+        <VerticalStackLayout Padding="{StaticResource PageScrollContentPadding}" Spacing="14"
+                             MaximumWidthRequest="720" HorizontalOptions="Center">
             <Border Padding="0"
                     StrokeThickness="0"
                     HeightRequest="238">
@@ -46,21 +47,24 @@
             </Border>
 
             <Grid ColumnDefinitions="*,*" ColumnSpacing="10" RowDefinitions="Auto,Auto">
-                <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource MetricCard}">
+                <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource MetricCard}"
+                        BackgroundColor="{StaticResource AccentGreenLight}" Stroke="{StaticResource AccentGreen}">
                     <VerticalStackLayout Spacing="4">
-                        <Label x:Name="PatientsCountLabel" Text="-" Style="{StaticResource MetricValueLabel}" />
+                        <Label x:Name="PatientsCountLabel" Text="-" Style="{StaticResource MetricValueLabel}" TextColor="{StaticResource AccentGreen}" />
                         <Label Text="Kayıtlı hasta" Style="{StaticResource MetricCaptionLabel}" />
                     </VerticalStackLayout>
                 </Border>
-                <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource MetricCard}">
+                <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource MetricCard}"
+                        BackgroundColor="{StaticResource AccentPurpleLight}" Stroke="{StaticResource AccentPurple}">
                     <VerticalStackLayout Spacing="4">
-                        <Label x:Name="DoctorsCountLabel" Text="-" Style="{StaticResource MetricValueLabel}" />
+                        <Label x:Name="DoctorsCountLabel" Text="-" Style="{StaticResource MetricValueLabel}" TextColor="{StaticResource AccentPurple}" />
                         <Label Text="Aktif doktor" Style="{StaticResource MetricCaptionLabel}" />
                     </VerticalStackLayout>
                 </Border>
-                <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource MetricCard}">
+                <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource MetricCard}"
+                        BackgroundColor="{StaticResource AccentOrangeLight}" Stroke="{StaticResource AccentOrange}">
                     <VerticalStackLayout Spacing="4">
-                        <Label x:Name="TodayAppointmentsLabel" Text="-" Style="{StaticResource MetricValueLabel}" />
+                        <Label x:Name="TodayAppointmentsLabel" Text="-" Style="{StaticResource MetricValueLabel}" TextColor="{StaticResource AccentOrange}" />
                         <Label Text="Bugün randevu" Style="{StaticResource MetricCaptionLabel}" />
                     </VerticalStackLayout>
                 </Border>
