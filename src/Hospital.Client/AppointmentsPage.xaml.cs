@@ -10,6 +10,7 @@ public partial class AppointmentsPage : ContentPage
 {
     private readonly IHospitalApiClient _api = AppLocator.Services.GetRequiredService<IHospitalApiClient>();
     private readonly ObservableCollection<AppointmentListRow> _items = new();
+    private readonly PickerFilterWatcher _statusPickerWatcher;
 
     public AppointmentsPage()
     {
@@ -18,10 +19,7 @@ public partial class AppointmentsPage : ContentPage
         RbAll.CheckedChanged += OnRangeOrStatusFilterChanged;
         RbToday.CheckedChanged += OnRangeOrStatusFilterChanged;
         RbWeek.CheckedChanged += OnRangeOrStatusFilterChanged;
-        StatusFilterPicker.SelectedIndexChanged += (_, _) =>
-        {
-            _ = ReloadWithSpinnerAsync();
-        };
+        _statusPickerWatcher = new PickerFilterWatcher(StatusFilterPicker, ReloadWithSpinnerAsync);
         RbAll.IsChecked = true;
         StatusFilterPicker.SelectedIndex = 0;
     }

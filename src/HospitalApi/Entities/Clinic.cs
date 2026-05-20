@@ -2,6 +2,7 @@ namespace HospitalApi.Entities;
 
 public sealed class Clinic : AuditableEntity
 {
+    public string? ClinicNumber { get; set; }
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
 

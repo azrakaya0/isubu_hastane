@@ -30,11 +30,19 @@
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="18" RowDefinitions="Auto,Auto">
                             <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="8">
                                 <Label Text="Hasta" Style="{StaticResource SectionLabel}" Margin="0" />
-                                <Border Style="{StaticResource FormFieldBorder}" Padding="6,2">
+                                <Switch x:Name="NewPatientSwitch" IsToggled="False" />
+                                <Label Text="Yeni hasta (kayıt yok)" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                                <Border x:Name="PatientPickerBorder" Style="{StaticResource FormFieldBorder}" Padding="6,2">
                                     <Picker x:Name="PatientPicker"
                                             Title="Hasta seçin"
                                             TextColor="{StaticResource TextPrimary}" />
                                 </Border>
+                                <VerticalStackLayout x:Name="NewPatientPanel" IsVisible="False" Spacing="8">
+                                    <Entry x:Name="NewPatientFirstNameEntry" Placeholder="Ad" />
+                                    <Entry x:Name="NewPatientLastNameEntry" Placeholder="Soyad" />
+                                    <Entry x:Name="NewPatientNationalIdEntry" Placeholder="T.C. (isteğe bağlı)" Keyboard="Numeric" MaxLength="11" />
+                                    <Entry x:Name="NewPatientPhoneEntry" Placeholder="Telefon" Keyboard="Telephone" />
+                                </VerticalStackLayout>
                             </VerticalStackLayout>
                             <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="8">
                                 <Label Text="Poliklinik" Style="{StaticResource SectionLabel}" Margin="0" />
@@ -68,13 +76,18 @@
                             </VerticalStackLayout>
                             <VerticalStackLayout Grid.Column="1" Spacing="8">
                                 <Label Text="Saat" Style="{StaticResource SectionLabel}" Margin="0" />
-                                <Border Style="{StaticResource FormFieldBorder}" Padding="10,4">
-                                    <TimePicker x:Name="ScheduleTimePicker"
-                                                HorizontalOptions="Start"
-                                                TextColor="{StaticResource TextPrimary}" />
+                                <Border Style="{StaticResource FormFieldBorder}" Padding="6,2">
+                                    <Picker x:Name="SlotPicker"
+                                            Title="Saat seçin"
+                                            TextColor="{StaticResource TextPrimary}" />
                                 </Border>
                             </VerticalStackLayout>
                         </Grid>
+                        <Label x:Name="SlotHintLabel"
+                               FontSize="12"
+                               TextColor="{StaticResource TextSecondary}"
+                               LineBreakMode="WordWrap"
+                               IsVisible="False" />
 
                         <VerticalStackLayout Spacing="8">
                             <Label Text="Durum" Style="{StaticResource SectionLabel}" Margin="0" />

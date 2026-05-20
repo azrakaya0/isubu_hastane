@@ -8,6 +8,10 @@ public sealed class Doctor : AuditableEntity
     public int ClinicId { get; set; }
     public Clinic? Clinic { get; set; }
 
+    public string? OfficeLocation { get; set; }
+    public string? PublicPhone { get; set; }
+    public string? PublicEmail { get; set; }
+
     /// <summary>Doktor portal girişi için benzersiz kullanıcı adı; boşsa portal kapalıdır.</summary>
     public string? PortalUserName { get; set; }
 

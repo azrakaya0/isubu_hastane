@@ -133,8 +133,15 @@ public static class HospitalEndpoints
                 return validation;
             }
 
-            var created = await clinics.CreateAsync(request);
-            return Results.Created($"/api/clinics/{created.Id}", created);
+            try
+            {
+                var created = await clinics.CreateAsync(request);
+                return Results.Created($"/api/clinics/{created.Id}", created);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
         });
 
         api.MapPut("/clinics/{id:int}", async (int id, UpdateClinicRequest request, IClinicService clinics) =>
@@ -224,6 +231,21 @@ public static class HospitalEndpoints
             return item is null ? Results.NotFound() : Results.Ok(item);
         });
 
+        api.MapGet("/appointments/slots", async (
+            int doctorId,
+            DateTime date,
+            int? excludeAppointmentId,
+            IAppointmentService appointments) =>
+        {
+            if (doctorId <= 0)
+            {
+                return Results.BadRequest(new { error = "Geçerli doktor seçiniz." });
+            }
+
+            var slots = await appointments.GetAvailableSlotsAsync(doctorId, date, excludeAppointmentId);
+            return Results.Ok(slots);
+        });
+
         api.MapPost("/appointments", async (CreateAppointmentRequest request, IAppointmentService appointments) =>
         {
             var validation = RequestValidator.Validate(request);
@@ -266,6 +288,14 @@ public static class HospitalEndpoints
         {
             var item = await labReports.GetByIdAsync(id);
             return item is null ? Results.NotFound() : Results.Ok(item);
+        });
+
+        api.MapGet("/lab-reports/{id:int}/pdf", async (int id, ILabReportService labReports) =>
+        {
+            var (content, fileName) = await labReports.GetPdfAsync(id);
+            return content is null
+                ? Results.NotFound()
+                : Results.File(content, "application/pdf", fileName ?? "rapor.pdf");
         });
 
         api.MapPost("/lab-reports", async (CreateLabReportRequest request, ILabReportService labReports) =>

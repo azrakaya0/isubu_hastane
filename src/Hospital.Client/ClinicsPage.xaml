@@ -124,7 +124,7 @@
                                                          VerticalOptions="Center">
                                         <Label FontFamily="OpenSansSemibold"
                                                FontSize="17"
-                                               Text="{Binding Name}"
+                                               Text="{Binding DisplayName}"
                                                TextColor="{StaticResource Primary}"
                                                LineBreakMode="WordWrap"
                                                HorizontalOptions="Fill">

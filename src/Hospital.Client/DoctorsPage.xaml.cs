@@ -50,7 +50,7 @@ public partial class DoctorsPage : ContentPage
             _clinicFilterIds.Add(null);
             foreach (var c in clinics.OrderBy(x => x.Name))
             {
-                ClinicFilterPicker.Items.Add(c.Name);
+                ClinicFilterPicker.Items.Add(c.DisplayName);
                 _clinicFilterIds.Add(c.Id);
             }
 

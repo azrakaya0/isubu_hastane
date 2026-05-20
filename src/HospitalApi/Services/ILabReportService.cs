@@ -17,4 +17,6 @@ public interface ILabReportService
     Task<(bool Success, string? Error)> UpdateAsync(int id, UpdateLabReportRequest request, CancellationToken cancellationToken = default);
 
     Task<(bool Success, string? Error)> DeleteAsync(int id, CancellationToken cancellationToken = default);
+
+    Task<(byte[]? Content, string? FileName)> GetPdfAsync(int id, CancellationToken cancellationToken = default);
 }

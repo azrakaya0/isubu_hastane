@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Hospital.Client.Views"
+             x:Class="Hospital.Client.PatientAppointmentCalendarPage"
+             Title="Randevu takvimi">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" RowSpacing="0"
+          MaximumWidthRequest="720" HorizontalOptions="Center">
+        <VerticalStackLayout Style="{StaticResource PageHeroPanel}">
+            <Label Text="Randevu takvimi"
+                   Style="{StaticResource PageHeroTitle}"
+                   FontSize="20" />
+            <Label Text="Gün seçin; randevularınız aşağıda listelenir."
+                   Style="{StaticResource PageHeroSubtitle}" />
+        </VerticalStackLayout>
+
+        <Border Grid.Row="1"
+                Margin="12,8,12,0"
+                Style="{StaticResource ElevatedCard}"
+                Padding="14,12">
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Hızlı gün seçimi"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="13"
+                       TextColor="{StaticResource TextSecondary}" />
+                <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                    <HorizontalStackLayout x:Name="DayChipsHost" Spacing="8" Padding="0,2,0,4" />
+                </ScrollView>
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Tarih"
+                               FontSize="12"
+                               TextColor="{StaticResource TextSecondary}" />
+                        <DatePicker x:Name="DayPicker"
+                                    DateSelected="OnDayPickerDateSelected"
+                                    Format="D" />
+                    </VerticalStackLayout>
+                    <Button Grid.Column="1"
+                            Text="Bugün"
+                            VerticalOptions="End"
+                            Style="{StaticResource OutlineButton}"
+                            Clicked="OnTodayClicked" />
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
+
+        <Label x:Name="SelectedSummaryLabel"
+               Grid.Row="2"
+               Margin="20,10,20,4"
+               FontSize="14"
+               FontFamily="OpenSansSemibold"
+               TextColor="{StaticResource TextPrimary}" />
+
+        <Border x:Name="PageErrorBanner"
+                Grid.Row="3"
+                IsVisible="False"
+                Margin="20,0,20,8"
+                Padding="14,12"
+                BackgroundColor="#FFEBEE"
+                Stroke="#E57373"
+                StrokeThickness="1">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="12" />
+            </Border.StrokeShape>
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <Label x:Name="PageErrorMessage"
+                       FontSize="13"
+                       TextColor="#B71C1C"
+                       VerticalTextAlignment="Center"
+                       LineBreakMode="WordWrap" />
+                <Button Grid.Column="1"
+                        Text="Tekrar dene"
+                        Clicked="OnPageErrorRetryClicked"
+                        Padding="12,8"
+                        FontSize="13"
+                        CornerRadius="8"
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource Primary}"
+                        BorderColor="{StaticResource Primary}"
+                        BorderWidth="1.5"
+                        VerticalOptions="Center" />
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="4" Margin="{StaticResource PageListMarginFlushTop}">
+            <RefreshView x:Name="RefreshHost" Refreshing="OnRefreshing">
+                <CollectionView x:Name="DayAppointmentsCollection"
+                                Style="{StaticResource AppListCollectionView}"
+                                SelectionMode="None">
+                    <CollectionView.EmptyView>
+                        <views:EmptyStateView Title="Bu gün için randevu yok"
+                                              Message="Başka bir gün seçerek takvimdeki randevularınızı inceleyin."
+                                              Hint="Liste görünümü için menüden Randevularım sayfasını kullanabilirsiniz." />
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource ListRowCard}">
+                                <VerticalStackLayout Spacing="6" HorizontalOptions="Fill">
+                                    <Label Text="{Binding ScheduledAt, StringFormat='{0:t}'}"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="16"
+                                           TextColor="{StaticResource Primary}" />
+                                    <Label Text="{Binding DoctorFullName}" FontSize="15" />
+                                    <Label Text="{Binding ClinicName}"
+                                           FontSize="13"
+                                           TextColor="{StaticResource TextSecondary}" />
+                                    <Label Text="{Binding Status}"
+                                           FontSize="12"
+                                           FontFamily="OpenSansSemibold" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+            <Grid x:Name="BusyOverlay"
+                  IsVisible="False"
+                  BackgroundColor="#DDF5FAFF"
+                  ZIndex="100">
+                <ActivityIndicator x:Name="BusySpinner"
+                                   IsRunning="False"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"
+                                   Scale="1.15" />
+            </Grid>
+        </Grid>
+    </Grid>
+</ContentPage>

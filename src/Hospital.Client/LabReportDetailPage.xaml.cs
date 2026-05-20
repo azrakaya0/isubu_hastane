@@ -1,3 +1,4 @@
+using Hospital.Client.Services;
 using Hospital.Client.Ui;
 using Hospital.Shared.Dtos;
 
@@ -5,9 +6,15 @@ namespace Hospital.Client;
 
 public partial class LabReportDetailPage : ContentPage
 {
-    public LabReportDetailPage(LabReportDto report)
+    private readonly IHospitalApiClient _api = AppLocator.Services.GetRequiredService<IHospitalApiClient>();
+    private readonly LabReportDto _report;
+    private readonly bool _patientPortal;
+
+    public LabReportDetailPage(LabReportDto report, bool patientPortal = false)
     {
         InitializeComponent();
+        _report = report;
+        _patientPortal = patientPortal;
         Bind(report);
     }
 
@@ -37,11 +44,16 @@ public partial class LabReportDetailPage : ContentPage
             DoctorLabel.Text = r.OrderingDoctorName;
         }
 
-        MetaLabel.Text = $"Kayıt no: {r.Id} • Kayıt tarihi: {r.CreatedAt:g}";
+        MetaLabel.Text = r.HasPdf
+            ? $"Kayıt no: {r.Id} • PDF ekli • Kayıt tarihi: {r.CreatedAt:g}"
+            : $"Kayıt no: {r.Id} • Kayıt tarihi: {r.CreatedAt:g}";
+
+        OpenPdfButton.IsVisible = r.HasPdf;
     }
 
-    private async void OnCloseClicked(object? sender, EventArgs e)
-    {
+    private async void OnOpenPdfClicked(object? sender, EventArgs e) =>
+        await LabReportPdfHelper.OpenPdfAsync(this, _api, _report.Id, _patientPortal, _report.PdfFileName);
+
+    private async void OnCloseClicked(object? sender, EventArgs e) =>
         await Navigation.PopAsync();
-    }
 }

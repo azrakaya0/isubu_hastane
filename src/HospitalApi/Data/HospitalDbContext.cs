@@ -39,12 +39,17 @@ public sealed class HospitalDbContext : DbContext
             e.Property(x => x.NationalId).HasMaxLength(11).IsRequired();
             e.Property(x => x.Phone).HasMaxLength(20).IsRequired();
             e.Property(x => x.Email).HasMaxLength(200);
+            e.Property(x => x.EmergencyContactName).HasMaxLength(100);
+            e.Property(x => x.EmergencyContactPhone).HasMaxLength(20);
+            e.Property(x => x.EmergencyContactRelation).HasMaxLength(80);
             e.Property(x => x.PortalPasswordHash).HasMaxLength(500);
         });
 
         modelBuilder.Entity<Clinic>(e =>
         {
             e.HasKey(x => x.Id);
+            e.Property(x => x.ClinicNumber).HasMaxLength(20);
+            e.HasIndex(x => x.ClinicNumber).IsUnique();
             e.Property(x => x.Name).HasMaxLength(200).IsRequired();
             e.Property(x => x.Description).HasMaxLength(2000);
         });
@@ -58,6 +63,9 @@ public sealed class HospitalDbContext : DbContext
             e.Property(x => x.PortalUserName).HasMaxLength(64);
             e.Property(x => x.PortalPasswordHash).HasMaxLength(500);
             e.HasIndex(x => x.PortalUserName).IsUnique();
+            e.Property(x => x.OfficeLocation).HasMaxLength(200);
+            e.Property(x => x.PublicPhone).HasMaxLength(20);
+            e.Property(x => x.PublicEmail).HasMaxLength(200);
             e.HasOne(x => x.Clinic)
                 .WithMany(c => c.Doctors)
                 .HasForeignKey(x => x.ClinicId)
@@ -88,6 +96,7 @@ public sealed class HospitalDbContext : DbContext
             e.Property(x => x.Title).HasMaxLength(200).IsRequired();
             e.Property(x => x.Category).HasMaxLength(100).IsRequired();
             e.Property(x => x.Summary).HasMaxLength(2000).IsRequired();
+            e.Property(x => x.PdfFileName).HasMaxLength(260);
             e.HasIndex(x => x.PatientId);
             e.HasIndex(x => x.ResultDate);
             e.HasOne(x => x.Patient)

@@ -1,7 +1,6 @@
 using Hospital.Client.Services;
 using Hospital.Client.Ui;
 using Hospital.Shared.Dtos;
-
 namespace Hospital.Client;
 
 public partial class LabReportEditPage : ContentPage
@@ -10,6 +9,8 @@ public partial class LabReportEditPage : ContentPage
     private readonly int? _reportId;
     private readonly List<PatientDto> _patients = new();
     private readonly List<DoctorDto?> _doctors = new();
+    private string? _pdfBase64;
+    private string? _pdfFileName;
 
     public LabReportEditPage(int? reportId)
     {
@@ -76,6 +77,11 @@ public partial class LabReportEditPage : ContentPage
                 {
                     DoctorPicker.SelectedIndex = 0;
                 }
+
+                if (existing.HasPdf)
+                {
+                    SetPdfUi(existing.PdfFileName, attached: true, pendingUpload: false);
+                }
             }
 
             RefreshCriticalPreview();
@@ -90,6 +96,48 @@ public partial class LabReportEditPage : ContentPage
         var title = TitleEntry.Text ?? string.Empty;
         var sum = SummaryEditor.Text ?? string.Empty;
         CriticalPreviewPanel.IsVisible = LabPresentation.IsLikelyCritical(sum, title);
+    }
+
+    private void SetPdfUi(string? fileName, bool attached, bool pendingUpload)
+    {
+        if (attached && pendingUpload)
+        {
+            PdfFileLabel.Text = $"Seçildi: {fileName}";
+            ClearPdfButton.IsVisible = true;
+            return;
+        }
+
+        if (attached)
+        {
+            PdfFileLabel.Text = string.IsNullOrWhiteSpace(fileName)
+                ? "Kayıtlı PDF mevcut (yeni dosya seçerek değiştirebilirsiniz)"
+                : $"Kayıtlı: {fileName}";
+            ClearPdfButton.IsVisible = false;
+            return;
+        }
+
+        PdfFileLabel.Text = "Dosya seçilmedi";
+        ClearPdfButton.IsVisible = false;
+    }
+
+    private async void OnPickPdfClicked(object? sender, EventArgs e)
+    {
+        var (b64, name) = await LabReportPdfHelper.PickPdfAsync(this);
+        if (b64 is null)
+        {
+            return;
+        }
+
+        _pdfBase64 = b64;
+        _pdfFileName = name;
+        SetPdfUi(name, attached: true, pendingUpload: true);
+    }
+
+    private void OnClearPdfClicked(object? sender, EventArgs e)
+    {
+        _pdfBase64 = null;
+        _pdfFileName = null;
+        SetPdfUi(null, attached: false, pendingUpload: false);
     }
 
     private int? GetSelectedDoctorId()
@@ -127,7 +175,9 @@ public partial class LabReportEditPage : ContentPage
                         Category = CategoryEntry.Text.Trim(),
                         Summary = SummaryEditor.Text.Trim(),
                         ResultDate = ResultDatePicker.Date!.Value,
-                        OrderingDoctorId = GetSelectedDoctorId()
+                        OrderingDoctorId = GetSelectedDoctorId(),
+                        PdfBase64 = _pdfBase64,
+                        PdfFileName = _pdfFileName
                     };
 
                     var created = await _api.CreateLabReportAsync(create);
@@ -157,7 +207,9 @@ public partial class LabReportEditPage : ContentPage
                         Category = CategoryEntry.Text.Trim(),
                         Summary = SummaryEditor.Text.Trim(),
                         ResultDate = ResultDatePicker.Date!.Value,
-                        OrderingDoctorId = GetSelectedDoctorId()
+                        OrderingDoctorId = GetSelectedDoctorId(),
+                        PdfBase64 = _pdfBase64,
+                        PdfFileName = _pdfFileName
                     };
 
                     await _api.UpdateLabReportAsync(_reportId.Value, update);

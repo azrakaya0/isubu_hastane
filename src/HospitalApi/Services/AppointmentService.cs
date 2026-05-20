@@ -1,12 +1,18 @@
+using Hospital.Shared;
 using Hospital.Shared.Dtos;
+using Hospital.Shared.Enums;
 using HospitalApi.Data;
 using HospitalApi.Entities;
 using HospitalApi.Security;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace HospitalApi.Services;
 
-public sealed class AppointmentService(HospitalDbContext db, ICurrentUserContext currentUser) : IAppointmentService
+public sealed class AppointmentService(
+    HospitalDbContext db,
+    ICurrentUserContext currentUser,
+    IPasswordHasher<Patient> patientPasswordHasher) : IAppointmentService
 {
     public async Task<IReadOnlyList<AppointmentDto>> GetAsync(AppointmentListQuery query, CancellationToken cancellationToken = default)
     {
@@ -99,10 +105,16 @@ public sealed class AppointmentService(HospitalDbContext db, ICurrentUserContext
 
     public async Task<(bool Success, string? Error, AppointmentDto? Appointment)> CreateAsync(CreateAppointmentRequest request, CancellationToken cancellationToken = default)
     {
-        var patientExists = await db.Patients.AnyAsync(p => p.Id == request.PatientId, cancellationToken);
-        if (!patientExists)
+        var (patientOk, patientError, patientId) = await PatientBookingHelper.ResolvePatientIdAsync(
+            db,
+            patientPasswordHasher,
+            currentUser.UserId,
+            request.PatientId,
+            request.NewPatient,
+            cancellationToken);
+        if (!patientOk)
         {
-            return (false, "Hasta bulunamadı.", null);
+            return (false, patientError, null);
         }
 
         var doctor = await db.Doctors.FirstOrDefaultAsync(d => d.Id == request.DoctorId, cancellationToken);
@@ -122,9 +134,19 @@ public sealed class AppointmentService(HospitalDbContext db, ICurrentUserContext
             return (false, "Seçilen doktor bu poliklinikte görevli değil.", null);
         }
 
+        var slotError = await ValidateSlotAndConflictAsync(
+            request.DoctorId,
+            request.ScheduledAt,
+            excludeAppointmentId: null,
+            cancellationToken);
+        if (slotError is not null)
+        {
+            return (false, slotError, null);
+        }
+
         var entity = new Appointment
         {
-            PatientId = request.PatientId,
+            PatientId = patientId,
             DoctorId = request.DoctorId,
             ClinicId = request.ClinicId,
             ScheduledAt = request.ScheduledAt,
@@ -171,6 +193,16 @@ public sealed class AppointmentService(HospitalDbContext db, ICurrentUserContext
             return (false, "Seçilen doktor bu poliklinikte görevli değil.");
         }
 
+        var slotError = await ValidateSlotAndConflictAsync(
+            request.DoctorId,
+            request.ScheduledAt,
+            excludeAppointmentId: id,
+            cancellationToken);
+        if (slotError is not null)
+        {
+            return (false, slotError);
+        }
+
         entity.PatientId = request.PatientId;
         entity.DoctorId = request.DoctorId;
         entity.ClinicId = request.ClinicId;
@@ -196,4 +228,83 @@ public sealed class AppointmentService(HospitalDbContext db, ICurrentUserContext
         await db.SaveChangesAsync(cancellationToken);
         return (true, null);
     }
+
+    public async Task<IReadOnlyList<AppointmentSlotDto>> GetAvailableSlotsAsync(
+        int doctorId,
+        DateTime date,
+        int? excludeAppointmentId = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (doctorId <= 0)
+        {
+            return [];
+        }
+
+        var day = date.Date;
+        if (AppointmentScheduling.IsWeekend(day))
+        {
+            return [];
+        }
+
+        var dayEnd = day.AddDays(1);
+        var booked = await db.Appointments.AsNoTracking()
+            .Where(a =>
+                a.DoctorId == doctorId &&
+                a.ScheduledAt >= day &&
+                a.ScheduledAt < dayEnd &&
+                a.Status != AppointmentStatus.Cancelled &&
+                (excludeAppointmentId == null || a.Id != excludeAppointmentId))
+            .Select(a => a.ScheduledAt)
+            .ToListAsync(cancellationToken);
+
+        var bookedSet = booked.Select(NormalizeSlot).ToHashSet();
+
+        return AppointmentScheduling.EnumerateSlotsForDate(day)
+            .Select(slot =>
+            {
+                var normalized = NormalizeSlot(slot);
+                var available = !bookedSet.Contains(normalized);
+                return new AppointmentSlotDto
+                {
+                    ScheduledAt = normalized,
+                    Label = AppointmentScheduling.FormatSlotLabel(normalized),
+                    IsAvailable = available
+                };
+            })
+            .ToList();
+    }
+
+    private async Task<string?> ValidateSlotAndConflictAsync(
+        int doctorId,
+        DateTime scheduledAt,
+        int? excludeAppointmentId,
+        CancellationToken cancellationToken)
+    {
+        var normalized = NormalizeSlot(scheduledAt);
+        var message = AppointmentScheduling.ValidateSlotMessage(normalized);
+        if (message is not null)
+        {
+            return message;
+        }
+
+        var conflict = await db.Appointments.AsNoTracking()
+            .AnyAsync(a =>
+                a.DoctorId == doctorId &&
+                a.ScheduledAt == normalized &&
+                a.Status != AppointmentStatus.Cancelled &&
+                (excludeAppointmentId == null || a.Id != excludeAppointmentId),
+                cancellationToken);
+
+        return conflict ? "Bu saat için doktorun başka bir randevusu var. Lütfen başka bir saat seçin." : null;
+    }
+
+    private static DateTime NormalizeSlot(DateTime scheduledAt) =>
+        new(
+            scheduledAt.Year,
+            scheduledAt.Month,
+            scheduledAt.Day,
+            scheduledAt.Hour,
+            scheduledAt.Minute,
+            0,
+            scheduledAt.Kind);
 }

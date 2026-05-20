@@ -48,12 +48,18 @@
                             </VerticalStackLayout>
                             <VerticalStackLayout Grid.Column="1" Spacing="8">
                                 <Label Text="Saat" Style="{StaticResource SectionLabel}" />
-                                <Border Style="{StaticResource FormFieldBorder}" Padding="8,4">
-                                    <TimePicker x:Name="ScheduleTimePicker"
-                                                TextColor="{StaticResource TextPrimary}" />
+                                <Border Style="{StaticResource FormFieldBorder}" Padding="6,2">
+                                    <Picker x:Name="SlotPicker"
+                                            Title="Saat seçin"
+                                            TextColor="{StaticResource TextPrimary}" />
                                 </Border>
                             </VerticalStackLayout>
                         </Grid>
+                        <Label x:Name="SlotHintLabel"
+                               FontSize="12"
+                               TextColor="{StaticResource TextSecondary}"
+                               LineBreakMode="WordWrap"
+                               IsVisible="False" />
 
                         <VerticalStackLayout Spacing="8">
                             <Label Text="Not (isteğe bağlı)" Style="{StaticResource SectionLabel}" />

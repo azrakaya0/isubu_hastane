@@ -8,6 +8,8 @@ public partial class DoctorBookAppointmentPage : ContentPage
 {
     private readonly IHospitalApiClient _api = AppLocator.Services.GetRequiredService<IHospitalApiClient>();
     private int _clinicId;
+    private int _doctorId;
+    private AppointmentSlotPickerHelper? _slotHelper;
 
     public DoctorBookAppointmentPage()
     {
@@ -18,58 +20,62 @@ public partial class DoctorBookAppointmentPage : ContentPage
     {
         base.OnAppearing();
         ScheduleDatePicker.MinimumDate = DateTime.Today;
-        if (ScheduleDatePicker.Date < ScheduleDatePicker.MinimumDate)
-        {
-            ScheduleDatePicker.Date = ScheduleDatePicker.MinimumDate;
-        }
-
         ErrorLabel.IsVisible = false;
         await PageUi.WithSpinnerAsync(BusyOverlay, BusySpinner, async () =>
         {
             var me = await _api.GetDoctorPortalMeAsync();
             if (me is null)
             {
-                ClinicInfoLabel.Text = "Profil bilgisi alınamadı; poliklinik atanamadı.";
-                _clinicId = 0;
+                ClinicInfoLabel.Text = "Profil bilgisi alınamadı.";
                 return;
             }
 
             _clinicId = me.ClinicId;
-            ClinicInfoLabel.Text = $"Poliklinik: {me.ClinicName} — Randevular bu birim ve sizin hekim kaydınız ile oluşturulur.";
+            _doctorId = me.Id;
+            ClinicInfoLabel.Text =
+                $"Poliklinik: {me.ClinicName} — Randevu kaydedildiğinde Randevularım ve Takvim'de görünür.";
+
+            _slotHelper = new AppointmentSlotPickerHelper(
+                ScheduleDatePicker,
+                SlotPicker,
+                () => Task.FromResult<int?>(_doctorId),
+                (_, date, __) => _api.GetDoctorPortalAppointmentSlotsAsync(date),
+                SlotHintLabel);
+            await _slotHelper.InitializeAsync();
         });
     }
 
     private async void OnBookClicked(object? sender, EventArgs e)
     {
         ErrorLabel.IsVisible = false;
-        if (_clinicId <= 0)
+        if (_clinicId <= 0 || _doctorId <= 0)
         {
-            ErrorLabel.Text = "Poliklinik bilgisi eksik; lütfen yeniden giriş yapın.";
+            ErrorLabel.Text = "Oturum bilgisi eksik; yeniden giriş yapın.";
+            ErrorLabel.IsVisible = true;
+            return;
+        }
+
+        var when = _slotHelper?.GetSelectedDateTime();
+        if (when is null)
+        {
+            ErrorLabel.Text = "Uygun bir saat seçiniz.";
             ErrorLabel.IsVisible = true;
             return;
         }
 
         var nid = (NationalIdEntry.Text ?? string.Empty).Trim();
-        if (nid.Length != 11 || !nid.All(char.IsDigit))
-        {
-            ErrorLabel.Text = "Geçerli 11 haneli T.C. kimlik numarası giriniz.";
-            ErrorLabel.IsVisible = true;
-            return;
-        }
-
-        var when = ScheduleDatePicker.Date!.Value.Date.Add(ScheduleTimePicker.Time!.Value);
-        if (when < DateTime.Now.AddMinutes(-5))
-        {
-            ErrorLabel.Text = "Geçmiş bir saat seçilemez.";
-            ErrorLabel.IsVisible = true;
-            return;
-        }
-
         var request = new PortalDoctorBookRequest
         {
-            PatientNationalId = nid,
+            PatientNationalId = string.IsNullOrEmpty(nid) ? null : nid,
+            WalkInPatient = new AppointmentWalkInPatientRequest
+            {
+                NationalId = string.IsNullOrEmpty(nid) ? null : nid,
+                FirstName = FirstNameEntry.Text?.Trim() ?? string.Empty,
+                LastName = LastNameEntry.Text?.Trim() ?? string.Empty,
+                Phone = PhoneEntry.Text?.Trim()
+            },
             ClinicId = _clinicId,
-            ScheduledAt = when,
+            ScheduledAt = when.Value,
             Status = AppointmentStatus.Scheduled,
             Notes = string.IsNullOrWhiteSpace(NotesEditor.Text) ? null : NotesEditor.Text.Trim()
         };
@@ -86,7 +92,10 @@ public partial class DoctorBookAppointmentPage : ContentPage
                     return;
                 }
 
-                await DisplayAlert("Randevu", "Hasta için randevu kaydedildi.", "Tamam");
+                await DisplayAlert(
+                    "Randevu",
+                    $"Kayıt oluşturuldu.\n{created.PatientFullName}\n{created.ScheduledAt:dd.MM.yyyy HH:mm}\nRandevularım ve Takvim'de listelenir.",
+                    "Tamam");
                 await Navigation.PopAsync();
             }
             catch (Exception ex)

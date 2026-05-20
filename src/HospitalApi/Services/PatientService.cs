@@ -40,6 +40,9 @@ public sealed class PatientService(HospitalDbContext db, ICurrentUserContext cur
                 Phone = p.Phone,
                 Email = p.Email,
                 BirthDate = p.BirthDate,
+                EmergencyContactName = p.EmergencyContactName,
+                EmergencyContactPhone = p.EmergencyContactPhone,
+                EmergencyContactRelation = p.EmergencyContactRelation,
                 CreatedAt = p.CreatedAt,
                 CreatedByUserId = p.CreatedByUserId,
                 UpdatedAt = p.UpdatedAt,
@@ -61,6 +64,9 @@ public sealed class PatientService(HospitalDbContext db, ICurrentUserContext cur
                 Phone = p.Phone,
                 Email = p.Email,
                 BirthDate = p.BirthDate,
+                EmergencyContactName = p.EmergencyContactName,
+                EmergencyContactPhone = p.EmergencyContactPhone,
+                EmergencyContactRelation = p.EmergencyContactRelation,
                 CreatedAt = p.CreatedAt,
                 CreatedByUserId = p.CreatedByUserId,
                 UpdatedAt = p.UpdatedAt,
@@ -143,5 +149,37 @@ public sealed class PatientService(HospitalDbContext db, ICurrentUserContext cur
         db.Patients.Remove(entity);
         await db.SaveChangesAsync(cancellationToken);
         return (true, null);
+    }
+
+    public async Task<(bool Success, string? Error, PatientDto? Patient)> UpdatePortalProfileAsync(
+        int patientId,
+        UpdatePatientProfileRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var entity = await db.Patients.FirstOrDefaultAsync(p => p.Id == patientId, cancellationToken);
+        if (entity is null)
+        {
+            return (false, "Hasta bulunamadı.", null);
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Phone))
+        {
+            entity.Phone = request.Phone.Trim();
+        }
+
+        entity.Email = string.IsNullOrWhiteSpace(request.Email) ? null : request.Email.Trim();
+        entity.EmergencyContactName = string.IsNullOrWhiteSpace(request.EmergencyContactName)
+            ? null
+            : request.EmergencyContactName.Trim();
+        entity.EmergencyContactPhone = string.IsNullOrWhiteSpace(request.EmergencyContactPhone)
+            ? null
+            : request.EmergencyContactPhone.Trim();
+        entity.EmergencyContactRelation = string.IsNullOrWhiteSpace(request.EmergencyContactRelation)
+            ? null
+            : request.EmergencyContactRelation.Trim();
+        entity.UpdatedAt = DateTime.UtcNow;
+
+        await db.SaveChangesAsync(cancellationToken);
+        return (true, null, await GetByIdAsync(patientId, cancellationToken));
     }
 }

@@ -53,5 +53,4 @@ public partial class AdminHomePage : ContentPage
     private async void OnAppointmentsClicked(object? sender, EventArgs e) => await ShellFlyoutNavigator.GoToAsync("AppointmentsPage");
     private async void OnLabReportsClicked(object? sender, EventArgs e) => await ShellFlyoutNavigator.GoToAsync("AdminLabReportsPage");
     private async void OnDutiesClicked(object? sender, EventArgs e) => await ShellFlyoutNavigator.GoToAsync("AdminDoctorDutiesPage");
-    private async void OnPermissionsClicked(object? sender, EventArgs e) => await ShellFlyoutNavigator.GoToAsync("AdminPermissionsPage");
 }

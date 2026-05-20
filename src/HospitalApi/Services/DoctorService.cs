@@ -12,7 +12,7 @@ public sealed class DoctorService(HospitalDbContext db, ICurrentUserContext curr
     {
         var linq = from d in db.Doctors.AsNoTracking()
                    join c in db.Clinics.AsNoTracking() on d.ClinicId equals c.Id
-                   select new { Doctor = d, ClinicName = c.Name };
+                   select new { Doctor = d, ClinicName = c.Name, ClinicNumber = c.ClinicNumber };
 
         if (!string.IsNullOrWhiteSpace(query.Search))
         {
@@ -40,6 +40,10 @@ public sealed class DoctorService(HospitalDbContext db, ICurrentUserContext curr
                 Specialty = x.Doctor.Specialty,
                 ClinicId = x.Doctor.ClinicId,
                 ClinicName = x.ClinicName,
+                ClinicNumber = x.ClinicNumber,
+                OfficeLocation = x.Doctor.OfficeLocation,
+                PublicPhone = x.Doctor.PublicPhone,
+                PublicEmail = x.Doctor.PublicEmail,
                 CreatedAt = x.Doctor.CreatedAt,
                 CreatedByUserId = x.Doctor.CreatedByUserId,
                 UpdatedAt = x.Doctor.UpdatedAt,
@@ -61,6 +65,10 @@ public sealed class DoctorService(HospitalDbContext db, ICurrentUserContext curr
                           Specialty = d.Specialty,
                           ClinicId = d.ClinicId,
                           ClinicName = c.Name,
+                          ClinicNumber = c.ClinicNumber,
+                          OfficeLocation = d.OfficeLocation,
+                          PublicPhone = d.PublicPhone,
+                          PublicEmail = d.PublicEmail,
                           CreatedAt = d.CreatedAt,
                           CreatedByUserId = d.CreatedByUserId,
                           UpdatedAt = d.UpdatedAt,

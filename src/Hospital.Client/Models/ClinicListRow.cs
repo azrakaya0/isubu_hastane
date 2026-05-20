@@ -15,6 +15,8 @@ public sealed class ClinicListRow
 
     public string Name => Source.Name;
 
+    public string DisplayName => Source.DisplayName;
+
     public string Description => Source.Description ?? string.Empty;
 
     public string? ThumbAsset { get; }

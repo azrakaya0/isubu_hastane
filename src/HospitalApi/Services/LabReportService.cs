@@ -6,7 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HospitalApi.Services;
 
-public sealed class LabReportService(HospitalDbContext db, ICurrentUserContext currentUser) : ILabReportService
+public sealed class LabReportService(
+    HospitalDbContext db,
+    ICurrentUserContext currentUser,
+    ILabPdfStorage pdfStorage) : ILabReportService
 {
     public async Task<IReadOnlyList<LabReportDto>> GetByPatientAsync(int patientId, CancellationToken cancellationToken = default)
     {
@@ -64,8 +67,34 @@ public sealed class LabReportService(HospitalDbContext db, ICurrentUserContext c
             CreatedAt = DateTime.UtcNow,
             CreatedByUserId = currentUser.UserId
         };
-        db.LabReports.Add(entity);
-        await db.SaveChangesAsync(cancellationToken);
+        if (!string.IsNullOrWhiteSpace(request.PdfBase64))
+        {
+            try
+            {
+                var bytes = Convert.FromBase64String(request.PdfBase64.Trim());
+                if (bytes.Length > 5 * 1024 * 1024)
+                {
+                    return (false, "PDF dosyası en fazla 5 MB olabilir.", null);
+                }
+
+                entity.PdfFileName = string.IsNullOrWhiteSpace(request.PdfFileName)
+                    ? "rapor.pdf"
+                    : request.PdfFileName.Trim();
+                db.LabReports.Add(entity);
+                await db.SaveChangesAsync(cancellationToken);
+                await pdfStorage.SaveAsync(entity.Id, bytes, cancellationToken);
+            }
+            catch (FormatException)
+            {
+                return (false, "PDF verisi geçersiz.", null);
+            }
+        }
+        else
+        {
+            db.LabReports.Add(entity);
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
         return (true, null, await GetByIdAsync(entity.Id, cancellationToken));
     }
 
@@ -95,6 +124,30 @@ public sealed class LabReportService(HospitalDbContext db, ICurrentUserContext c
         entity.OrderingDoctorId = request.OrderingDoctorId;
         entity.UpdatedAt = DateTime.UtcNow;
         entity.UpdatedByUserId = currentUser.UserId;
+
+        if (!string.IsNullOrWhiteSpace(request.PdfBase64))
+        {
+            try
+            {
+                var bytes = Convert.FromBase64String(request.PdfBase64.Trim());
+                if (bytes.Length > 5 * 1024 * 1024)
+                {
+                    return (false, "PDF dosyası en fazla 5 MB olabilir.");
+                }
+
+                entity.PdfFileName = string.IsNullOrWhiteSpace(request.PdfFileName)
+                    ? "rapor.pdf"
+                    : request.PdfFileName.Trim();
+                await db.SaveChangesAsync(cancellationToken);
+                await pdfStorage.SaveAsync(id, bytes, cancellationToken);
+                return (true, null);
+            }
+            catch (FormatException)
+            {
+                return (false, "PDF verisi geçersiz.");
+            }
+        }
+
         await db.SaveChangesAsync(cancellationToken);
         return (true, null);
     }
@@ -107,9 +160,23 @@ public sealed class LabReportService(HospitalDbContext db, ICurrentUserContext c
             return (false, "Kayıt bulunamadı.");
         }
 
+        pdfStorage.Delete(id);
         db.LabReports.Remove(entity);
         await db.SaveChangesAsync(cancellationToken);
         return (true, null);
+    }
+
+    public async Task<(byte[]? Content, string? FileName)> GetPdfAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var report = await db.LabReports.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        if (report is null || string.IsNullOrWhiteSpace(report.PdfFileName))
+        {
+            return (null, null);
+        }
+
+        var bytes = await pdfStorage.TryReadAsync(id, cancellationToken);
+        return bytes is null ? (null, null) : (bytes, report.PdfFileName);
     }
 
     private IQueryable<LabReportDto> QueryDtos()
@@ -129,7 +196,9 @@ public sealed class LabReportService(HospitalDbContext db, ICurrentUserContext c
                    ResultDate = r.ResultDate,
                    OrderingDoctorId = r.OrderingDoctorId,
                    OrderingDoctorName = od != null ? od.FirstName + " " + od.LastName : null,
-                   CreatedAt = r.CreatedAt
+                   CreatedAt = r.CreatedAt,
+                   HasPdf = r.PdfFileName != null,
+                   PdfFileName = r.PdfFileName
                };
     }
 }

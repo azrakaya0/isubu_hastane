@@ -23,8 +23,11 @@ public sealed class AppointmentDto
 
 public sealed class CreateAppointmentRequest
 {
-    [Range(1, int.MaxValue, ErrorMessage = "Hasta seçiniz.")]
+    /// <summary>0 ise <see cref="NewPatient"/> ile yeni hasta açılır.</summary>
+    [Range(0, int.MaxValue)]
     public int PatientId { get; set; }
+
+    public AppointmentWalkInPatientRequest? NewPatient { get; set; }
 
     [Range(1, int.MaxValue, ErrorMessage = "Doktor seçiniz.")]
     public int DoctorId { get; set; }

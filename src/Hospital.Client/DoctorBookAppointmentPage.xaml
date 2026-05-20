@@ -7,12 +7,12 @@
         <BackButtonBehavior TextOverride="Geri" />
     </Shell.BackButtonBehavior>
     <Grid RowDefinitions="Auto,*"
-          MaximumWidthRequest="680" HorizontalOptions="Center">
+          MaximumWidthRequest="720" HorizontalOptions="Center">
         <VerticalStackLayout Style="{StaticResource PageHeroPanel}">
             <Label Text="Randevu oluştur"
                    Style="{StaticResource PageHeroTitle}"
                    FontSize="20" />
-            <Label Text="Hastanın T.C. kimlik numarasını doğrulayın; randevu kendi poliklinik kaydınız üzerinden açılır."
+            <Label Text="Kayıtlı hasta yoksa ad-soyad ile yeni kayıt açılır; randevu sizin takviminize düşer."
                    Style="{StaticResource PageHeroSubtitle}" />
         </VerticalStackLayout>
 
@@ -28,13 +28,38 @@
                         </Border>
 
                         <VerticalStackLayout Spacing="8">
-                            <Label Text="Hasta T.C. kimlik no (11 hane)" Style="{StaticResource SectionLabel}" />
+                            <Label Text="Hasta T.C. (varsa)" Style="{StaticResource SectionLabel}" />
                             <Border Style="{StaticResource FormFieldBorder}" Padding="10,6">
                                 <Entry x:Name="NationalIdEntry"
                                        Keyboard="Numeric"
                                        MaxLength="11"
-                                       Placeholder="Örn. 12345678901"
+                                       Placeholder="Kayıtlı hasta için 11 hane"
                                        TextColor="{StaticResource TextPrimary}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <Label Text="Kayıtlı değilse hasta bilgisi"
+                               Style="{StaticResource FormSubSectionTitle}" />
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <VerticalStackLayout Grid.Column="0" Spacing="8">
+                                <Label Text="Ad" Style="{StaticResource SectionLabel}" />
+                                <Border Style="{StaticResource FormFieldBorder}" Padding="10,6">
+                                    <Entry x:Name="FirstNameEntry" Placeholder="Ad" TextColor="{StaticResource TextPrimary}" />
+                                </Border>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="8">
+                                <Label Text="Soyad" Style="{StaticResource SectionLabel}" />
+                                <Border Style="{StaticResource FormFieldBorder}" Padding="10,6">
+                                    <Entry x:Name="LastNameEntry" Placeholder="Soyad" TextColor="{StaticResource TextPrimary}" />
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Telefon" Style="{StaticResource SectionLabel}" />
+                            <Border Style="{StaticResource FormFieldBorder}" Padding="10,6">
+                                <Entry x:Name="PhoneEntry" Keyboard="Telephone" Placeholder="05xx xxx xx xx" TextColor="{StaticResource TextPrimary}" />
                             </Border>
                         </VerticalStackLayout>
 
@@ -42,50 +67,34 @@
                             <VerticalStackLayout Grid.Column="0" Spacing="8">
                                 <Label Text="Tarih" Style="{StaticResource SectionLabel}" />
                                 <Border Style="{StaticResource FormFieldBorder}" Padding="8,4">
-                                    <DatePicker x:Name="ScheduleDatePicker"
-                                                TextColor="{StaticResource TextPrimary}" />
+                                    <DatePicker x:Name="ScheduleDatePicker" TextColor="{StaticResource TextPrimary}" />
                                 </Border>
                             </VerticalStackLayout>
                             <VerticalStackLayout Grid.Column="1" Spacing="8">
                                 <Label Text="Saat" Style="{StaticResource SectionLabel}" />
-                                <Border Style="{StaticResource FormFieldBorder}" Padding="8,4">
-                                    <TimePicker x:Name="ScheduleTimePicker"
-                                                TextColor="{StaticResource TextPrimary}" />
+                                <Border Style="{StaticResource FormFieldBorder}" Padding="6,2">
+                                    <Picker x:Name="SlotPicker" Title="Saat seçin" TextColor="{StaticResource TextPrimary}" />
                                 </Border>
                             </VerticalStackLayout>
                         </Grid>
+                        <Label x:Name="SlotHintLabel" FontSize="12" TextColor="{StaticResource TextSecondary}" LineBreakMode="WordWrap" IsVisible="False" />
 
                         <VerticalStackLayout Spacing="8">
                             <Label Text="Not (isteğe bağlı)" Style="{StaticResource SectionLabel}" />
                             <Border Style="{StaticResource FormFieldBorder}" Padding="10,8">
-                                <Editor x:Name="NotesEditor"
-                                        AutoSize="TextChanges"
-                                        MaxLength="500"
-                                        MinimumHeightRequest="64"
-                                        BackgroundColor="Transparent"
-                                        TextColor="{StaticResource TextPrimary}" />
+                                <Editor x:Name="NotesEditor" AutoSize="TextChanges" MaxLength="500" MinimumHeightRequest="64"
+                                        BackgroundColor="Transparent" TextColor="{StaticResource TextPrimary}" />
                             </Border>
                         </VerticalStackLayout>
 
-                        <Label x:Name="ErrorLabel"
-                               IsVisible="False"
-                               TextColor="#B71C1C"
-                               FontSize="13"
-                               LineBreakMode="WordWrap" />
+                        <Label x:Name="ErrorLabel" IsVisible="False" TextColor="#B71C1C" FontSize="13" LineBreakMode="WordWrap" />
 
-                        <Button Text="Randevuyu kaydet"
-                                Clicked="OnBookClicked" />
+                        <Button Text="Randevuyu kaydet" Clicked="OnBookClicked" />
                     </VerticalStackLayout>
                 </Border>
             </ScrollView>
-            <Grid x:Name="BusyOverlay"
-                  IsVisible="False"
-                  BackgroundColor="#DDF5FAFF"
-                  ZIndex="100">
-                <ActivityIndicator x:Name="BusySpinner"
-                                   IsRunning="False"
-                                   VerticalOptions="Center"
-                                   HorizontalOptions="Center" />
+            <Grid x:Name="BusyOverlay" IsVisible="False" BackgroundColor="#DDF5FAFF" ZIndex="100">
+                <ActivityIndicator x:Name="BusySpinner" IsRunning="False" VerticalOptions="Center" HorizontalOptions="Center" />
             </Grid>
         </Grid>
     </Grid>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hospital.Client.AdminProfilePage"
+             Title="Kurum bilgileri">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior TextOverride="Geri" />
+    </Shell.BackButtonBehavior>
+    <Grid RowDefinitions="Auto,*"
+          MaximumWidthRequest="720" HorizontalOptions="Center">
+        <VerticalStackLayout Style="{StaticResource PageHeroPanel}">
+            <Label Text="Kurum bilgileri"
+                   Style="{StaticResource PageHeroTitle}"
+                   FontSize="20" />
+            <Label Text="Hastane iletişim ve çalışma saatleri."
+                   Style="{StaticResource PageHeroSubtitle}" />
+        </VerticalStackLayout>
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="{StaticResource PageScrollContentPadding}" Spacing="14">
+                <Border Style="{StaticResource ElevatedCard}" Padding="22,20">
+                    <VerticalStackLayout Spacing="10">
+                        <Label x:Name="HospitalNameLabel" FontSize="18" FontFamily="OpenSansSemibold" />
+                        <Label x:Name="DepartmentLabel" FontSize="14" TextColor="{StaticResource TextSecondary}" LineBreakMode="WordWrap" />
+                        <BoxView HeightRequest="1" Color="{StaticResource BorderSubtle}" />
+                        <Label x:Name="PhoneLabel" FontSize="14" />
+                        <Label x:Name="EmergencyLabel" FontSize="14" TextColor="#B71C1C" />
+                        <Label x:Name="EmailLabel" FontSize="14" TextColor="{StaticResource TextSecondary}" />
+                        <Label x:Name="HoursLabel" FontSize="14" TextColor="{StaticResource TextSecondary}" LineBreakMode="WordWrap" />
+                        <Label x:Name="AddressLabel" FontSize="14" TextColor="{StaticResource TextSecondary}" LineBreakMode="WordWrap" />
+                        <Label x:Name="SessionLabel"
+                               FontSize="12"
+                               TextColor="{StaticResource TextSecondary}"
+                               Margin="0,8,0,0" />
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

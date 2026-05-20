@@ -19,11 +19,20 @@ public interface IHospitalApiClient
 
     Task<PatientDto?> GetPatientPortalMeAsync(CancellationToken cancellationToken = default);
 
+    Task<PatientDto?> UpdatePatientPortalProfileAsync(UpdatePatientProfileRequest request, CancellationToken cancellationToken = default);
+
+    Task<Stream?> GetLabReportPdfStreamAsync(int reportId, bool patientPortal, CancellationToken cancellationToken = default);
+
     Task<IReadOnlyList<AppointmentDto>> GetPatientPortalAppointmentsAsync(CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<ClinicDto>> GetPatientPortalClinicsAsync(string? search, CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<DoctorDto>> GetPatientPortalDoctorsAsync(int clinicId, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<AppointmentSlotDto>> GetPatientPortalAppointmentSlotsAsync(
+        int doctorId,
+        DateTime date,
+        CancellationToken cancellationToken = default);
 
     Task<AppointmentDto?> PatientPortalBookAppointmentAsync(PortalPatientBookRequest request, CancellationToken cancellationToken = default);
 
@@ -32,6 +41,10 @@ public interface IHospitalApiClient
     Task<IReadOnlyList<LabReportDto>> GetPatientPortalLabReportsAsync(CancellationToken cancellationToken = default);
 
     Task<PatientDto?> DoctorPortalLookupPatientAsync(string nationalId, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<AppointmentSlotDto>> GetDoctorPortalAppointmentSlotsAsync(
+        DateTime date,
+        CancellationToken cancellationToken = default);
 
     Task<AppointmentDto?> DoctorPortalBookAppointmentAsync(PortalDoctorBookRequest request, CancellationToken cancellationToken = default);
 
@@ -87,6 +100,12 @@ public interface IHospitalApiClient
         CancellationToken cancellationToken = default);
 
     Task<AppointmentDto?> GetAppointmentAsync(int id, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<AppointmentSlotDto>> GetAppointmentSlotsAsync(
+        int doctorId,
+        DateTime date,
+        int? excludeAppointmentId = null,
+        CancellationToken cancellationToken = default);
 
     Task<AppointmentDto?> CreateAppointmentAsync(CreateAppointmentRequest request, CancellationToken cancellationToken = default);
     Task UpdateAppointmentAsync(int id, UpdateAppointmentRequest request, CancellationToken cancellationToken = default);

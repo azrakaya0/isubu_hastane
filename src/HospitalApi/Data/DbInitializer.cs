@@ -53,10 +53,14 @@ public static class DbInitializer
         else
             await db.Database.MigrateAsync(cancellationToken);
 
+        await EnsureClinicNumberSchemaAsync(db, cancellationToken);
+        await EnsureExtendedProfileSchemaAsync(db, cancellationToken);
+
         if (await db.Users.AnyAsync(cancellationToken))
         {
             await EnsureDemoPortalCredentialsAsync(db, doctorPasswordHasher, patientPasswordHasher, cancellationToken);
             await EnsureClinicAndDoctorScaleAsync(db, doctorPasswordHasher, patientPasswordHasher, cancellationToken);
+            await EnsureClinicNumbersAsync(db, cancellationToken);
             await EnsureLabsAndDutiesAsync(db, cancellationToken);
             return;
         }
@@ -107,6 +111,11 @@ public static class DbInitializer
                 CreatedAt = DateTime.UtcNow,
                 CreatedByUserId = admin.Id
             });
+        }
+
+        for (var i = 0; i < clinics.Count; i++)
+        {
+            clinics[i].ClinicNumber = (101 + i).ToString();
         }
 
         db.Clinics.AddRange(clinics);
@@ -411,6 +420,7 @@ public static class DbInitializer
         if (changed)
         {
             await db.SaveChangesAsync(cancellationToken);
+            await EnsureClinicNumbersAsync(db, cancellationToken);
         }
 
         changed = false;
@@ -439,6 +449,87 @@ public static class DbInitializer
             };
             doctor.PortalPasswordHash = doctorPasswordHasher.HashPassword(doctor, "Doctor123!");
             db.Doctors.Add(doctor);
+            changed = true;
+        }
+
+        if (changed)
+        {
+            await db.SaveChangesAsync(cancellationToken);
+        }
+    }
+
+    private static async Task EnsureExtendedProfileSchemaAsync(HospitalDbContext db, CancellationToken cancellationToken)
+    {
+        if (!db.Database.IsSqlite())
+        {
+            return;
+        }
+
+        foreach (var sql in new[]
+                 {
+                     "ALTER TABLE Patients ADD COLUMN EmergencyContactName TEXT NULL;",
+                     "ALTER TABLE Patients ADD COLUMN EmergencyContactPhone TEXT NULL;",
+                     "ALTER TABLE Patients ADD COLUMN EmergencyContactRelation TEXT NULL;",
+                     "ALTER TABLE Doctors ADD COLUMN OfficeLocation TEXT NULL;",
+                     "ALTER TABLE Doctors ADD COLUMN PublicPhone TEXT NULL;",
+                     "ALTER TABLE Doctors ADD COLUMN PublicEmail TEXT NULL;",
+                     "ALTER TABLE LabReports ADD COLUMN PdfFileName TEXT NULL;"
+                 })
+        {
+            try
+            {
+                await db.Database.ExecuteSqlRawAsync(sql, cancellationToken);
+            }
+            catch
+            {
+                // Sütun zaten var.
+            }
+        }
+    }
+
+    private static async Task EnsureClinicNumberSchemaAsync(HospitalDbContext db, CancellationToken cancellationToken)
+    {
+        if (!db.Database.IsSqlite())
+        {
+            return;
+        }
+
+        try
+        {
+            await db.Database.ExecuteSqlRawAsync(
+                "ALTER TABLE Clinics ADD COLUMN ClinicNumber TEXT NULL;",
+                cancellationToken);
+        }
+        catch
+        {
+            // Sütun zaten var.
+        }
+    }
+
+    private static async Task EnsureClinicNumbersAsync(HospitalDbContext db, CancellationToken cancellationToken)
+    {
+        var clinics = await db.Clinics.OrderBy(c => c.Id).ToListAsync(cancellationToken);
+        var next = 101;
+        var changed = false;
+        foreach (var clinic in clinics)
+        {
+            if (!string.IsNullOrWhiteSpace(clinic.ClinicNumber))
+            {
+                if (int.TryParse(clinic.ClinicNumber, out var n) && n >= next)
+                {
+                    next = n + 1;
+                }
+
+                continue;
+            }
+
+            while (clinics.Any(c => c.Id != clinic.Id && c.ClinicNumber == next.ToString()))
+            {
+                next++;
+            }
+
+            clinic.ClinicNumber = next.ToString();
+            next++;
             changed = true;
         }
 

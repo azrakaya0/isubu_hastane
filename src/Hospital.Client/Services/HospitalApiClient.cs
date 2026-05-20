@@ -32,7 +32,7 @@ public sealed class HospitalApiClient(HttpClient http, IAuthTokenStore tokenStor
         var result = await response.Content.ReadFromJsonAsync<LoginResponse>(JsonOptions, cancellationToken);
         if (result is not null)
         {
-            tokenStore.SetSession(result.Token, string.IsNullOrWhiteSpace(result.Role) ? "Admin" : result.Role);
+            tokenStore.SetSession(result.Token, string.IsNullOrWhiteSpace(result.Role) ? "Admin" : result.Role, result.FullName);
         }
 
         return result;
@@ -56,7 +56,7 @@ public sealed class HospitalApiClient(HttpClient http, IAuthTokenStore tokenStor
         var result = await response.Content.ReadFromJsonAsync<LoginResponse>(JsonOptions, cancellationToken);
         if (result is not null)
         {
-            tokenStore.SetSession(result.Token, string.IsNullOrWhiteSpace(result.Role) ? "Doctor" : result.Role);
+            tokenStore.SetSession(result.Token, string.IsNullOrWhiteSpace(result.Role) ? "Doctor" : result.Role, result.FullName);
         }
 
         return result;
@@ -80,7 +80,7 @@ public sealed class HospitalApiClient(HttpClient http, IAuthTokenStore tokenStor
         var result = await response.Content.ReadFromJsonAsync<LoginResponse>(JsonOptions, cancellationToken);
         if (result is not null)
         {
-            tokenStore.SetSession(result.Token, string.IsNullOrWhiteSpace(result.Role) ? "Patient" : result.Role);
+            tokenStore.SetSession(result.Token, string.IsNullOrWhiteSpace(result.Role) ? "Patient" : result.Role, result.FullName);
         }
 
         return result;
@@ -111,6 +111,27 @@ public sealed class HospitalApiClient(HttpClient http, IAuthTokenStore tokenStor
     public async Task<PatientDto?> GetPatientPortalMeAsync(CancellationToken cancellationToken = default) =>
         await http.GetFromJsonAsync<PatientDto>("api/portal/patient/me", JsonOptions, cancellationToken);
 
+    public async Task<PatientDto?> UpdatePatientPortalProfileAsync(UpdatePatientProfileRequest request, CancellationToken cancellationToken = default)
+    {
+        using var response = await http.PutAsJsonAsync("api/portal/patient/me/profile", request, JsonOptions, cancellationToken);
+        await EnsureSuccess(response, cancellationToken);
+        return await response.Content.ReadFromJsonAsync<PatientDto>(JsonOptions, cancellationToken);
+    }
+
+    public async Task<Stream?> GetLabReportPdfStreamAsync(int reportId, bool patientPortal, CancellationToken cancellationToken = default)
+    {
+        var url = patientPortal
+            ? $"api/portal/patient/lab-reports/{reportId}/pdf"
+            : $"api/lab-reports/{reportId}/pdf";
+        var response = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
+
+        return await response.Content.ReadAsStreamAsync(cancellationToken);
+    }
+
     public async Task<IReadOnlyList<AppointmentDto>> GetPatientPortalAppointmentsAsync(CancellationToken cancellationToken = default)
     {
         var list = await http.GetFromJsonAsync<List<AppointmentDto>>("api/portal/patient/appointments", JsonOptions, cancellationToken);
@@ -128,6 +149,19 @@ public sealed class HospitalApiClient(HttpClient http, IAuthTokenStore tokenStor
     {
         var url = BuildUrl("api/portal/patient/doctors", ("clinicId", clinicId.ToString()));
         var list = await http.GetFromJsonAsync<List<DoctorDto>>(url, JsonOptions, cancellationToken);
+        return list ?? [];
+    }
+
+    public async Task<IReadOnlyList<AppointmentSlotDto>> GetPatientPortalAppointmentSlotsAsync(
+        int doctorId,
+        DateTime date,
+        CancellationToken cancellationToken = default)
+    {
+        var url = BuildUrl(
+            "api/portal/patient/appointments/slots",
+            ("doctorId", doctorId.ToString()),
+            ("date", date.Date.ToString("yyyy-MM-dd")));
+        var list = await http.GetFromJsonAsync<List<AppointmentSlotDto>>(url, JsonOptions, cancellationToken);
         return list ?? [];
     }
 
@@ -161,6 +195,15 @@ public sealed class HospitalApiClient(HttpClient http, IAuthTokenStore tokenStor
 
         await EnsureSuccess(response, cancellationToken);
         return await response.Content.ReadFromJsonAsync<PatientDto>(JsonOptions, cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<AppointmentSlotDto>> GetDoctorPortalAppointmentSlotsAsync(
+        DateTime date,
+        CancellationToken cancellationToken = default)
+    {
+        var url = BuildUrl("api/portal/doctor/appointments/slots", ("date", date.Date.ToString("yyyy-MM-dd")));
+        var list = await http.GetFromJsonAsync<List<AppointmentSlotDto>>(url, JsonOptions, cancellationToken);
+        return list ?? [];
     }
 
     public async Task<AppointmentDto?> DoctorPortalBookAppointmentAsync(PortalDoctorBookRequest request, CancellationToken cancellationToken = default)
@@ -361,6 +404,21 @@ public sealed class HospitalApiClient(HttpClient http, IAuthTokenStore tokenStor
     public async Task<AppointmentDto?> GetAppointmentAsync(int id, CancellationToken cancellationToken = default)
     {
         return await http.GetFromJsonAsync<AppointmentDto>($"api/appointments/{id}", JsonOptions, cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<AppointmentSlotDto>> GetAppointmentSlotsAsync(
+        int doctorId,
+        DateTime date,
+        int? excludeAppointmentId = null,
+        CancellationToken cancellationToken = default)
+    {
+        var url = BuildUrl(
+            "api/appointments/slots",
+            ("doctorId", doctorId.ToString()),
+            ("date", date.Date.ToString("yyyy-MM-dd")),
+            ("excludeAppointmentId", excludeAppointmentId?.ToString()));
+        var list = await http.GetFromJsonAsync<List<AppointmentSlotDto>>(url, JsonOptions, cancellationToken);
+        return list ?? [];
     }
 
     public async Task<AppointmentDto?> CreateAppointmentAsync(CreateAppointmentRequest request, CancellationToken cancellationToken = default)

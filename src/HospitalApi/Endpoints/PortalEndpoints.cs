@@ -1,7 +1,9 @@
 using System.Security.Claims;
 using Hospital.Shared.Dtos;
+using HospitalApi.Data;
 using HospitalApi.Services;
 using HospitalApi.Validation;
+using Microsoft.EntityFrameworkCore;
 
 namespace HospitalApi.Endpoints;
 
@@ -20,6 +22,21 @@ public static class PortalEndpoints
 
             var dto = await doctors.GetByIdAsync(id.Value);
             return dto is null ? Results.NotFound() : Results.Ok(dto);
+        });
+
+        doctor.MapGet("/appointments/slots", async (
+            DateTime date,
+            ClaimsPrincipal user,
+            IAppointmentService appointments) =>
+        {
+            var id = GetSubjectId(user);
+            if (id is null)
+            {
+                return Results.Unauthorized();
+            }
+
+            var slots = await appointments.GetAvailableSlotsAsync(id.Value, date);
+            return Results.Ok(slots);
         });
 
         doctor.MapGet("/appointments", async (ClaimsPrincipal user, IAppointmentService appointments) =>
@@ -144,6 +161,20 @@ public static class PortalEndpoints
             return Results.Ok(list);
         });
 
+        patient.MapGet("/appointments/slots", async (
+            int doctorId,
+            DateTime date,
+            IAppointmentService appointments) =>
+        {
+            if (doctorId <= 0)
+            {
+                return Results.BadRequest(new { error = "Geçerli doktor seçiniz." });
+            }
+
+            var slots = await appointments.GetAvailableSlotsAsync(doctorId, date);
+            return Results.Ok(slots);
+        });
+
         patient.MapGet("/appointments", async (ClaimsPrincipal user, IAppointmentService appointments) =>
         {
             var id = GetSubjectId(user);
@@ -198,6 +229,45 @@ public static class PortalEndpoints
 
             var list = await labs.GetByPatientAsync(id.Value);
             return Results.Ok(list);
+        });
+
+        patient.MapGet("/lab-reports/{reportId:int}/pdf", async (int reportId, ClaimsPrincipal user, ILabReportService labs, HospitalDbContext db) =>
+        {
+            var id = GetSubjectId(user);
+            if (id is null)
+            {
+                return Results.Unauthorized();
+            }
+
+            var owned = await db.LabReports.AsNoTracking()
+                .AnyAsync(r => r.Id == reportId && r.PatientId == id.Value);
+            if (!owned)
+            {
+                return Results.NotFound();
+            }
+
+            var (content, fileName) = await labs.GetPdfAsync(reportId);
+            return content is null
+                ? Results.NotFound()
+                : Results.File(content, "application/pdf", fileName ?? "rapor.pdf");
+        });
+
+        patient.MapPut("/me/profile", async (UpdatePatientProfileRequest request, ClaimsPrincipal user, IPatientService patients) =>
+        {
+            var validation = RequestValidator.Validate(request);
+            if (validation is not null)
+            {
+                return validation;
+            }
+
+            var id = GetSubjectId(user);
+            if (id is null)
+            {
+                return Results.Unauthorized();
+            }
+
+            var (success, error, dto) = await patients.UpdatePortalProfileAsync(id.Value, request);
+            return success ? Results.Ok(dto) : Results.BadRequest(new { error });
         });
 
         patient.MapPut("/change-password", async (ChangePasswordRequest request, ClaimsPrincipal user, IAuthService auth) =>

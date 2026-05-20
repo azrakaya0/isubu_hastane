@@ -10,6 +10,10 @@ public sealed class DoctorDto
     public string Specialty { get; set; } = string.Empty;
     public int ClinicId { get; set; }
     public string ClinicName { get; set; } = string.Empty;
+    public string? ClinicNumber { get; set; }
+    public string? OfficeLocation { get; set; }
+    public string? PublicPhone { get; set; }
+    public string? PublicEmail { get; set; }
     public DateTime CreatedAt { get; set; }
     public int? CreatedByUserId { get; set; }
     public DateTime? UpdatedAt { get; set; }

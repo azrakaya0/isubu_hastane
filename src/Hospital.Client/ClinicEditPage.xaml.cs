@@ -36,6 +36,7 @@ public partial class ClinicEditPage : ContentPage
                     return;
                 }
 
+                ClinicNumberEntry.Text = c.ClinicNumber ?? string.Empty;
                 NameEntry.Text = c.Name;
                 DescriptionEditor.Text = c.Description;
             }
@@ -56,8 +57,10 @@ public partial class ClinicEditPage : ContentPage
         }
 
         var desc = DescriptionEditor.Text?.Trim();
+        var number = ClinicNumberEntry.Text?.Trim();
         var request = new CreateClinicRequest
         {
+            ClinicNumber = string.IsNullOrWhiteSpace(number) ? null : number,
             Name = name,
             Description = string.IsNullOrWhiteSpace(desc) ? null : desc
         };

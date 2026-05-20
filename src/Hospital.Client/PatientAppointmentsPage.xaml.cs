@@ -11,6 +11,7 @@ public partial class PatientAppointmentsPage : ContentPage
     private readonly IHospitalApiClient _api = AppLocator.Services.GetRequiredService<IHospitalApiClient>();
     private readonly ObservableCollection<AppointmentListRow> _items = new();
     private List<AppointmentDto> _snapshot = new();
+    private readonly PickerFilterWatcher _statusPickerWatcher;
 
     public PatientAppointmentsPage()
     {
@@ -19,7 +20,11 @@ public partial class PatientAppointmentsPage : ContentPage
         RbAllDates.CheckedChanged += OnFilterChanged;
         RbToday.CheckedChanged += OnFilterChanged;
         RbWeek.CheckedChanged += OnFilterChanged;
-        StatusPicker.SelectedIndexChanged += (_, _) => ApplyFilters();
+        _statusPickerWatcher = new PickerFilterWatcher(StatusPicker, () =>
+        {
+            ApplyFilters();
+            return Task.CompletedTask;
+        });
         RbAllDates.IsChecked = true;
         StatusPicker.SelectedIndex = 0;
     }

@@ -13,6 +13,7 @@ public partial class AppointmentEditPage : ContentPage
     private readonly List<int> _doctorIds = new();
     private List<DoctorDto> _allDoctors = new();
     private readonly PickerFilterWatcher _clinicPickerWatcher;
+    private AppointmentSlotPickerHelper? _slotHelper;
 
     public AppointmentEditPage(int? appointmentId)
     {
@@ -24,6 +25,15 @@ public partial class AppointmentEditPage : ContentPage
         StatusPicker.Items.Add("İptal");
         StatusPicker.SelectedIndex = 0;
         _clinicPickerWatcher = new PickerFilterWatcher(ClinicPicker, OnClinicFilterCommittedAsync);
+        DoctorPicker.SelectedIndexChanged += async (_, _) => await ReloadSlotsAsync();
+        NewPatientSwitch.Toggled += (_, _) => ToggleNewPatientPanel();
+    }
+
+    private void ToggleNewPatientPanel()
+    {
+        var isNew = NewPatientSwitch.IsToggled;
+        PatientPickerBorder.IsVisible = !isNew;
+        NewPatientPanel.IsVisible = isNew;
     }
 
     protected override async void OnAppearing()
@@ -34,11 +44,17 @@ public partial class AppointmentEditPage : ContentPage
             try
             {
                 await LoadPickersAsync();
+                _slotHelper = new AppointmentSlotPickerHelper(
+                    ScheduleDatePicker,
+                    SlotPicker,
+                    () => Task.FromResult(GetSelectedDoctorId()),
+                    (doctorId, date, exclude) => _api.GetAppointmentSlotsAsync(doctorId, date, exclude),
+                    SlotHintLabel);
+                _slotHelper.SetExcludeAppointmentId(_appointmentId);
 
                 if (_appointmentId is not > 0)
                 {
                     ScheduleDatePicker.Date = DateTime.Today;
-                    ScheduleTimePicker.Time = new TimeSpan(9, 0, 0);
                     if (_patientIds.Count > 0)
                     {
                         PatientPicker.SelectedIndex = 0;
@@ -48,6 +64,7 @@ public partial class AppointmentEditPage : ContentPage
                     {
                         ClinicPicker.SelectedIndex = 0;
                         await FilterDoctorsByClinicAsync(_clinicIds[0]);
+                        await ReloadSlotsAsync();
                     }
 
                     return;
@@ -69,8 +86,7 @@ public partial class AppointmentEditPage : ContentPage
 
                 await FilterDoctorsByClinicAsync(a.ClinicId);
                 SelectPickerIndex(DoctorPicker, _doctorIds, a.DoctorId);
-                ScheduleDatePicker.Date = a.ScheduledAt.Date;
-                ScheduleTimePicker.Time = a.ScheduledAt.TimeOfDay;
+                await _slotHelper.SelectExistingAsync(a.ScheduledAt);
                 StatusPicker.SelectedIndex = a.Status switch
                 {
                     AppointmentStatus.Scheduled => 0,
@@ -118,9 +134,9 @@ public partial class AppointmentEditPage : ContentPage
         var clinics = await _api.GetClinicsAsync(null);
         ClinicPicker.Items.Clear();
         _clinicIds.Clear();
-        foreach (var c in clinics.OrderBy(x => x.Name))
+        foreach (var c in clinics.OrderBy(x => x.ClinicNumber ?? "zzz").ThenBy(x => x.Name))
         {
-            ClinicPicker.Items.Add(c.Name);
+            ClinicPicker.Items.Add(c.DisplayName);
             _clinicIds.Add(c.Id);
         }
 
@@ -153,8 +169,16 @@ public partial class AppointmentEditPage : ContentPage
             DoctorPicker.SelectedIndex = 0;
         }
 
-        return Task.CompletedTask;
+        return ReloadSlotsAsync();
     }
+
+    private int? GetSelectedDoctorId() =>
+        DoctorPicker.SelectedIndex >= 0 && DoctorPicker.SelectedIndex < _doctorIds.Count
+            ? _doctorIds[DoctorPicker.SelectedIndex]
+            : null;
+
+    private Task ReloadSlotsAsync() =>
+        _slotHelper?.InitializeAsync() ?? Task.CompletedTask;
 
     private AppointmentStatus SelectedStatus => StatusPicker.SelectedIndex switch
     {
@@ -165,9 +189,10 @@ public partial class AppointmentEditPage : ContentPage
 
     private async void OnSaveClicked(object? sender, EventArgs e)
     {
-        if (PatientPicker.SelectedIndex < 0 || PatientPicker.SelectedIndex >= _patientIds.Count)
+        var useNewPatient = NewPatientSwitch.IsToggled;
+        if (!useNewPatient && (PatientPicker.SelectedIndex < 0 || PatientPicker.SelectedIndex >= _patientIds.Count))
         {
-            await DisplayAlert("Doğrulama", "Hasta seçiniz.", "Tamam");
+            await DisplayAlert("Doğrulama", "Hasta seçiniz veya yeni hasta seçeneğini açın.", "Tamam");
             return;
         }
 
@@ -183,10 +208,32 @@ public partial class AppointmentEditPage : ContentPage
             return;
         }
 
-        var patientId = _patientIds[PatientPicker.SelectedIndex];
+        var patientId = useNewPatient ? 0 : _patientIds[PatientPicker.SelectedIndex];
+        AppointmentWalkInPatientRequest? walkIn = null;
+        if (useNewPatient)
+        {
+            walkIn = new AppointmentWalkInPatientRequest
+            {
+                FirstName = NewPatientFirstNameEntry.Text?.Trim() ?? string.Empty,
+                LastName = NewPatientLastNameEntry.Text?.Trim() ?? string.Empty,
+                NationalId = NewPatientNationalIdEntry.Text?.Trim(),
+                Phone = NewPatientPhoneEntry.Text?.Trim()
+            };
+            if (string.IsNullOrWhiteSpace(walkIn.FirstName) || string.IsNullOrWhiteSpace(walkIn.LastName))
+            {
+                await DisplayAlert("Doğrulama", "Yeni hasta için ad ve soyad giriniz.", "Tamam");
+                return;
+            }
+        }
+
         var clinicId = _clinicIds[ClinicPicker.SelectedIndex];
         var doctorId = _doctorIds[DoctorPicker.SelectedIndex];
-        var when = ScheduleDatePicker.Date!.Value.Date + ScheduleTimePicker.Time!.Value;
+        var when = _slotHelper?.GetSelectedDateTime();
+        if (when is null)
+        {
+            await DisplayAlert("Doğrulama", "Uygun bir randevu saati seçiniz.", "Tamam");
+            return;
+        }
         var notes = NotesEditor.Text?.Trim();
         if (UrgentSwitch.IsToggled)
         {
@@ -204,7 +251,7 @@ public partial class AppointmentEditPage : ContentPage
                         PatientId = patientId,
                         DoctorId = doctorId,
                         ClinicId = clinicId,
-                        ScheduledAt = when,
+                        ScheduledAt = when.Value,
                         Status = SelectedStatus,
                         Notes = string.IsNullOrWhiteSpace(notes) ? null : notes
                     });
@@ -214,9 +261,10 @@ public partial class AppointmentEditPage : ContentPage
                     await _api.CreateAppointmentAsync(new CreateAppointmentRequest
                     {
                         PatientId = patientId,
+                        NewPatient = walkIn,
                         DoctorId = doctorId,
                         ClinicId = clinicId,
-                        ScheduledAt = when,
+                        ScheduledAt = when.Value,
                         Status = SelectedStatus,
                         Notes = string.IsNullOrWhiteSpace(notes) ? null : notes
                     });

@@ -11,6 +11,9 @@ public sealed class PatientDto
     public string Phone { get; set; } = string.Empty;
     public string? Email { get; set; }
     public DateTime BirthDate { get; set; }
+    public string? EmergencyContactName { get; set; }
+    public string? EmergencyContactPhone { get; set; }
+    public string? EmergencyContactRelation { get; set; }
     public DateTime CreatedAt { get; set; }
     public int? CreatedByUserId { get; set; }
     public DateTime? UpdatedAt { get; set; }

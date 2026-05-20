@@ -107,6 +107,25 @@
                             </Border>
                         </VerticalStackLayout>
 
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="PDF sonuç (isteğe bağlı, en fazla 5 MB)"
+                                   Style="{StaticResource SectionLabel}" />
+                            <Label x:Name="PdfFileLabel"
+                                   FontSize="13"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   Text="Dosya seçilmedi" />
+                            <HorizontalStackLayout Spacing="10">
+                                <Button Text="PDF seç"
+                                        Style="{StaticResource OutlineButton}"
+                                        Clicked="OnPickPdfClicked" />
+                                <Button Text="Kaldır"
+                                        Style="{StaticResource OutlineButton}"
+                                        IsVisible="False"
+                                        x:Name="ClearPdfButton"
+                                        Clicked="OnClearPdfClicked" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+
                         <Label x:Name="ErrorLabel"
                                IsVisible="False"
                                TextColor="#B71C1C"

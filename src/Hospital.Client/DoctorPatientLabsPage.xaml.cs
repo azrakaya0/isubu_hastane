@@ -9,15 +9,31 @@ public partial class DoctorPatientLabsPage : ContentPage
 {
     private readonly IHospitalApiClient _api = AppLocator.Services.GetRequiredService<IHospitalApiClient>();
     private readonly ObservableCollection<LabReportListRow> _items = new();
+    private readonly DebouncedReload _lookupDebouncer;
     private int? _patientId;
 
     public DoctorPatientLabsPage()
     {
         InitializeComponent();
         LabsCollection.ItemsSource = _items;
+        _lookupDebouncer = new DebouncedReload(RunLookupAsync);
+        SearchFilterWiring.WireEntry(NationalIdEntry, _lookupDebouncer);
     }
 
-    private async void OnLookupClicked(object? sender, EventArgs e)
+    private async Task RunLookupAsync()
+    {
+        var nid = (NationalIdEntry.Text ?? string.Empty).Trim();
+        if (nid.Length != 11 || !nid.All(char.IsDigit))
+        {
+            return;
+        }
+
+        await RunLookupCoreAsync();
+    }
+
+    private async void OnLookupClicked(object? sender, EventArgs e) => await _lookupDebouncer.RunNowAsync();
+
+    private async Task RunLookupCoreAsync()
     {
         LookupErrorLabel.IsVisible = false;
         PatientFoundLabel.IsVisible = false;
@@ -95,7 +111,7 @@ public partial class DoctorPatientLabsPage : ContentPage
         }
 
         LabsCollection.SelectedItem = null;
-        await Navigation.PushAsync(new LabReportDetailPage(Clone(row.Source)));
+        await Navigation.PushAsync(new LabReportDetailPage(Clone(row.Source), patientPortal: false));
     }
 
     private static LabReportDto Clone(LabReportDto r) =>
@@ -110,6 +126,8 @@ public partial class DoctorPatientLabsPage : ContentPage
             ResultDate = r.ResultDate,
             OrderingDoctorId = r.OrderingDoctorId,
             OrderingDoctorName = r.OrderingDoctorName,
-            CreatedAt = r.CreatedAt
+            CreatedAt = r.CreatedAt,
+            HasPdf = r.HasPdf,
+            PdfFileName = r.PdfFileName
         };
 }

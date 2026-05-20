@@ -53,7 +53,7 @@ public partial class PatientLabReportsPage : ContentPage
         }
 
         LabsCollection.SelectedItem = null;
-        await Navigation.PushAsync(new LabReportDetailPage(Clone(row.Source)));
+        await Navigation.PushAsync(new LabReportDetailPage(Clone(row.Source), patientPortal: true));
     }
 
     private static LabReportDto Clone(LabReportDto r) =>
@@ -68,6 +68,8 @@ public partial class PatientLabReportsPage : ContentPage
             ResultDate = r.ResultDate,
             OrderingDoctorId = r.OrderingDoctorId,
             OrderingDoctorName = r.OrderingDoctorName,
-            CreatedAt = r.CreatedAt
+            CreatedAt = r.CreatedAt,
+            HasPdf = r.HasPdf,
+            PdfFileName = r.PdfFileName
         };
 }

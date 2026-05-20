@@ -28,6 +28,18 @@
                                Margin="0,0,0,0" />
 
                         <VerticalStackLayout Spacing="8">
+                            <Label Text="Poliklinik numarası" Style="{StaticResource SectionLabel}" Margin="0" />
+                            <Border Style="{StaticResource FormFieldBorder}">
+                                <Entry x:Name="ClinicNumberEntry"
+                                       Placeholder="Örn. 105"
+                                       MaxLength="20"
+                                       Keyboard="Numeric"
+                                       BackgroundColor="Transparent"
+                                       TextColor="{StaticResource TextPrimary}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="8">
                             <Label Text="Poliklinik adı" Style="{StaticResource SectionLabel}" Margin="0" />
                             <Border Style="{StaticResource FormFieldBorder}">
                                 <Entry x:Name="NameEntry"

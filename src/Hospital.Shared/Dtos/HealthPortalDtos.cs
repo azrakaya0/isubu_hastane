@@ -33,9 +33,11 @@ public sealed class PortalPatientBookRequest
 
 public sealed class PortalDoctorBookRequest
 {
-    [Required(ErrorMessage = "Hasta T.C. kimlik numarası zorunludur.")]
-    [StringLength(11, MinimumLength = 11, ErrorMessage = "T.C. kimlik numarası 11 haneli olmalıdır.")]
-    public string PatientNationalId { get; set; } = string.Empty;
+    /// <summary>11 hane; kayıtlı hasta yoksa <see cref="WalkInPatient"/> ile yeni kayıt açılır.</summary>
+    [MaxLength(11)]
+    public string? PatientNationalId { get; set; }
+
+    public AppointmentWalkInPatientRequest? WalkInPatient { get; set; }
 
     [Range(1, int.MaxValue, ErrorMessage = "Poliklinik seçiniz.")]
     public int ClinicId { get; set; }
@@ -61,6 +63,8 @@ public sealed class LabReportDto
     public int? OrderingDoctorId { get; set; }
     public string? OrderingDoctorName { get; set; }
     public DateTime CreatedAt { get; set; }
+    public bool HasPdf { get; set; }
+    public string? PdfFileName { get; set; }
 }
 
 public class CreateLabReportRequest
@@ -84,6 +88,12 @@ public class CreateLabReportRequest
     public DateTime ResultDate { get; set; }
 
     public int? OrderingDoctorId { get; set; }
+
+    /// <summary>İsteğe bağlı PDF (base64).</summary>
+    public string? PdfBase64 { get; set; }
+
+    [MaxLength(260)]
+    public string? PdfFileName { get; set; }
 }
 
 public sealed class UpdateLabReportRequest : CreateLabReportRequest

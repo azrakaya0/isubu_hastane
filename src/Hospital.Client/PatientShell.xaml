@@ -48,6 +48,10 @@
         <ShellContent ContentTemplate="{DataTemplate local:PatientAppointmentsPage}" Route="PatientAppointmentsPage" />
     </FlyoutItem>
 
+    <FlyoutItem Title="Takvim">
+        <ShellContent ContentTemplate="{DataTemplate local:PatientAppointmentCalendarPage}" Route="PatientAppointmentCalendarPage" />
+    </FlyoutItem>
+
     <FlyoutItem Title="Randevu al">
         <ShellContent ContentTemplate="{DataTemplate local:PatientBookAppointmentPage}" Route="PatientBookAppointmentPage" />
     </FlyoutItem>

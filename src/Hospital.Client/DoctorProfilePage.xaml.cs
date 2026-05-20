@@ -29,7 +29,19 @@ public partial class DoctorProfilePage : ContentPage
 
                 FullNameLabel.Text = $"{me.FirstName} {me.LastName}";
                 SpecialtyLabel.Text = me.Specialty;
-                ClinicLabel.Text = $"Poliklinik: {me.ClinicName}";
+                var clinicLine = string.IsNullOrWhiteSpace(me.ClinicNumber)
+                    ? me.ClinicName
+                    : $"{me.ClinicName} · No {me.ClinicNumber}";
+                ClinicLabel.Text = $"Poliklinik: {clinicLine}";
+                OfficeLabel.Text = string.IsNullOrWhiteSpace(me.OfficeLocation)
+                    ? "Oda / kat: (yönetim tarafından tanımlanmadı)"
+                    : $"Oda / kat: {me.OfficeLocation}";
+                PhoneLabel.Text = string.IsNullOrWhiteSpace(me.PublicPhone)
+                    ? "Dahili / telefon: —"
+                    : $"Dahili / telefon: {me.PublicPhone}";
+                EmailLabel.Text = string.IsNullOrWhiteSpace(me.PublicEmail)
+                    ? "Kurumsal e-posta: —"
+                    : $"Kurumsal e-posta: {me.PublicEmail}";
             }
             catch (Exception ex)
             {
@@ -38,13 +50,4 @@ public partial class DoctorProfilePage : ContentPage
             }
         });
     }
-
-    private async void OnBookForPatientClicked(object? sender, EventArgs e) =>
-        await Navigation.PushAsync(new DoctorBookAppointmentPage());
-
-    private async void OnTimelineClicked(object? sender, EventArgs e) =>
-        await Navigation.PushAsync(new DoctorTimelinePage());
-
-    private async void OnPatientLabsClicked(object? sender, EventArgs e) =>
-        await Navigation.PushAsync(new DoctorPatientLabsPage());
 }

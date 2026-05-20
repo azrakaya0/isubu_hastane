@@ -82,14 +82,13 @@
                            FontFamily="OpenSansSemibold"
                            FontSize="16"
                            TextColor="{StaticResource TextPrimary}" />
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10" RowDefinitions="Auto,Auto,Auto,Auto">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10" RowDefinitions="Auto,Auto,Auto">
                         <Button Grid.Row="0" Grid.Column="0" Text="Hasta yönetimi" Style="{StaticResource OutlineButton}" Clicked="OnPatientsClicked" />
                         <Button Grid.Row="0" Grid.Column="1" Text="Doktor kadrosu" Style="{StaticResource OutlineButton}" Clicked="OnDoctorsClicked" />
                         <Button Grid.Row="1" Grid.Column="0" Text="Poliklinikler" Style="{StaticResource OutlineButton}" Clicked="OnClinicsClicked" />
                         <Button Grid.Row="1" Grid.Column="1" Text="Randevu planı" Style="{StaticResource OutlineButton}" Clicked="OnAppointmentsClicked" />
                         <Button Grid.Row="2" Grid.Column="0" Text="Tetkik raporları" Style="{StaticResource OutlineButton}" Clicked="OnLabReportsClicked" />
                         <Button Grid.Row="2" Grid.Column="1" Text="Nöbet ve izinler" Style="{StaticResource OutlineButton}" Clicked="OnDutiesClicked" />
-                        <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="Erişim ve roller" Style="{StaticResource OutlineButton}" Clicked="OnPermissionsClicked" />
                     </Grid>
                     <Label x:Name="StatusMessageLabel"
                            Text="Veriler yükleniyor..."

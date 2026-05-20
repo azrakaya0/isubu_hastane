@@ -97,6 +97,13 @@
                     </VerticalStackLayout>
                 </Border>
 
+                <Button x:Name="OpenPdfButton"
+                        Margin="12,0,12,0"
+                        Text="PDF sonucu aç"
+                        Style="{StaticResource OutlineButton}"
+                        IsVisible="False"
+                        Clicked="OnOpenPdfClicked"
+                        HorizontalOptions="Fill" />
                 <Button Margin="12,0,12,12"
                         Text="Kapat"
                         Clicked="OnCloseClicked"

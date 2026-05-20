@@ -44,6 +44,7 @@ builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<ILabReportService, LabReportService>();
 builder.Services.AddScoped<IDoctorDutyService, DoctorDutyService>();
 builder.Services.AddScoped<IPortalAppointmentService, PortalAppointmentService>();
+builder.Services.AddSingleton<ILabPdfStorage, LabPdfStorage>();
 builder.Services.AddScoped<IPortalTimelineService, PortalTimelineService>();
 
 var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>()

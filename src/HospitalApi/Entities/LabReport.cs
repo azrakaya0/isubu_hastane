@@ -17,4 +17,6 @@ public sealed class LabReport : AuditableEntity
 
     public int? OrderingDoctorId { get; set; }
     public Doctor? OrderingDoctor { get; set; }
+
+    public string? PdfFileName { get; set; }
 }

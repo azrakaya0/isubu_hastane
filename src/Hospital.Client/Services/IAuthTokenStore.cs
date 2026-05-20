@@ -7,7 +7,9 @@ public interface IAuthTokenStore
     /// <summary>Admin, Doctor veya Patient; oturum yoksa null.</summary>
     string? Role { get; }
 
-    void SetSession(string token, string role);
+    string? DisplayName { get; }
+
+    void SetSession(string token, string role, string? displayName = null);
 
     /// <summary>Yalnızca jetonu günceller; rolü Admin varsayar (eski çağrılar için).</summary>
     void SetToken(string? token);

@@ -69,8 +69,8 @@
         <ShellContent ContentTemplate="{DataTemplate local:AdminDoctorDutiesPage}" Route="AdminDoctorDutiesPage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Erişim ve roller">
-        <ShellContent ContentTemplate="{DataTemplate local:AdminPermissionsPage}" Route="AdminPermissionsPage" />
+    <FlyoutItem Title="Kurum bilgileri">
+        <ShellContent ContentTemplate="{DataTemplate local:AdminProfilePage}" Route="AdminProfilePage" />
     </FlyoutItem>
 
     <FlyoutItem Title="Şifre Değiştir">
