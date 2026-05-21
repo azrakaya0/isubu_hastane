@@ -59,20 +59,24 @@ internal static class AppNavigator
                 if (PortalWindowsNavigation.UseNavigationPage)
                 {
                     CrashLogger.Log($"Windows bootstrap portal ({kind})", "AppNavigator");
-                    app.MainPage = PortalWindowsNavigation.CreateBootstrap(kind);
+                    if (app.Windows.Count > 0)
+                        app.Windows[0].Page = PortalWindowsNavigation.CreateBootstrap(kind);
                 }
                 else
                 {
                     CrashLogger.Log($"Shell portal ({kind})", "AppNavigator");
-                    app.MainPage = kind switch
+                    var page = (Page)(kind switch
                     {
                         PortalKind.Doctor => new DoctorShell(),
                         PortalKind.Patient => new PatientShell(),
                         _ => new AppShell()
-                    };
+                    });
+                    if (app.Windows.Count > 0)
+                        app.Windows[0].Page = page;
                 }
 
-                CrashLogger.Log($"MainPage={app.MainPage?.GetType().Name}", "AppNavigator");
+                var pageName = app.Windows.Count > 0 ? app.Windows[0].Page?.GetType().Name : "N/A";
+                CrashLogger.Log($"MainPage={pageName}", "AppNavigator");
             }
             catch (Exception ex)
             {
@@ -86,33 +90,20 @@ internal static class AppNavigator
 
 
     internal static Task ReturnToLoginAsync()
-
     {
-
         PortalFlyoutHost.Current = null;
-
         PortalRouteTable.Clear();
 
-
-
         return MainThread.InvokeOnMainThreadAsync(() =>
-
         {
-
             if (Application.Current is not { } app)
-
             {
-
                 return;
-
             }
 
-
-
-            app.MainPage = App.CreateLoginNavigation();
-
+            if (app.Windows.Count > 0)
+                app.Windows[0].Page = App.CreateLoginNavigation();
         });
-
     }
 
 }

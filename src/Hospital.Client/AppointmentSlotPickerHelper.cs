@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+using Hospital.Client.Models;
 using Hospital.Shared;
 using Hospital.Shared.Dtos;
 
@@ -9,25 +11,42 @@ namespace Hospital.Client;
 internal sealed class AppointmentSlotPickerHelper
 {
     private readonly DatePicker _datePicker;
-    private readonly Picker _slotPicker;
     private readonly Label? _slotHintLabel;
     private readonly Func<Task<int?>> _getDoctorIdAsync;
     private readonly Func<int, DateTime, int?, Task<IReadOnlyList<AppointmentSlotDto>>> _fetchSlotsAsync;
-    private readonly List<DateTime> _slotTimes = new();
+    public readonly ObservableCollection<SlotViewModel> Slots = new();
+    
     private int? _excludeAppointmentId;
+    private SlotViewModel? _selectedSlot;
 
+    // New constructor for CollectionView-based pages
     public AppointmentSlotPickerHelper(
         DatePicker datePicker,
-        Picker slotPicker,
         Func<Task<int?>> getDoctorIdAsync,
         Func<int, DateTime, int?, Task<IReadOnlyList<AppointmentSlotDto>>> fetchSlotsAsync,
         Label? slotHintLabel = null)
     {
         _datePicker = datePicker;
-        _slotPicker = slotPicker;
         _getDoctorIdAsync = getDoctorIdAsync;
         _fetchSlotsAsync = fetchSlotsAsync;
         _slotHintLabel = slotHintLabel;
+        InitializeDatePicker();
+    }
+
+    // Legacy constructor for backward compatibility (Picker-based pages)
+    public AppointmentSlotPickerHelper(
+        DatePicker datePicker,
+        Picker? slotPicker,
+        Func<Task<int?>> getDoctorIdAsync,
+        Func<int, DateTime, int?, Task<IReadOnlyList<AppointmentSlotDto>>> fetchSlotsAsync,
+        Label? slotHintLabel = null)
+        : this(datePicker, getDoctorIdAsync, fetchSlotsAsync, slotHintLabel)
+    {
+        // Legacy: slotPicker is ignored, use new constructor instead
+    }
+
+    private void InitializeDatePicker()
+    {
         _datePicker.DateSelected += async (_, _) => await ReloadSlotsAsync();
         _datePicker.MinimumDate = AppointmentScheduling.NormalizeToNextWeekday(DateTime.Today);
         if (_datePicker.Date is null || AppointmentScheduling.IsWeekend(_datePicker.Date.Value))
@@ -43,14 +62,15 @@ internal sealed class AppointmentSlotPickerHelper
         await ReloadSlotsAsync();
     }
 
-    public DateTime? GetSelectedDateTime()
-    {
-        if (_slotPicker.SelectedIndex < 0 || _slotPicker.SelectedIndex >= _slotTimes.Count)
-        {
-            return null;
-        }
+    public DateTime? GetSelectedDateTime() => _selectedSlot?.ScheduledAt;
 
-        return _slotTimes[_slotPicker.SelectedIndex];
+    public void SelectSlot(SlotViewModel slot)
+    {
+        if (!slot.IsAvailable)
+        {
+            return;
+        }
+        _selectedSlot = slot;
     }
 
     public async Task SelectExistingAsync(DateTime scheduledAt)
@@ -69,52 +89,49 @@ internal sealed class AppointmentSlotPickerHelper
         }
 
         var doctorId = await _getDoctorIdAsync();
-        _slotTimes.Clear();
-        _slotPicker.Items.Clear();
-        _slotPicker.SelectedIndex = -1;
+        Slots.Clear();
+        _selectedSlot = null;
 
         if (doctorId is not > 0)
         {
-            _slotPicker.Title = "Önce doktor seçin";
             SetHint("Doktor seçildikten sonra uygun saatler listelenir.");
             return;
         }
 
         var slots = await _fetchSlotsAsync(doctorId.Value, date.Date, _excludeAppointmentId);
-        var available = slots.Where(s => s.IsAvailable).ToList();
-        foreach (var s in available)
+        var allSlots = slots.ToList();
+
+        foreach (var s in allSlots)
         {
-            _slotTimes.Add(s.ScheduledAt);
-            _slotPicker.Items.Add(s.Label);
+            var viewModel = new SlotViewModel
+            {
+                ScheduledAt = s.ScheduledAt,
+                Label = s.Label,
+                IsAvailable = s.IsAvailable
+            };
+            Slots.Add(viewModel);
         }
 
-        if (_slotTimes.Count == 0)
+        var hasAvailable = allSlots.Any(s => s.IsAvailable);
+        if (!hasAvailable)
         {
-            _slotPicker.Title = "Uygun saat yok";
-            SetHint("Bu tarihte boş randevu saati kalmadı veya gün kapalı. Başka bir gün seçin.");
+            SetHint("Bu tarihte boş randevu saati kalmadı. Başka bir gün seçin.");
             return;
         }
 
-        _slotPicker.Title = "Saat seçin";
-        SetHint("Hafta içi 08:30–16:30, öğle 12:00–13:00 hariç, 15 dk aralıklar.");
+        SetHint("Hafta içi 08:30–16:30, öğle 12:00–13:00 hariç, 15 dk aralıklar. Gri slot'lar dolu randevu gösterir.");
 
         if (preferTime is { } preferred)
         {
-            var idx = _slotTimes.FindIndex(t => t == preferred);
-            if (idx < 0)
+            var slot = Slots.FirstOrDefault(s => s.ScheduledAt == preferred);
+            if (slot is not null && slot.IsAvailable)
             {
-                _slotTimes.Add(preferred);
-                _slotPicker.Items.Add(AppointmentScheduling.FormatSlotLabel(preferred));
-                idx = _slotTimes.Count - 1;
+                _selectedSlot = slot;
             }
-
-            _slotPicker.SelectedIndex = idx;
-            return;
         }
-
-        if (_slotTimes.Count > 0)
+        else if (Slots.FirstOrDefault(s => s.IsAvailable) is { } firstAvailable)
         {
-            _slotPicker.SelectedIndex = 0;
+            _selectedSlot = firstAvailable;
         }
     }
 

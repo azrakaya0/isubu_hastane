@@ -1,3 +1,4 @@
+using Hospital.Client.Models;
 using Hospital.Client.Services;
 using Hospital.Shared.Dtos;
 
@@ -42,10 +43,10 @@ public partial class PatientBookAppointmentPage : ContentPage
             _doctors.Clear();
             _slotHelper = new AppointmentSlotPickerHelper(
                 ScheduleDatePicker,
-                SlotPicker,
                 () => Task.FromResult(GetSelectedDoctorId()),
                 (doctorId, date, _) => _api.GetPatientPortalAppointmentSlotsAsync(doctorId, date),
                 SlotHintLabel);
+            SlotCollectionView.ItemsSource = _slotHelper.Slots;
         });
     }
 
@@ -75,7 +76,7 @@ public partial class PatientBookAppointmentPage : ContentPage
             }
 
             DoctorPicker.Title = _doctors.Count > 0 ? "Doktor seçin" : "Bu birimde doktor yok";
-            SlotPicker.Items.Clear();
+            _slotHelper?.Slots.Clear();
             if (_doctors.Count > 0)
             {
                 DoctorPicker.SelectedIndex = 0;
@@ -92,6 +93,19 @@ public partial class PatientBookAppointmentPage : ContentPage
         }
 
         await _slotHelper.InitializeAsync();
+    }
+
+    private void OnSlotButtonClicked(object? sender, EventArgs e)
+    {
+        if (sender is Button button && button.BindingContext is SlotViewModel slot)
+        {
+            _slotHelper?.SelectSlot(slot);
+        }
+    }
+
+    private void OnSlotSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        // Selection is handled via button click
     }
 
     private async void OnBookClicked(object? sender, EventArgs e)
