@@ -11,6 +11,7 @@ public partial class PatientBookAppointmentPage : ContentPage
     private readonly List<DoctorDto> _doctors = new();
     private readonly PickerFilterWatcher _clinicPickerWatcher;
     private AppointmentSlotPickerHelper? _slotHelper;
+    private Button? _selectedSlotButton;
 
     public PatientBookAppointmentPage()
     {
@@ -45,8 +46,8 @@ public partial class PatientBookAppointmentPage : ContentPage
                 ScheduleDatePicker,
                 () => Task.FromResult(GetSelectedDoctorId()),
                 (doctorId, date, _) => _api.GetPatientPortalAppointmentSlotsAsync(doctorId, date),
-                SlotHintLabel);
-            SlotCollectionView.ItemsSource = _slotHelper.Slots;
+                SlotHintLabel,
+                onSlotsReloaded: () => MainThread.BeginInvokeOnMainThread(RebuildSlotButtons));
         });
     }
 
@@ -95,17 +96,59 @@ public partial class PatientBookAppointmentPage : ContentPage
         await _slotHelper.InitializeAsync();
     }
 
-    private void OnSlotButtonClicked(object? sender, EventArgs e)
+    private void RebuildSlotButtons()
     {
-        if (sender is Button button && button.BindingContext is SlotViewModel slot)
+        SlotFlexLayout.Children.Clear();
+        _selectedSlotButton = null;
+        SelectedSlotLabel.IsVisible = false;
+
+        if (_slotHelper is null) return;
+
+        foreach (var slot in _slotHelper.Slots)
         {
-            _slotHelper?.SelectSlot(slot);
+            var btn = new Button
+            {
+                Text = slot.DisplayLabel,
+                FontSize = 12,
+                Padding = new Thickness(6, 5),
+                Margin = new Thickness(3),
+                WidthRequest = 76,
+                BackgroundColor = slot.IsAvailable ? Colors.White : Color.FromArgb("#F0F0F0"),
+                TextColor = slot.IsAvailable ? Color.FromArgb("#1A2B42") : Color.FromArgb("#AAAAAA"),
+                Opacity = slot.IsAvailable ? 1.0 : 0.55,
+                IsEnabled = slot.IsAvailable,
+                BorderColor = Color.FromArgb("#CCDDEE"),
+                BorderWidth = 1,
+                CornerRadius = 6,
+                BindingContext = slot
+            };
+            btn.Clicked += OnSlotButtonClicked;
+            SlotFlexLayout.Children.Add(btn);
         }
     }
 
-    private void OnSlotSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    private void OnSlotButtonClicked(object? sender, EventArgs e)
     {
-        // Selection is handled via button click
+        if (sender is not Button btn || btn.BindingContext is not SlotViewModel slot) return;
+
+        // Önceki seçimi temizle
+        if (_selectedSlotButton is not null)
+        {
+            _selectedSlotButton.BackgroundColor = Colors.White;
+            _selectedSlotButton.TextColor = Color.FromArgb("#1A2B42");
+            _selectedSlotButton.BorderColor = Color.FromArgb("#CCDDEE");
+        }
+
+        // Yeni seçimi vurgula
+        btn.BackgroundColor = Color.FromArgb("#1565C0");
+        btn.TextColor = Colors.White;
+        btn.BorderColor = Color.FromArgb("#1565C0");
+        _selectedSlotButton = btn;
+
+        _slotHelper?.SelectSlot(slot);
+
+        SelectedSlotLabel.Text = $"Seçilen saat: {slot.ScheduledAt:HH:mm}";
+        SelectedSlotLabel.IsVisible = true;
     }
 
     private async void OnBookClicked(object? sender, EventArgs e)

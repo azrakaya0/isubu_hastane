@@ -51,35 +51,18 @@
                             </VerticalStackLayout>
                         </Grid>
                         
-                        <CollectionView x:Name="SlotCollectionView"
-                                        SelectionMode="Single"
-                                        SelectionChanged="OnSlotSelectionChanged">
-                            <CollectionView.ItemsLayout>
-                                <GridItemsLayout Orientation="Vertical"
-                                               HorizontalItemSpacing="8"
-                                               VerticalItemSpacing="8"
-                                               Columns="4" />
-                            </CollectionView.ItemsLayout>
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate xmlns:models="clr-namespace:Hospital.Client.Models">
-                                    <Frame BorderColor="Transparent"
-                                           CornerRadius="6"
-                                           HasShadow="False"
-                                           Padding="0"
-                                           Margin="0"
-                                           BackgroundColor="{Binding BackgroundColor}"
-                                           Opacity="{Binding Opacity}">
-                                        <Button Text="{Binding DisplayLabel}"
-                                                FontSize="12"
-                                                Padding="8,6"
-                                                TextColor="{Binding TextColor}"
-                                                BackgroundColor="Transparent"
-                                                IsEnabled="{Binding IsAvailable}"
-                                                Clicked="OnSlotButtonClicked" />
-                                    </Frame>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
+                        <FlexLayout x:Name="SlotFlexLayout"
+                                    Wrap="Wrap"
+                                    Direction="Row"
+                                    JustifyContent="Start"
+                                    AlignItems="Start"
+                                    Margin="0,4" />
+
+                        <Label x:Name="SelectedSlotLabel"
+                               FontSize="13"
+                               FontFamily="OpenSansSemibold"
+                               TextColor="{StaticResource Primary}"
+                               IsVisible="False" />
                         
                         <Label x:Name="SlotHintLabel"
                                FontSize="12"

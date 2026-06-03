@@ -29,6 +29,15 @@ artifacts/
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# Publish çıktısı
+publish/
+
+# Geçici dosyalar
+maui_crash.txt
+~$*.docx
+rapor_screenshots/
 
 # Yerel gizli ayarlar (isteğe bağlı — şu an dev ayarları repoda)
 # **/appsettings.Development.json
